@@ -96,7 +96,7 @@ async function fetchPrayerTimes() {
 function displayPrayerTimes() {
     // All prayer times to display
     const prayerList = [
-        { key: 'Imsak', name: 'Imsak', label: 'Stop Eating (Suhoor)', isRamadanSpecial: true },
+        { key: 'Imsak', name: 'Sehri', label: 'Stop Eating (Suhoor)', isRamadanSpecial: true },
         { key: 'Fajr', name: 'Fajr', label: 'Dawn Prayer' },
         { key: 'Sunrise', name: 'Sunrise', label: 'Sunrise' },
         { key: 'Dhuhr', name: 'Dhuhr', label: 'Noon Prayer' },
