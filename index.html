@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Athan Clock - 11426</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+#main-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('https://images.unsplash.com/photo-1562938963-0cefe2cbcd4d?auto=format&w=1600') center/cover no-repeat;
+    filter: brightness(0.45);
+}
+
+.container {
+    position: relative;
+    padding: 20px 40px;
+    text-align: center;
+    z-index: 10;
+}
+
+.time-display {
+    font-family: 'Cinzel', serif;
+    font-size: 92px;
+    font-weight: 700;
+    margin-top: 20px;
+}
+
+.hijri-date {
+    font-size: 18px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+.prayer-panel {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px auto;
+    max-width: 900px;
+}
+
+.prayer-box {
+    flex: 1;
+    margin: 0 8px;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 14px 0;
+    font-size: 18px;
+}
+
+.prayer-box.highlight {
+    border: 2px solid #fbbc04;
+}
+
+.main-time {
+    margin-top: 30px;
+    font-size: 36px;
+    opacity: 0.9;
+}
+
+.next-label {
+    font-size: 24px;
+    margin-top: 12px;
+    color: #fbbc04;
+}
+
+</style>
+</head>
+
+<body>
+<div id="main-bg"></div>
+
+<div class="container">
+
+    <div class="time-display" id="clock"></div>
+    <div class="hijri-date" id="hijri"></div>
+
+    <div class="main-time" id="nextPrayer"></div>
+
+    <div class="prayer-panel" id="prayerGrid"></div>
+
+</div>
+
+<script>
+const zip = "11426";
+const country = "US";
+const method = 2;
+
+function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").innerText =
+        now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+async function fetchPrayerTimes() {
+    const today = new Date();
+    const month = today.getMonth()+1;
+    const year = today.getFullYear();
+
+    const res = await fetch(
+      `https://api.aladhan.com/v1/calendarByZip/${year}/${month}?zip=${zip}&country=${country}&method=${method}`
+    );
+    const json = await res.json();
+    const dayData = json.data[today.getDate()-1].timings;
+    displayPrayers(dayData);
+}
+
+function displayPrayers(t) {
+    const order = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+    const panel = document.getElementById("prayerGrid");
+    panel.innerHTML = "";
+
+    let now = new Date();
+    let next = null;
+    let nextName = "";
+
+    order.forEach(p => {
+        const timeString = t[p].split(" ")[0];
+        const dt = new Date();
+        const [h,m] = timeString.split(":");
+        dt.setHours(h,m,0);
+
+        if(!next && dt > now) {
+            next = dt;
+            nextName = p;
+        }
+
+        const div = document.createElement("div");
+        div.className = "prayer-box";
+        if(p === nextName) div.classList.add("highlight");
+        div.innerHTML = `<div><b>${p}</b></div><div>${timeString}</div>`;
+        panel.appendChild(div);
+    });
+
+    if(next) {
+        document.getElementById("nextPrayer").innerText =
+            `Next Prayer: ${nextName} • ${next.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+    }
+}
+
+fetchPrayerTimes();
+</script>
+
+</body>
+</html>
