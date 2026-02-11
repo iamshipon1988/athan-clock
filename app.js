@@ -352,5 +352,31 @@ function stopAthan() {
     modal.classList.remove('show');
 }
 
+// Play athan manually (called from button)
+function playAthanManually() {
+    const now = new Date();
+    const currentTimeFormatted = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    // Show modal with current time
+    const modal = document.getElementById('prayerModal');
+    const audio = document.getElementById('athanAudio');
+
+    document.getElementById('modalPrayerName').textContent = 'Athan';
+    document.getElementById('modalPrayerTime').textContent = currentTimeFormatted;
+
+    // Show modal
+    modal.classList.add('show');
+
+    // Play audio
+    audio.currentTime = 0;
+    audio.play().catch(error => {
+        console.error('Error playing athan:', error);
+    });
+}
+
 // Check for prayer time every second
 setInterval(checkPrayerTime, 1000);
