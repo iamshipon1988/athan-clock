@@ -8,6 +8,7 @@ const RAMADAN_TEST_MODE = false;
 let prayerTimesData = null;
 let nextPrayerInfo = null;
 let isRamadan = false;
+let lastAnnouncedPrayer = null;
 
 // Update clock every second
 function updateClock() {
@@ -291,5 +292,65 @@ setInterval(() => {
         fetchPrayerTimes();
         fetchHijriDate();
         updateGregorianDate();
+        lastAnnouncedPrayer = null; // Reset announced prayer at midnight
     }
 }, 60000); // Check every minute
+
+// Check for prayer time and play athan
+function checkPrayerTime() {
+    if (!prayerTimesData) return;
+
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    // Only check the 5 main prayers
+    const mainPrayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+    for (const prayer of mainPrayers) {
+        if (!prayerTimesData[prayer]) continue;
+
+        const prayerTimeString = prayerTimesData[prayer].split(' ')[0];
+
+        // Check if current time matches prayer time and hasn't been announced yet
+        if (currentTime === prayerTimeString && lastAnnouncedPrayer !== prayer) {
+            playAthan(prayer, prayerTimeString);
+            lastAnnouncedPrayer = prayer;
+            break;
+        }
+    }
+}
+
+// Play athan and show modal
+function playAthan(prayerName, prayerTime) {
+    const modal = document.getElementById('prayerModal');
+    const audio = document.getElementById('athanAudio');
+
+    // Update modal content
+    document.getElementById('modalPrayerName').textContent = `${prayerName} Prayer Time`;
+    document.getElementById('modalPrayerTime').textContent = formatTime(prayerTime);
+
+    // Show modal
+    modal.classList.add('show');
+
+    // Play audio
+    audio.currentTime = 0;
+    audio.play().catch(error => {
+        console.error('Error playing athan:', error);
+    });
+}
+
+// Stop athan and close modal
+function stopAthan() {
+    const modal = document.getElementById('prayerModal');
+    const audio = document.getElementById('athanAudio');
+
+    // Stop audio
+    audio.pause();
+    audio.currentTime = 0;
+
+    // Hide modal
+    modal.classList.remove('show');
+}
+
+// Check for prayer time every second
+setInterval(checkPrayerTime, 1000);
