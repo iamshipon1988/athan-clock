@@ -195,7 +195,7 @@ MIT License - feel free to use this project for personal or commercial purposes.
 
 **Sazzad Hossain**
 - Website: [sazzad.me](https://sazzad.me)
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@iamshipon1988](https://github.com/iamshipon1988)
 
 ## 🙏 Acknowledgments
 
