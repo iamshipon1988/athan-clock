@@ -168,12 +168,10 @@ function displayPrayerTimes() {
     const prayerList = [
         { key: 'Imsak', name: 'Sehri', label: 'Stop Eating (Suhoor)', isRamadanSpecial: true },
         { key: 'Fajr', name: 'Fajr', label: 'Dawn Prayer' },
-        { key: 'Sunrise', name: 'Sunrise', label: 'Sunrise' },
         { key: 'Dhuhr', name: 'Dhuhr', label: 'Noon Prayer' },
         { key: 'Asr', name: 'Asr', label: 'Afternoon Prayer' },
         { key: 'Maghrib', name: 'Maghrib', label: 'Sunset Prayer', isRamadanSpecial: true },
-        { key: 'Isha', name: 'Isha', label: 'Night Prayer' },
-        { key: 'Midnight', name: 'Midnight', label: 'Islamic Midnight' }
+        { key: 'Isha', name: 'Isha', label: 'Night Prayer' }
     ];
 
     const grid = document.getElementById('prayerGrid');
