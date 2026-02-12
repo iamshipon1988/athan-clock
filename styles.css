@@ -55,92 +55,113 @@ body.ramadan-mode .container {
 }
 
 body.ramadan-mode .bismillah {
-    color: #2c2c2c;
-    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+    color: #6b5016;
+    text-shadow: none;
 }
 
 body.ramadan-mode .current-time {
-    color: #3a3939;
-    text-shadow: 0 4px 20px rgba(255, 255, 255, 0.6);
+    color: #8b6914;
+    text-shadow: none;
 }
 
 body.ramadan-mode .athan-button {
-    background: linear-gradient(135deg, #3a3939 0%, #2c2c2c 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+    font-weight: 600;
 }
 
 body.ramadan-mode .settings-button {
-    background: linear-gradient(135deg, #3a3939 0%, #2c2c2c 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+    font-weight: 600;
 }
 
 body.ramadan-mode .gregorian-date,
 body.ramadan-mode .hijri-date {
-    background: rgba(58, 57, 57, 0.6);
-    border: 1px solid rgba(58, 57, 57, 0.8);
-    color: #ffffff;
+    background: rgba(139, 105, 20, 0.15);
+    border: 1px solid rgba(107, 80, 22, 0.4);
+    color: #6b5016;
+    font-weight: 500;
+    text-shadow: none;
 }
 
 body.ramadan-mode .next-prayer-section {
-    background: rgba(255, 255, 255, 0.7);
-    border: 2px solid rgba(58, 57, 57, 0.3);
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(139, 105, 20, 0.4);
 }
 
 body.ramadan-mode .next-prayer-info-label,
 body.ramadan-mode .next-prayer-time-label,
 body.ramadan-mode .countdown-label {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 500;
+    text-shadow: none;
 }
 
 body.ramadan-mode .next-prayer-name {
-    color: #3a3939;
+    color: #8b6914;
+    font-weight: 700;
+    text-shadow: none;
 }
 
 body.ramadan-mode .next-prayer-time {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 700;
+    text-shadow: none;
 }
 
 body.ramadan-mode .countdown {
-    color: #3a3939;
+    color: #8b6914;
+    font-weight: 600;
+    text-shadow: none;
 }
 
 body.ramadan-mode .prayer-card {
-    background: rgba(255, 255, 255, 0.75);
-    border: 2px solid rgba(58, 57, 57, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(139, 105, 20, 0.3);
 }
 
 body.ramadan-mode .prayer-card.active {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: #2c2c2c;
-    box-shadow: 0 4px 12px rgba(58, 57, 57, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #8b6914;
+    border-width: 3px;
+    box-shadow: 0 4px 12px rgba(139, 105, 20, 0.3);
 }
 
 body.ramadan-mode .prayer-card .prayer-label {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 600;
+    text-shadow: none;
 }
 
 body.ramadan-mode .prayer-name {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 700;
+    text-shadow: none;
 }
 
 body.ramadan-mode .prayer-time {
-    color: #3a3939;
+    color: #8b6914;
+    font-weight: 600;
+    text-shadow: none;
 }
 
 body.ramadan-mode .ramadan-banner {
-    background: rgba(58, 57, 57, 0.85);
-    color: #ffffff;
+    background: rgba(139, 105, 20, 0.15);
+    color: #6b5016;
+    border: 2px solid rgba(107, 80, 22, 0.4);
 }
 
 body.ramadan-mode .ramadan-time-box {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(139, 105, 20, 0.4);
 }
 
 body.ramadan-mode .prayer-card.ramadan-special {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: #2c2c2c;
-    box-shadow: 0 0 20px rgba(58, 57, 57, 0.4);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #8b6914;
+    border-width: 3px;
+    box-shadow: 0 0 20px rgba(139, 105, 20, 0.3);
 }
 
 /* Islamic Pattern Background */
@@ -176,7 +197,7 @@ body.ramadan-mode .prayer-card.ramadan-special {
     position: relative;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 15px 20px;
+    padding: 15px 25px;
     z-index: 10;
     height: 100%;
     display: flex;
@@ -201,7 +222,8 @@ body.ramadan-mode .prayer-card.ramadan-special {
     font-size: 20px;
     color: #f4d571;
     margin-bottom: 6px;
-    text-shadow: 0 2px 10px rgba(244, 213, 113, 0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    font-weight: 500;
 }
 
 .current-time {
@@ -209,9 +231,10 @@ body.ramadan-mode .prayer-card.ramadan-special {
     font-size: 52px;
     font-weight: 700;
     letter-spacing: 1px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
     margin: 0;
     font-variant-numeric: tabular-nums;
+    color: #ffffff;
 }
 
 .athan-button-container {
@@ -294,11 +317,14 @@ body.ramadan-mode .prayer-card.ramadan-special {
     font-size: 14px;
     opacity: 1;
     padding: 6px 14px;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border-radius: 15px;
-    border: 1px solid rgba(244, 213, 113, 0.4);
+    border: 1px solid rgba(244, 213, 113, 0.5);
     white-space: nowrap;
+    font-weight: 500;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Ramadan Banner */
@@ -354,12 +380,12 @@ body.ramadan-mode .prayer-card.ramadan-special {
 /* Next Prayer Section */
 .next-prayer-section {
     margin: 10px 0;
-    padding: 18px 20px;
-    background: rgba(255,255,255,0.12);
+    padding: 18px 30px;
+    background: rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(15px);
     border-radius: 12px;
-    border: 2px solid rgba(244, 213, 113, 0.3);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    border: 2px solid rgba(244, 213, 113, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     flex-shrink: 0;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -382,12 +408,16 @@ body.ramadan-mode .prayer-card.ramadan-special {
     color: #f4d571;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    opacity: 0.9;
+    opacity: 1;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .next-prayer-name {
     font-size: 32px;
     font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .next-prayer-time-info {
@@ -401,11 +431,16 @@ body.ramadan-mode .prayer-card.ramadan-special {
     color: #f4d571;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    opacity: 0.9;
+    opacity: 1;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .next-prayer-time {
     font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     color: #f4d571;
     font-variant-numeric: tabular-nums;
     font-weight: 700;
@@ -422,12 +457,164 @@ body.ramadan-mode .prayer-card.ramadan-special {
     color: #f4d571;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    opacity: 0.9;
+    opacity: 1;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .countdown {
     font-size: 20px;
     font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Date Navigation */
+.next-prayer-section {
+    position: relative;
+}
+
+/* 4-column layout when viewing a different date */
+.next-prayer-section.viewing-different-date {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.date-navigation-badge {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.date-badge-label {
+    font-size: 10px;
+    color: #f4d571;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.9;
+}
+
+body.ramadan-mode .date-badge-label {
+    color: #6b5016;
+    font-weight: 500;
+}
+
+.date-badge-date {
+    font-size: 20px;
+    font-weight: 600;
+    color: #f4d571;
+    /* margin-bottom: 10px; */
+}
+
+body.ramadan-mode .date-badge-date {
+    color: #8b6914;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+.back-to-today-button {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 12px;
+    background: rgba(244, 213, 113, 0.3);
+    border: 1px solid rgba(244, 213, 113, 0.6);
+    border-radius: 10px;
+    color: #f4d571;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-to-today-button:hover {
+    background: rgba(244, 213, 113, 0.5);
+    border-color: #f4d571;
+    transform: scale(1.05);
+}
+
+.back-to-today-button:active {
+    transform: scale(0.95);
+}
+
+body.ramadan-mode .back-to-today-button {
+    background: rgba(139, 105, 20, 0.2);
+    border-color: rgba(107, 80, 22, 0.6);
+    color: #6b5016;
+    font-weight: 700;
+}
+
+body.ramadan-mode .back-to-today-button:hover {
+    background: rgba(139, 105, 20, 0.3);
+    border-color: #8b6914;
+}
+
+.next-prayer-time-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+}
+
+.date-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(244, 213, 113, 0.3);
+    color: #f4d571;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 0;
+}
+
+.date-nav-prev {
+    left: -20px;
+}
+
+.date-nav-next {
+    right: -20px;
+}
+
+.date-nav-button:hover:not(:disabled) {
+    background: rgba(244, 213, 113, 0.2);
+    border-color: #f4d571;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.date-nav-button:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.date-nav-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+body.ramadan-mode .date-nav-button {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(107, 80, 22, 0.5);
+    border-width: 2px;
+    color: #6b5016;
+}
+
+body.ramadan-mode .date-nav-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: #8b6914;
 }
 
 /* Prayer Times Grid */
@@ -441,11 +628,11 @@ body.ramadan-mode .prayer-card.ramadan-special {
 }
 
 .prayer-card {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.16);
     backdrop-filter: blur(10px);
     border-radius: 10px;
     padding: 12px 12px;
-    border: 2px solid rgba(255,255,255,0.15);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -480,9 +667,10 @@ body.ramadan-mode .prayer-card.ramadan-special {
 }
 
 .prayer-card.active {
-    background: rgba(244, 213, 113, 0.15);
+    background: rgba(244, 213, 113, 0.22);
     border-color: #f4d571;
-    box-shadow: 0 4px 12px rgba(244, 213, 113, 0.2);
+    border-width: 3px;
+    box-shadow: 0 4px 15px rgba(244, 213, 113, 0.4);
     transform: translateY(-2px);
 }
 
@@ -531,20 +719,25 @@ body.ramadan-mode .prayer-card.ramadan-special {
 }
 
 body.ramadan-mode .prayer-card .tomorrow-label {
-    background: rgba(58, 57, 57, 0.25);
-    color: #3a3939;
-    border-color: rgba(58, 57, 57, 0.4);
+    background: rgba(139, 105, 20, 0.2);
+    color: #6b5016;
+    border-color: rgba(107, 80, 22, 0.5);
+    font-weight: 700;
 }
 
 .prayer-name {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 6px;
     color: #f4d571;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .prayer-time {
     font-size: 22px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     font-family: 'Libre Baskerville', serif;
@@ -579,11 +772,26 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         align-items: center;
     }
 
+    .date-nav-prev {
+        left: 8px;
+    }
+
+    .date-nav-next {
+        right: 8px;
+    }
+
+    .date-nav-button {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
     .current-time {
         font-size: 36px;
     }
 
-    .next-prayer-section {
+    .next-prayer-section,
+    .next-prayer-section.viewing-different-date {
         grid-template-columns: 1fr;
         text-align: center;
         gap: 15px;
@@ -672,21 +880,24 @@ body.ramadan-mode .prayer-card .tomorrow-label {
 }
 
 body.ramadan-mode .prayer-modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: #2c2c2c;
+    background: rgba(255, 255, 255, 0.98);
+    border-color: #8b6914;
 }
 
 body.ramadan-mode .prayer-modal h2 {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 700;
 }
 
 body.ramadan-mode .prayer-modal-time {
-    color: #3a3939;
+    color: #8b6914;
+    font-weight: 600;
 }
 
 body.ramadan-mode .prayer-modal-button {
-    background: linear-gradient(135deg, #3a3939 0%, #2c2c2c 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+    font-weight: 700;
 }
 
 @keyframes modalSlideIn {
@@ -738,8 +949,9 @@ body.ramadan-mode .prayer-modal-button {
 }
 
 body.ramadan-mode .prayer-modal-info {
-    background: rgba(255, 255, 255, 0.3);
-    color: #3a3939;
+    background: rgba(139, 105, 20, 0.15);
+    border: 1px solid rgba(107, 80, 22, 0.3);
+    color: #6b5016;
 }
 
 .prayer-modal-button {
@@ -796,8 +1008,8 @@ body.ramadan-mode .prayer-modal-info {
 }
 
 body.ramadan-mode .prayer-details-content {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: #2c2c2c;
+    background: rgba(255, 255, 255, 0.98);
+    border-color: #8b6914;
 }
 
 .modal-close {
@@ -819,8 +1031,9 @@ body.ramadan-mode .prayer-details-content {
 }
 
 body.ramadan-mode .modal-close {
-    background: rgba(58, 57, 57, 0.1);
-    color: #3a3939;
+    background: rgba(139, 105, 20, 0.2);
+    color: #6b5016;
+    border: 1px solid rgba(107, 80, 22, 0.3);
 }
 
 .modal-close:hover {
@@ -829,7 +1042,8 @@ body.ramadan-mode .modal-close {
 }
 
 body.ramadan-mode .modal-close:hover {
-    background: rgba(58, 57, 57, 0.2);
+    background: rgba(139, 105, 20, 0.3);
+    border-color: #8b6914;
 }
 
 .prayer-details-icon {
@@ -847,7 +1061,8 @@ body.ramadan-mode .modal-close:hover {
 }
 
 body.ramadan-mode .prayer-details-content h2 {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 700;
 }
 
 .prayer-details-time {
@@ -859,7 +1074,9 @@ body.ramadan-mode .prayer-details-content h2 {
 }
 
 body.ramadan-mode .prayer-details-time {
-    color: #3a3939;
+    color: #8b6914;
+    opacity: 1;
+    font-weight: 600;
 }
 
 .rakats-info {
@@ -871,8 +1088,9 @@ body.ramadan-mode .prayer-details-time {
 }
 
 body.ramadan-mode .rakats-info {
-    background: rgba(255, 255, 255, 0.3);
-    color: #3a3939;
+    background: rgba(139, 105, 20, 0.15);
+    border: 1px solid rgba(107, 80, 22, 0.3);
+    color: #6b5016;
 }
 
 .rakats-info .rakat-item {
@@ -882,7 +1100,7 @@ body.ramadan-mode .rakats-info {
 }
 
 body.ramadan-mode .rakats-info .rakat-item {
-    border-bottom-color: rgba(58, 57, 57, 0.1);
+    border-bottom-color: rgba(107, 80, 22, 0.2);
 }
 
 .rakats-info .rakat-item:last-child {
@@ -895,7 +1113,8 @@ body.ramadan-mode .rakats-info .rakat-item {
 }
 
 body.ramadan-mode .rakats-info .rakat-type {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 700;
 }
 
 .prayer-description {
@@ -907,7 +1126,8 @@ body.ramadan-mode .rakats-info .rakat-type {
 }
 
 body.ramadan-mode .prayer-description {
-    color: #3a3939;
+    color: #6b5016;
+    opacity: 1;
 }
 
 /* Settings Modal */
@@ -941,8 +1161,8 @@ body.ramadan-mode .prayer-description {
 }
 
 body.ramadan-mode .settings-modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: #2c2c2c;
+    background: rgba(255, 255, 255, 0.98);
+    border-color: #8b6914;
 }
 
 .settings-modal h2 {
@@ -954,7 +1174,8 @@ body.ramadan-mode .settings-modal-content {
 }
 
 body.ramadan-mode .settings-modal h2 {
-    color: #2c2c2c;
+    color: #6b5016;
+    font-weight: 700;
 }
 
 .settings-form {
@@ -995,9 +1216,11 @@ body.ramadan-mode .form-group label {
 
 body.ramadan-mode .form-group input,
 body.ramadan-mode .form-group select {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(58, 57, 57, 0.3);
-    color: #3a3939;
+    background: #ffffff;
+    border-color: rgba(107, 80, 22, 0.4);
+    border-width: 2px;
+    color: #2c1f0a;
+    font-weight: 500;
 }
 
 .form-group input:focus,
@@ -1009,8 +1232,8 @@ body.ramadan-mode .form-group select {
 
 body.ramadan-mode .form-group input:focus,
 body.ramadan-mode .form-group select:focus {
-    border-color: #2c2c2c;
-    box-shadow: 0 0 10px rgba(58, 57, 57, 0.2);
+    border-color: #8b6914;
+    box-shadow: 0 0 10px rgba(139, 105, 20, 0.3);
 }
 
 .settings-buttons {
@@ -1038,8 +1261,9 @@ body.ramadan-mode .form-group select:focus {
 }
 
 body.ramadan-mode .settings-save-button {
-    background: linear-gradient(135deg, #3a3939 0%, #2c2c2c 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+    font-weight: 700;
 }
 
 .settings-cancel-button {
@@ -1049,9 +1273,10 @@ body.ramadan-mode .settings-save-button {
 }
 
 body.ramadan-mode .settings-cancel-button {
-    background: rgba(58, 57, 57, 0.1);
-    color: #3a3939;
-    border-color: rgba(58, 57, 57, 0.3);
+    background: rgba(139, 105, 20, 0.1);
+    color: #6b5016;
+    border-color: rgba(107, 80, 22, 0.4);
+    font-weight: 600;
 }
 
 .settings-save-button:hover,
@@ -1063,4 +1288,35 @@ body.ramadan-mode .settings-cancel-button {
 .settings-save-button:active,
 .settings-cancel-button:active {
     transform: translateY(0);
+}
+
+.settings-copyright {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 24px;
+    opacity: 0.7;
+    color: #f4d571;
+    font-weight: 300;
+}
+
+.settings-copyright a {
+    color: #f4d571;
+    text-decoration: none;
+    font-weight: 400;
+    transition: opacity 0.2s ease;
+}
+
+.settings-copyright a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+body.ramadan-mode .settings-copyright {
+    color: #6b5016;
+    opacity: 0.8;
+}
+
+body.ramadan-mode .settings-copyright a {
+    color: #8b6914;
+    font-weight: 600;
 }

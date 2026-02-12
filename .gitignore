@@ -1,0 +1,22 @@
+# Claude AI Files
+.claude/
+.anthropic/
+
+# AI Assistant Settings
+*.claude.json
+*.anthropic.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local

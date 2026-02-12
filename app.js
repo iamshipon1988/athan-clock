@@ -62,6 +62,16 @@ let nextPrayerInfo = null;
 let isRamadan = false;
 let lastAnnouncedPrayer = null;
 let showingTomorrow = false;
+let currentHijriData = null;    // Hijri data for current viewed date
+
+// Date navigation and caching state
+let currentViewedDate = null;  // Date being viewed (user navigates this)
+let todayDate = null;           // Actual today (never changes except midnight)
+let prayerCache = null;         // Cache object from localStorage
+const CACHE_VERSION = "1.0";
+const CACHE_KEY = "athanClockPrayerCache";
+const CACHE_DAYS_RANGE = 3;     // ±3 days from today
+const CACHE_EXPIRY_DAYS = 7;    // Entries older than 7 days are stale
 
 // Load settings from localStorage
 function loadSettings() {
@@ -78,6 +88,134 @@ function saveSettingsToStorage() {
 
 // Initialize settings on page load
 loadSettings();
+
+// ==================== DATE HELPER FUNCTIONS ====================
+
+// Format date as YYYY-MM-DD for cache keys
+function formatDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Add/subtract days from a date
+function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+// Check if two dates are the same day
+function isSameDay(date1, date2) {
+    return formatDateKey(date1) === formatDateKey(date2);
+}
+
+// ==================== CACHE MANAGEMENT FUNCTIONS ====================
+
+// Initialize cache from localStorage
+function loadPrayerCache() {
+    try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (!cached) {
+            prayerCache = createEmptyCache();
+            return;
+        }
+
+        const parsed = JSON.parse(cached);
+
+        // Validate cache version and settings
+        if (parsed.cacheVersion !== CACHE_VERSION ||
+            parsed.zipCode !== settings.zipCode ||
+            parsed.country !== settings.country) {
+            console.log('Cache invalidated: version or settings mismatch');
+            prayerCache = createEmptyCache();
+            return;
+        }
+
+        prayerCache = parsed;
+        cleanExpiredEntries();
+    } catch (error) {
+        console.error('Error loading cache:', error);
+        prayerCache = createEmptyCache();
+    }
+}
+
+// Create empty cache structure
+function createEmptyCache() {
+    return {
+        cacheVersion: CACHE_VERSION,
+        zipCode: settings.zipCode,
+        country: settings.country,
+        lastUpdated: Date.now(),
+        dates: {}
+    };
+}
+
+// Save cache to localStorage
+function savePrayerCache() {
+    try {
+        prayerCache.lastUpdated = Date.now();
+        localStorage.setItem(CACHE_KEY, JSON.stringify(prayerCache));
+    } catch (error) {
+        console.error('Error saving cache:', error);
+        // Handle quota exceeded
+        if (error.name === 'QuotaExceededError') {
+            console.warn('localStorage quota exceeded, keeping only today ±1 day');
+            // Keep only today ±1 day
+            const today = formatDateKey(new Date());
+            const yesterday = formatDateKey(addDays(new Date(), -1));
+            const tomorrow = formatDateKey(addDays(new Date(), 1));
+
+            const minimumCache = {};
+            if (prayerCache.dates[yesterday]) minimumCache[yesterday] = prayerCache.dates[yesterday];
+            if (prayerCache.dates[today]) minimumCache[today] = prayerCache.dates[today];
+            if (prayerCache.dates[tomorrow]) minimumCache[tomorrow] = prayerCache.dates[tomorrow];
+
+            prayerCache.dates = minimumCache;
+            localStorage.setItem(CACHE_KEY, JSON.stringify(prayerCache));
+        }
+    }
+}
+
+// Remove entries older than CACHE_EXPIRY_DAYS
+function cleanExpiredEntries() {
+    const now = Date.now();
+    const expiryMs = CACHE_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+
+    Object.keys(prayerCache.dates).forEach(dateKey => {
+        const entry = prayerCache.dates[dateKey];
+        if (now - entry.fetchedAt > expiryMs) {
+            delete prayerCache.dates[dateKey];
+        }
+    });
+}
+
+// Clear entire cache
+function clearPrayerCache() {
+    prayerCache = createEmptyCache();
+    localStorage.removeItem(CACHE_KEY);
+}
+
+// Get cached prayer times for a specific date
+function getCachedPrayerTimes(date) {
+    const dateKey = formatDateKey(date);
+    return prayerCache.dates[dateKey] || null;
+}
+
+// Store prayer times in cache
+function cachePrayerTimes(date, timings, hijriData) {
+    const dateKey = formatDateKey(date);
+    prayerCache.dates[dateKey] = {
+        timings: timings,
+        hijriDate: `${hijriData.day} ${hijriData.month.en} ${hijriData.year} AH`,
+        hijriDay: hijriData.day,
+        hijriMonth: hijriData.month.en,
+        hijriYear: hijriData.year,
+        fetchedAt: Date.now()
+    };
+    savePrayerCache();
+}
 
 // Update clock every second
 function updateClock() {
@@ -107,6 +245,23 @@ function updateGregorianDate() {
 
 updateGregorianDate();
 
+// Update Gregorian date to show currently viewed date
+function updateGregorianDateForViewed() {
+    const dateString = currentViewedDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    document.getElementById('gregorianDate').textContent = dateString;
+}
+
+// Update Hijri date from API data or cache
+function updateHijriDate(hijriData) {
+    const hijriDateString = `${hijriData.day} ${hijriData.month.en} ${hijriData.year} AH`;
+    document.getElementById('hijriDate').textContent = hijriDateString;
+}
+
 // Fetch Hijri date
 async function fetchHijriDate() {
     try {
@@ -133,7 +288,148 @@ async function fetchHijriDate() {
 
 fetchHijriDate();
 
-// Fetch prayer times
+// ==================== CACHE-AWARE FETCH FUNCTIONS ====================
+
+// Fetch prayer times for a specific date (with caching)
+async function fetchPrayerTimesForDate(date) {
+    // Check cache first
+    const cached = getCachedPrayerTimes(date);
+    if (cached) {
+        console.log(`Using cached data for ${formatDateKey(date)}`);
+        return {
+            timings: cached.timings,
+            hijriData: {
+                day: cached.hijriDay,
+                month: { en: cached.hijriMonth },
+                year: cached.hijriYear
+            }
+        };
+    }
+
+    // Fetch from API
+    try {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        const response = await fetch(
+            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${settings.zipCode},${settings.country}&method=${CALCULATION_METHOD}`
+        );
+        const data = await response.json();
+
+        if (data.code === 200 && data.data && data.data.timings) {
+            const timings = data.data.timings;
+            const hijriData = data.data.date.hijri;
+
+            // Cache the result
+            cachePrayerTimes(date, timings, hijriData);
+
+            return { timings, hijriData };
+        } else {
+            throw new Error('Invalid API response');
+        }
+    } catch (error) {
+        console.error('Error fetching prayer times:', error);
+
+        // If fetch failed and we have cached data (even expired), use it
+        if (cached) {
+            console.log('Using stale cache as fallback');
+            return {
+                timings: cached.timings,
+                hijriData: {
+                    day: cached.hijriDay,
+                    month: { en: cached.hijriMonth },
+                    year: cached.hijriYear
+                }
+            };
+        }
+
+        throw error;
+    }
+}
+
+// Initialize and prefetch prayer times (called on page load)
+async function initializePrayerTimes() {
+    todayDate = new Date();
+    currentViewedDate = new Date(todayDate);
+
+    loadPrayerCache();
+
+    try {
+        // Fetch today first (blocking)
+        const todayData = await fetchPrayerTimesForDate(todayDate);
+        prayerTimesData = todayData.timings;
+        currentHijriData = todayData.hijriData;
+
+        // Update UI with today's data
+        displayPrayerTimes();
+        updateNextPrayer();
+        updateHijriDate(todayData.hijriData);
+        checkRamadanMode();
+        updateDateNavigationUI();
+
+        // Prefetch ±CACHE_DAYS_RANGE days in background
+        const prefetchPromises = [];
+        for (let i = -CACHE_DAYS_RANGE; i <= CACHE_DAYS_RANGE; i++) {
+            if (i === 0) continue; // Already fetched today
+            const date = addDays(todayDate, i);
+            const cached = getCachedPrayerTimes(date);
+            if (!cached) {
+                prefetchPromises.push(
+                    fetchPrayerTimesForDate(date).catch(err => {
+                        console.warn(`Failed to prefetch ${formatDateKey(date)}:`, err);
+                    })
+                );
+            }
+        }
+
+        // Prefetch in background
+        if (prefetchPromises.length > 0) {
+            Promise.all(prefetchPromises).then(() => {
+                console.log('Background prefetch completed');
+            }).catch(err => {
+                console.warn('Some prefetch requests failed:', err);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error initializing prayer times:', error);
+        document.getElementById('prayerGrid').innerHTML =
+            '<div class="loading">Failed to load prayer times. Please check your connection and refresh.</div>';
+    }
+}
+
+// Load and display prayer times for currently viewed date
+async function loadPrayerTimesForCurrentView() {
+    try {
+        const data = await fetchPrayerTimesForDate(currentViewedDate);
+        prayerTimesData = data.timings;
+        currentHijriData = data.hijriData; // Store for use in updateNextPrayer
+        displayPrayerTimes();
+        updateNextPrayer();
+        updateHijriDate(data.hijriData);
+        checkRamadanMode();
+        updateDateNavigationUI();
+
+        // Background prefetch adjacent dates
+        const prevDate = addDays(currentViewedDate, -1);
+        const nextDate = addDays(currentViewedDate, 1);
+
+        if (!getCachedPrayerTimes(prevDate)) {
+            fetchPrayerTimesForDate(prevDate).catch(() => {});
+        }
+        if (!getCachedPrayerTimes(nextDate)) {
+            fetchPrayerTimesForDate(nextDate).catch(() => {});
+        }
+
+    } catch (error) {
+        console.error('Error loading prayer times:', error);
+        document.getElementById('prayerGrid').innerHTML =
+            '<div class="loading">Failed to load prayer times. Please check your connection.</div>';
+    }
+}
+
+// Fetch prayer times (LEGACY - kept for backward compatibility, will be removed)
 async function fetchPrayerTimes() {
     try {
         const today = new Date();
@@ -162,7 +458,7 @@ async function fetchPrayerTimes() {
     }
 }
 
-// Display prayer times
+// Display prayer times (updated for date navigation)
 function displayPrayerTimes() {
     // All prayer times to display
     const prayerList = [
@@ -178,19 +474,20 @@ function displayPrayerTimes() {
     grid.innerHTML = '';
 
     const now = new Date();
+    const isViewingToday = currentViewedDate && todayDate && isSameDay(currentViewedDate, todayDate);
 
     prayerList.forEach(prayer => {
         // Skip if prayer time not available
         if (!prayerTimesData[prayer.key]) return;
 
         const timeString = prayerTimesData[prayer.key].split(' ')[0];
-        const prayerTime = parseTimeString(timeString);
+        const prayerTime = parseTimeString(timeString, currentViewedDate);
 
         const card = document.createElement('div');
         card.className = 'prayer-card';
 
-        // Check if this is the next prayer
-        if (nextPrayerInfo && nextPrayerInfo.name === prayer.key) {
+        // Check if this is the next prayer (only when viewing today)
+        if (isViewingToday && nextPrayerInfo && nextPrayerInfo.name === prayer.key) {
             card.classList.add('active');
         }
 
@@ -199,8 +496,8 @@ function displayPrayerTimes() {
             card.classList.add('ramadan-special');
         }
 
-        // Check if prayer has passed (only if not showing tomorrow's times)
-        if (!showingTomorrow && prayerTime < now) {
+        // Check if prayer has passed (only if viewing today)
+        if (isViewingToday && prayerTime < now) {
             card.classList.add('passed');
         }
 
@@ -213,11 +510,9 @@ function displayPrayerTimes() {
             }
         }
 
-        // Add tomorrow label if showing tomorrow's times
-        const tomorrowLabel = showingTomorrow ? '<div class="tomorrow-label">Tomorrow</div>' : '';
+        // No tomorrow label needed (replaced by date badge)
 
         card.innerHTML = `
-            ${tomorrowLabel}
             ${ramadanLabel}
             <div class="prayer-name">${prayer.name}</div>
             <div class="prayer-time">${formatTime(timeString)}</div>
@@ -233,10 +528,10 @@ function displayPrayerTimes() {
     });
 }
 
-// Parse time string to Date object
-function parseTimeString(timeString) {
+// Parse time string to Date object for specific date
+function parseTimeString(timeString, forDate = null) {
     const [hours, minutes] = timeString.split(':').map(Number);
-    const date = new Date();
+    const date = forDate ? new Date(forDate) : new Date();
     date.setHours(hours, minutes, 0, 0);
     return date;
 }
@@ -249,8 +544,70 @@ function formatTime(timeString) {
     return `${hour12}:${String(minutes).padStart(2, '0')} ${period}`;
 }
 
-// Update next prayer
+// Update next prayer (only relevant when viewing today)
 function updateNextPrayer() {
+    const isViewingToday = currentViewedDate && todayDate && isSameDay(currentViewedDate, todayDate);
+
+    if (!isViewingToday) {
+        // Not viewing today - show sunrise/sunset and day info
+        const sunriseTime = prayerTimesData['Sunrise'] ? prayerTimesData['Sunrise'].split(' ')[0] : '--:--';
+        const sunsetTime = prayerTimesData['Sunset'] ? prayerTimesData['Sunset'].split(' ')[0] : '--:--';
+
+        // Update labels and values for sunrise/sunset
+        document.querySelector('.next-prayer-info-label').textContent = 'Sunrise';
+        document.getElementById('nextPrayerName').textContent = formatTime(sunriseTime);
+
+        document.querySelector('.next-prayer-time-label').textContent = 'Sunset';
+        document.getElementById('nextPrayerTime').textContent = formatTime(sunsetTime);
+
+        // Calculate and show daylight duration and Islamic date
+        if (prayerTimesData['Sunrise'] && prayerTimesData['Sunset']) {
+            const sunrise = parseTimeString(sunriseTime, currentViewedDate);
+            const sunset = parseTimeString(sunsetTime, currentViewedDate);
+            const daylightMs = sunset - sunrise;
+            const hours = Math.floor(daylightMs / (1000 * 60 * 60));
+            const minutes = Math.floor((daylightMs % (1000 * 60 * 60)) / (1000 * 60));
+
+            // Show daylight duration
+            document.querySelector('.countdown-label').textContent = 'Moon Phase';
+            document.querySelector('.countdown-label').style.display = 'block';
+
+            // Create summary with daylight duration and Islamic date (moon phase indicator)
+            let summaryText = `☀️ ${hours}h ${minutes}m daylight`;
+            if (currentHijriData) {
+                const hijriDay = parseInt(currentHijriData.day);
+                let moonPhase = '';
+                if (hijriDay === 1) moonPhase = '🌑 New Moon';
+                else if (hijriDay < 7) moonPhase = '🌒 Waxing Crescent';
+                else if (hijriDay < 14) moonPhase = '🌓 First Quarter';
+                else if (hijriDay === 14 || hijriDay === 15) moonPhase = '🌕 Full Moon';
+                else if (hijriDay < 22) moonPhase = '🌗 Last Quarter';
+                else moonPhase = '🌘 Waning Crescent';
+
+                summaryText = `${moonPhase}`;
+            }
+
+            document.getElementById('countdown').textContent = summaryText;
+            document.getElementById('countdown').style.display = 'block';
+        } else {
+            document.querySelector('.countdown-label').style.display = 'none';
+            document.getElementById('countdown').style.display = 'none';
+        }
+
+        nextPrayerInfo = null;
+        showingTomorrow = false;
+        return;
+    }
+
+    // Restore original labels when viewing today
+    document.querySelector('.next-prayer-info-label').textContent = 'Next Prayer';
+    document.querySelector('.next-prayer-time-label').textContent = 'Prayer Time';
+    document.querySelector('.countdown-label').textContent = 'Time Remaining';
+
+    // Show countdown and label when viewing today
+    const countdownElements = document.querySelectorAll('.countdown-label, #countdown');
+    countdownElements.forEach(el => el.style.display = 'block');
+
     // Only include the 5 main prayers for "next prayer" determination
     const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     const now = new Date();
@@ -261,7 +618,7 @@ function updateNextPrayer() {
         if (!prayerTimesData[prayer]) continue;
 
         const timeString = prayerTimesData[prayer].split(' ')[0];
-        const prayerTime = parseTimeString(timeString);
+        const prayerTime = parseTimeString(timeString, todayDate);
 
         if (prayerTime > now) {
             nextPrayer = {
@@ -275,22 +632,38 @@ function updateNextPrayer() {
 
     // If no prayer found today, it means all prayers have passed
     if (!nextPrayer) {
-        nextPrayer = {
-            name: 'Fajr',
-            time: null,
-            timeString: prayerTimesData['Fajr'].split(' ')[0]
-        };
-        document.getElementById('nextPrayerName').textContent = 'Fajr (Tomorrow)';
-        document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
-        document.getElementById('countdown').textContent = 'All prayers completed for today';
+        // Show tomorrow's Fajr as next prayer
+        const tomorrowDate = addDays(todayDate, 1);
+        const tomorrowCached = getCachedPrayerTimes(tomorrowDate);
+
+        if (tomorrowCached && tomorrowCached.timings['Fajr']) {
+            const fajrTimeString = tomorrowCached.timings['Fajr'].split(' ')[0];
+            document.getElementById('nextPrayerName').textContent = 'Fajr';
+            document.getElementById('nextPrayerTime').textContent = formatTime(fajrTimeString);
+            document.getElementById('countdown').textContent = 'All prayers completed for today';
+        } else {
+            // Fetch tomorrow's times in background
+            fetchPrayerTimesForDate(tomorrowDate).then(data => {
+                const fajrTimeString = data.timings['Fajr'].split(' ')[0];
+                document.getElementById('nextPrayerName').textContent = 'Fajr';
+                document.getElementById('nextPrayerTime').textContent = formatTime(fajrTimeString);
+                document.getElementById('countdown').textContent = 'All prayers completed for today';
+            }).catch(() => {
+                document.getElementById('nextPrayerName').textContent = 'Fajr';
+                document.getElementById('nextPrayerTime').textContent = '--:--';
+                document.getElementById('countdown').textContent = 'All prayers completed for today';
+            });
+        }
+        nextPrayerInfo = null;
         showingTomorrow = true;
     } else {
         document.getElementById('nextPrayerName').textContent = nextPrayer.name;
         document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
+        const countdownEls = document.querySelectorAll('.countdown-label, #countdown');
+        countdownEls.forEach(el => el.style.display = 'block');
+        nextPrayerInfo = nextPrayer;
         showingTomorrow = false;
     }
-
-    nextPrayerInfo = nextPrayer;
 }
 
 // Update countdown
@@ -382,16 +755,144 @@ function applyTheme() {
     }
 }
 
+// ==================== DATE NAVIGATION FUNCTIONS ====================
+
+// Debounce navigation to prevent rapid clicks
+let navigationDebounceTimer = null;
+function navigateDateDebounced(offset) {
+    clearTimeout(navigationDebounceTimer);
+
+    // Disable buttons during navigation
+    document.getElementById('dateNavPrev').disabled = true;
+    document.getElementById('dateNavNext').disabled = true;
+
+    navigationDebounceTimer = setTimeout(() => {
+        navigateDate(offset);
+    }, 150);
+}
+
+// Navigate to different date
+function navigateDate(offset) {
+    currentViewedDate = addDays(currentViewedDate, offset);
+    loadPrayerTimesForCurrentView();
+}
+
+// Navigate back to today
+function navigateToToday() {
+    currentViewedDate = new Date(todayDate);
+    loadPrayerTimesForCurrentView();
+}
+
+// Update the date navigation UI elements
+function updateDateNavigationUI() {
+    const isToday = isSameDay(currentViewedDate, todayDate);
+    const badge = document.getElementById('dateNavigationBadge');
+    const label = document.getElementById('viewedDateLabel');
+    const prayerSection = document.querySelector('.next-prayer-section');
+
+    if (isToday) {
+        label.textContent = 'Today';
+        badge.style.display = 'none'; // Hide badge when viewing today
+        prayerSection.classList.remove('viewing-different-date'); // Back to 3 columns
+    } else {
+        const dayDiff = Math.floor((currentViewedDate - todayDate) / (1000 * 60 * 60 * 24));
+
+        if (dayDiff === 1) {
+            label.textContent = 'Tomorrow';
+        } else if (dayDiff === -1) {
+            label.textContent = 'Yesterday';
+        } else {
+            label.textContent = currentViewedDate.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: currentViewedDate.getFullYear() !== todayDate.getFullYear() ? 'numeric' : undefined
+            });
+        }
+
+        badge.style.display = 'flex'; // Show badge as flex column
+        prayerSection.classList.add('viewing-different-date'); // Switch to 4 columns
+    }
+
+    // Update Gregorian date display (always show viewed date)
+    updateGregorianDateForViewed();
+
+    // Enable/disable navigation buttons based on cache availability
+    updateNavigationButtons();
+}
+
+// Enable/disable navigation buttons
+function updateNavigationButtons() {
+    const prevButton = document.getElementById('dateNavPrev');
+    const nextButton = document.getElementById('dateNavNext');
+
+    // Can navigate back 1 day, forward 30 days
+    const daysSinceToday = Math.floor((currentViewedDate - todayDate) / (1000 * 60 * 60 * 24));
+
+    prevButton.disabled = daysSinceToday <= -1;
+    nextButton.disabled = daysSinceToday >= 30;
+}
+
+// ==================== SWIPE GESTURE HANDLING ====================
+
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+const SWIPE_THRESHOLD = 50; // Minimum distance for a swipe
+
+function handleSwipeGesture() {
+    const swipeDistance = touchEndX - touchStartX;
+    const verticalDistance = Math.abs(touchEndY - touchStartY);
+
+    // Only process horizontal swipes (vertical distance should be small)
+    if (verticalDistance > 50) return;
+
+    // Right swipe (go to previous day)
+    if (swipeDistance > SWIPE_THRESHOLD) {
+        navigateDateDebounced(-1);
+    }
+    // Left swipe (go to next day)
+    else if (swipeDistance < -SWIPE_THRESHOLD) {
+        navigateDateDebounced(1);
+    }
+}
+
+// Add touch event listeners to the document body
+document.addEventListener('touchstart', (e) => {
+    // Don't interfere with modal interactions
+    if (e.target.closest('.settings-modal, .prayer-modal, .prayer-details-modal')) {
+        return;
+    }
+
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    // Don't interfere with modal interactions
+    if (e.target.closest('.settings-modal, .prayer-modal, .prayer-details-modal')) {
+        return;
+    }
+
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipeGesture();
+}, { passive: true });
+
 // Initialize
-fetchPrayerTimes();
+initializePrayerTimes();
 
 // Refresh prayer times at midnight
 setInterval(() => {
     const now = new Date();
     if (now.getHours() === 0 && now.getMinutes() === 0) {
-        fetchPrayerTimes();
-        fetchHijriDate();
-        updateGregorianDate();
+        // Reset dates and reinitialize
+        todayDate = new Date();
+        currentViewedDate = new Date(todayDate);
+        cleanExpiredEntries();
+        savePrayerCache();
+        initializePrayerTimes();
         lastAnnouncedPrayer = null; // Reset announced prayer at midnight
     }
 }, 60000); // Check every minute
@@ -576,9 +1077,10 @@ function saveSettings() {
     // Apply new theme immediately
     applyTheme();
 
-    // Refresh prayer times with new ZIP code if changed
+    // Clear cache and refresh if ZIP code changed
     if (newZipCode && newZipCode !== oldZipCode) {
-        fetchPrayerTimes();
+        clearPrayerCache();
+        initializePrayerTimes();
     }
 
     // Close modal
@@ -617,3 +1119,18 @@ function closePrayerDetails() {
     const modal = document.getElementById('prayerDetailsModal');
     modal.classList.remove('show');
 }
+
+// ==================== ONLINE/OFFLINE EVENT LISTENERS ====================
+
+// Handle coming back online
+window.addEventListener('online', () => {
+    console.log('Back online - refreshing current view');
+    if (currentViewedDate && todayDate) {
+        loadPrayerTimesForCurrentView();
+    }
+});
+
+// Handle going offline
+window.addEventListener('offline', () => {
+    console.log('Offline mode - using cached data');
+});

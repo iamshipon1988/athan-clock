@@ -50,6 +50,9 @@
     </div>
 
     <div class="next-prayer-section">
+        <button class="date-nav-button date-nav-prev" id="dateNavPrev" onclick="navigateDateDebounced(-1)" aria-label="Previous day">◀</button>
+        <button class="date-nav-button date-nav-next" id="dateNavNext" onclick="navigateDateDebounced(1)" aria-label="Next day">▶</button>
+
         <div class="next-prayer-info">
             <div class="next-prayer-info-label">Next Prayer</div>
             <div class="next-prayer-name" id="nextPrayerName">Loading...</div>
@@ -61,6 +64,10 @@
         <div class="countdown-info">
             <div class="countdown-label">Time Remaining</div>
             <div class="countdown" id="countdown">Calculating...</div>
+        </div>
+        <div class="date-navigation-badge" id="dateNavigationBadge" style="display:none;">
+            <div class="date-badge-date" id="viewedDateLabel">Today</div>
+            <button class="back-to-today-button" id="backToTodayButton" onclick="navigateToToday()">Back to Today</button>
         </div>
     </div>
 
@@ -114,6 +121,9 @@
                 <button class="settings-cancel-button" onclick="closeSettings()">Cancel</button>
                 <button class="settings-save-button" onclick="saveSettings()">Save</button>
             </div>
+        </div>
+        <div class="settings-copyright">
+            Created by <a href="https://sazzad.me" target="_blank" rel="noopener noreferrer">Sazzad Hossain</a>
         </div>
     </div>
 </div>
