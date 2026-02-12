@@ -2,504 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<parameter name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Ramadan Athan Clock - 11426</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body, html {
-    width: 100%;
-    height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    color: #fff;
-    overflow: hidden;
-    background: linear-gradient(135deg, #1a4d2e 0%, #0f2818 100%);
-}
-
-/* Islamic Pattern Background */
-.pattern-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.08;
-    background-image:
-        repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.03) 35px, rgba(255,255,255,.03) 70px),
-        repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.03) 35px, rgba(255,255,255,.03) 70px);
-    pointer-events: none;
-}
-
-.geometric-pattern {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.05;
-    background-image: radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.2) 2%, transparent 0),
-                      radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.2) 2%, transparent 0);
-    background-size: 60px 60px;
-    pointer-events: none;
-}
-
-.container {
-    position: relative;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 15px 20px;
-    z-index: 10;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header Section */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    flex-shrink: 0;
-}
-
-.header-left {
-    flex: 1;
-}
-
-.bismillah {
-    font-family: 'Amiri', serif;
-    font-size: 20px;
-    color: #d4af37;
-    margin-bottom: 6px;
-    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
-}
-
-.current-time {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 52px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    margin: 0;
-    font-variant-numeric: tabular-nums;
-}
-
-.athan-button-container {
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-}
-
-.athan-button {
-    background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
-    color: #1a4d2e;
-    border: none;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
-    white-space: nowrap;
-}
-
-.athan-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
-}
-
-.athan-button:active {
-    transform: translateY(0);
-}
-
-.athan-button::before {
-    content: '🔊 ';
-}
-
-.date-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-end;
-    flex: 1;
-}
-
-.gregorian-date, .hijri-date {
-    font-size: 14px;
-    opacity: 0.9;
-    padding: 6px 14px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    white-space: nowrap;
-}
-
-/* Ramadan Banner */
-.ramadan-banner {
-    background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
-    color: #1a4d2e;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin: 10px 0;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    flex-shrink: 0;
-}
-
-.ramadan-banner h2 {
-    font-family: 'Amiri', serif;
-    font-size: 18px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.ramadan-times {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.ramadan-time-box {
-    background: rgba(26, 77, 46, 0.2);
-    padding: 12px;
-    border-radius: 8px;
-    border: 2px solid rgba(26, 77, 46, 0.3);
-    text-align: center;
-}
-
-.ramadan-time-box h3 {
-    font-size: 12px;
-    margin-bottom: 6px;
-    opacity: 0.8;
-}
-
-.ramadan-time-box .time {
-    font-size: 24px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-.ramadan-time-box .note {
-    font-size: 11px;
-    margin-top: 4px;
-    opacity: 0.7;
-}
-
-/* Next Prayer Section */
-.next-prayer-section {
-    text-align: center;
-    margin: 10px 0;
-    padding: 18px 20px;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
-    border-radius: 12px;
-    border: 2px solid rgba(212, 175, 55, 0.2);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    flex-shrink: 0;
-}
-
-.next-prayer-label {
-    font-size: 12px;
-    color: #d4af37;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-.next-prayer-name {
-    font-size: 32px;
-    font-weight: 700;
-    margin: 6px 0;
-}
-
-.next-prayer-time {
-    font-size: 28px;
-    color: #d4af37;
-    font-variant-numeric: tabular-nums;
-    margin: 6px 0;
-}
-
-.countdown {
-    font-size: 16px;
-    opacity: 0.8;
-    margin-top: 6px;
-}
-
-/* Prayer Times Grid */
-.prayer-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin: 10px 0;
-    flex: 1;
-    align-content: stretch;
-}
-
-.prayer-card {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    padding: 12px 12px;
-    border: 2px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 110px;
-}
-
-.prayer-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #d4af37, #aa8c2c);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.prayer-card:hover::before,
-.prayer-card.active::before {
-    opacity: 1;
-}
-
-.prayer-card.active {
-    background: rgba(212, 175, 55, 0.15);
-    border-color: #d4af37;
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
-    transform: translateY(-2px);
-}
-
-.prayer-card.passed {
-    opacity: 0.5;
-}
-
-.prayer-card.ramadan-special {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(170, 140, 44, 0.2));
-    border-color: #d4af37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-}
-
-.prayer-card.ramadan-special::before {
-    opacity: 1;
-    height: 6px;
-}
-
-.prayer-card.ramadan-special .prayer-name::after {
-    content: '🌙';
-    margin-left: 8px;
-}
-
-.prayer-card .prayer-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.6;
-    margin-bottom: 4px;
-    color: #d4af37;
-}
-
-.prayer-name {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #d4af37;
-}
-
-.prayer-time {
-    font-size: 22px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    font-family: 'Libre Baskerville', serif;
-}
-
-.prayer-status {
-    font-size: 10px;
-    margin-top: 6px;
-    opacity: 0.7;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .header-left {
-        margin-bottom: 10px;
-    }
-
-    .athan-button-container {
-        padding: 10px 0;
-    }
-
-    .athan-button {
-        font-size: 12px;
-        padding: 8px 16px;
-    }
-
-    .date-info {
-        align-items: center;
-    }
-
-    .current-time {
-        font-size: 36px;
-    }
-
-    .ramadan-times {
-        grid-template-columns: 1fr;
-    }
-
-    .prayer-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Loading Animation */
-.loading {
-    text-align: center;
-    padding: 20px;
-    font-size: 14px;
-}
-
-.loading::after {
-    content: '...';
-    animation: dots 1.5s steps(4, end) infinite;
-}
-
-@keyframes dots {
-    0%, 20% { content: '.'; }
-    40% { content: '..'; }
-    60%, 100% { content: '...'; }
-}
-
-/* Landscape Optimization for Fire Tablet 7 */
-@media (orientation: landscape) and (max-height: 600px) {
-    .bismillah {
-        font-size: 16px;
-    }
-
-    .current-time {
-        font-size: 42px;
-    }
-
-    .prayer-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-/* Prayer Time Modal */
-.prayer-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-}
-
-.prayer-modal.show {
-    display: flex;
-}
-
-.prayer-modal-content {
-    background: linear-gradient(135deg, #1a4d2e 0%, #0f2818 100%);
-    border: 3px solid #d4af37;
-    border-radius: 20px;
-    padding: 40px;
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 10px 50px rgba(212, 175, 55, 0.5);
-    animation: modalSlideIn 0.3s ease-out;
-}
-
-@keyframes modalSlideIn {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.prayer-modal-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-.prayer-modal h2 {
-    font-family: 'Amiri', serif;
-    font-size: 36px;
-    color: #d4af37;
-    margin-bottom: 10px;
-}
-
-.prayer-modal-time {
-    font-size: 24px;
-    margin-bottom: 30px;
-    opacity: 0.9;
-}
-
-.prayer-modal-button {
-    background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
-    color: #1a4d2e;
-    border: none;
-    padding: 15px 40px;
-    font-size: 18px;
-    font-weight: 600;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-}
-
-.prayer-modal-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
-}
-
-.prayer-modal-button:active {
-    transform: translateY(0);
-}
-
-</style>
+<link href="styles.css" rel="stylesheet">
 </head>
 
 <body>
@@ -517,8 +25,11 @@ body, html {
             <button class="athan-button" onclick="playAthanManually()">Play Athan</button>
         </div>
         <div class="date-info">
-            <div class="gregorian-date" id="gregorianDate">Loading...</div>
-            <div class="hijri-date" id="hijriDate">Loading...</div>
+            <div class="date-container">
+                <div class="gregorian-date" id="gregorianDate">Loading...</div>
+                <div class="hijri-date" id="hijriDate">Loading...</div>
+            </div>
+            <button class="settings-button" onclick="openSettings()">⚙️</button>
         </div>
     </div>
 
@@ -539,10 +50,18 @@ body, html {
     </div>
 
     <div class="next-prayer-section">
-        <div class="next-prayer-label">Next Prayer</div>
-        <div class="next-prayer-name" id="nextPrayerName">Loading...</div>
-        <div class="next-prayer-time" id="nextPrayerTime">--:--</div>
-        <div class="countdown" id="countdown">Calculating...</div>
+        <div class="next-prayer-info">
+            <div class="next-prayer-info-label">Next Prayer</div>
+            <div class="next-prayer-name" id="nextPrayerName">Loading...</div>
+        </div>
+        <div class="next-prayer-time-info">
+            <div class="next-prayer-time-label">Prayer Time</div>
+            <div class="next-prayer-time" id="nextPrayerTime">--:--</div>
+        </div>
+        <div class="countdown-info">
+            <div class="countdown-label">Time Remaining</div>
+            <div class="countdown" id="countdown">Calculating...</div>
+        </div>
     </div>
 
     <div class="prayer-grid" id="prayerGrid">
@@ -557,7 +76,45 @@ body, html {
         <div class="prayer-modal-icon">🕌</div>
         <h2 id="modalPrayerName">Prayer Time</h2>
         <div class="prayer-modal-time" id="modalPrayerTime">--:--</div>
+        <div class="prayer-modal-info" id="modalPrayerInfo"></div>
         <button class="prayer-modal-button" onclick="stopAthan()">Stop Athan</button>
+    </div>
+</div>
+
+<!-- Prayer Details Modal -->
+<div class="prayer-details-modal" id="prayerDetailsModal">
+    <div class="prayer-details-content">
+        <button class="modal-close" onclick="closePrayerDetails()">✕</button>
+        <div class="prayer-details-icon">🕌</div>
+        <h2 id="detailsPrayerName">Prayer Details</h2>
+        <div class="prayer-details-time" id="detailsPrayerTime">--:--</div>
+        <div class="rakats-info" id="rakatsInfo"></div>
+        <div class="prayer-description" id="prayerDescription"></div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="settings-modal" id="settingsModal">
+    <div class="settings-modal-content">
+        <h2>⚙️ Settings</h2>
+        <div class="settings-form">
+            <div class="form-group">
+                <label for="zipCodeInput">ZIP Code</label>
+                <input type="text" id="zipCodeInput" placeholder="Enter ZIP code" maxlength="5">
+            </div>
+            <div class="form-group">
+                <label for="themeSelect">Theme Preference</label>
+                <select id="themeSelect">
+                    <option value="auto">Auto (Ramadan theme during Ramadan)</option>
+                    <option value="default">Default (Green)</option>
+                    <option value="ramadan">Ramadan (Golden)</option>
+                </select>
+            </div>
+            <div class="settings-buttons">
+                <button class="settings-cancel-button" onclick="closeSettings()">Cancel</button>
+                <button class="settings-save-button" onclick="saveSettings()">Save</button>
+            </div>
+        </div>
     </div>
 </div>
 

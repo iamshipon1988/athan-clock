@@ -1,14 +1,83 @@
-const ZIP_CODE = "11426";
-const COUNTRY = "US";
+// Settings with defaults
+let settings = {
+    zipCode: "11426",
+    country: "US",
+    theme: "auto" // auto, default, ramadan
+};
+
 const CALCULATION_METHOD = 2; // ISNA method
 
 // Set to true to test Ramadan mode year-round
 const RAMADAN_TEST_MODE = false;
 
+// Prayer information
+const PRAYER_INFO = {
+    Fajr: {
+        icon: '🌅',
+        rakats: [
+            { type: 'Sunnah', count: 2 },
+            { type: 'Fard', count: 2 }
+        ],
+        description: 'The pre-dawn prayer. Wake up before sunrise to pray and start your day with blessings.'
+    },
+    Dhuhr: {
+        icon: '☀️',
+        rakats: [
+            { type: 'Sunnah', count: 4 },
+            { type: 'Fard', count: 4 },
+            { type: 'Sunnah', count: 2 }
+        ],
+        description: 'The noon prayer. A midday break to reconnect with Allah and recharge spiritually.'
+    },
+    Asr: {
+        icon: '🌤️',
+        rakats: [
+            { type: 'Sunnah', count: 4 },
+            { type: 'Fard', count: 4 }
+        ],
+        description: 'The afternoon prayer. Performed in the late afternoon before the sun begins to set.'
+    },
+    Maghrib: {
+        icon: '🌆',
+        rakats: [
+            { type: 'Fard', count: 3 },
+            { type: 'Sunnah', count: 2 }
+        ],
+        description: 'The sunset prayer. Pray just after the sun sets and break your fast during Ramadan.'
+    },
+    Isha: {
+        icon: '🌙',
+        rakats: [
+            { type: 'Sunnah', count: 4 },
+            { type: 'Fard', count: 4 },
+            { type: 'Sunnah', count: 2 },
+            { type: 'Witr', count: 3 }
+        ],
+        description: 'The night prayer. Complete your day with worship and reflection before sleep.'
+    }
+};
+
 let prayerTimesData = null;
 let nextPrayerInfo = null;
 let isRamadan = false;
 let lastAnnouncedPrayer = null;
+let showingTomorrow = false;
+
+// Load settings from localStorage
+function loadSettings() {
+    const savedSettings = localStorage.getItem('athanClockSettings');
+    if (savedSettings) {
+        settings = { ...settings, ...JSON.parse(savedSettings) };
+    }
+}
+
+// Save settings to localStorage
+function saveSettingsToStorage() {
+    localStorage.setItem('athanClockSettings', JSON.stringify(settings));
+}
+
+// Initialize settings on page load
+loadSettings();
 
 // Update clock every second
 function updateClock() {
@@ -74,7 +143,7 @@ async function fetchPrayerTimes() {
 
         // Use timingsByAddress endpoint which works with current dates
         const response = await fetch(
-            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${ZIP_CODE},${COUNTRY}&method=${CALCULATION_METHOD}`
+            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${settings.zipCode},${settings.country}&method=${CALCULATION_METHOD}`
         );
         const data = await response.json();
 
@@ -132,12 +201,10 @@ function displayPrayerTimes() {
             card.classList.add('ramadan-special');
         }
 
-        // Check if prayer has passed
-        if (prayerTime < now) {
+        // Check if prayer has passed (only if not showing tomorrow's times)
+        if (!showingTomorrow && prayerTime < now) {
             card.classList.add('passed');
         }
-
-        const status = prayerTime > now ? 'Upcoming' : 'Completed';
 
         let ramadanLabel = '';
         if (isRamadan && prayer.isRamadanSpecial) {
@@ -148,12 +215,21 @@ function displayPrayerTimes() {
             }
         }
 
+        // Add tomorrow label if showing tomorrow's times
+        const tomorrowLabel = showingTomorrow ? '<div class="tomorrow-label">Tomorrow</div>' : '';
+
         card.innerHTML = `
+            ${tomorrowLabel}
             ${ramadanLabel}
             <div class="prayer-name">${prayer.name}</div>
             <div class="prayer-time">${formatTime(timeString)}</div>
-            <div class="prayer-status">${status}</div>
         `;
+
+        // Add click handler for main prayers only
+        const mainPrayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        if (mainPrayers.includes(prayer.key)) {
+            card.onclick = () => showPrayerDetails(prayer.key, timeString);
+        }
 
         grid.appendChild(card);
     });
@@ -209,9 +285,11 @@ function updateNextPrayer() {
         document.getElementById('nextPrayerName').textContent = 'Fajr (Tomorrow)';
         document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
         document.getElementById('countdown').textContent = 'All prayers completed for today';
+        showingTomorrow = true;
     } else {
         document.getElementById('nextPrayerName').textContent = nextPrayer.name;
         document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
+        showingTomorrow = false;
     }
 
     nextPrayerInfo = nextPrayer;
@@ -266,6 +344,7 @@ function checkRamadanMode() {
     isRamadan = RAMADAN_TEST_MODE || (now >= ramadanStart && now <= ramadanEnd);
 
     if (isRamadan) {
+        // Show Ramadan banner
         document.getElementById('ramadanBanner').style.display = 'block';
 
         // Suhoor ends at Imsak time (or Fajr if Imsak not available)
@@ -278,8 +357,31 @@ function checkRamadanMode() {
         document.getElementById('iftarTime').textContent = formatTime(maghribTime);
     }
 
+    // Apply theme based on user preference
+    applyTheme();
+
     // Re-render prayer times to apply Ramadan styling
     displayPrayerTimes();
+}
+
+// Apply theme based on settings and Ramadan status
+function applyTheme() {
+    const body = document.body;
+
+    if (settings.theme === 'auto') {
+        // Auto mode: apply Ramadan theme during Ramadan
+        if (isRamadan) {
+            body.classList.add('ramadan-mode');
+        } else {
+            body.classList.remove('ramadan-mode');
+        }
+    } else if (settings.theme === 'ramadan') {
+        // Always use Ramadan theme
+        body.classList.add('ramadan-mode');
+    } else {
+        // Default theme
+        body.classList.remove('ramadan-mode');
+    }
 }
 
 // Initialize
@@ -329,8 +431,27 @@ function playAthan(prayerName, prayerTime) {
     document.getElementById('modalPrayerName').textContent = `${prayerName} Prayer Time`;
     document.getElementById('modalPrayerTime').textContent = formatTime(prayerTime);
 
+    // Add prayer info if available
+    const infoDiv = document.getElementById('modalPrayerInfo');
+    if (PRAYER_INFO[prayerName]) {
+        const info = PRAYER_INFO[prayerName];
+        const rakatsText = info.rakats.map(r => `${r.count} ${r.type}`).join(' + ');
+        infoDiv.innerHTML = `
+            <div style="font-weight: 600; margin-bottom: 5px;">${info.icon} ${rakatsText}</div>
+            <div style="font-size: 13px; opacity: 0.9;">${info.description}</div>
+        `;
+        infoDiv.style.display = 'block';
+    } else {
+        infoDiv.style.display = 'none';
+    }
+
     // Show modal
     modal.classList.add('show');
+
+    // Auto-close modal when athan finishes
+    audio.onended = function() {
+        stopAthan();
+    };
 
     // Play audio
     audio.currentTime = 0;
@@ -371,6 +492,11 @@ function playAthanManually() {
     // Show modal
     modal.classList.add('show');
 
+    // Auto-close modal when athan finishes
+    audio.onended = function() {
+        stopAthan();
+    };
+
     // Play audio
     audio.currentTime = 0;
     audio.play().catch(error => {
@@ -380,3 +506,116 @@ function playAthanManually() {
 
 // Check for prayer time every second
 setInterval(checkPrayerTime, 1000);
+
+// Audio element setup - ensure it stays playing
+const athanAudio = document.getElementById('athanAudio');
+
+// Handle audio errors
+athanAudio.onerror = function(e) {
+    console.error('Audio error:', e);
+};
+
+// Handle audio stalling
+athanAudio.onstalled = function() {
+    console.warn('Audio stalled, attempting to resume...');
+};
+
+// Handle audio suspension (browser paused it)
+athanAudio.onsuspend = function() {
+    console.warn('Audio suspended by browser');
+};
+
+// Log when audio starts playing
+athanAudio.onplay = function() {
+    console.log('Athan started playing');
+};
+
+// Log when audio is paused
+athanAudio.onpause = function() {
+    console.log('Athan paused');
+};
+
+// Settings Modal Functions
+function openSettings() {
+    const modal = document.getElementById('settingsModal');
+    const zipCodeInput = document.getElementById('zipCodeInput');
+    const themeSelect = document.getElementById('themeSelect');
+
+    // Populate current settings
+    zipCodeInput.value = settings.zipCode;
+    themeSelect.value = settings.theme;
+
+    // Show modal
+    modal.classList.add('show');
+}
+
+function closeSettings() {
+    const modal = document.getElementById('settingsModal');
+    modal.classList.remove('show');
+}
+
+function saveSettings() {
+    const zipCodeInput = document.getElementById('zipCodeInput');
+    const themeSelect = document.getElementById('themeSelect');
+
+    // Validate ZIP code
+    const newZipCode = zipCodeInput.value.trim();
+    const oldZipCode = settings.zipCode;
+
+    if (newZipCode && /^\d{5}$/.test(newZipCode)) {
+        settings.zipCode = newZipCode;
+    } else if (newZipCode) {
+        alert('Please enter a valid 5-digit ZIP code');
+        return;
+    }
+
+    // Update theme preference
+    settings.theme = themeSelect.value;
+
+    // Save to localStorage
+    saveSettingsToStorage();
+
+    // Apply new theme immediately
+    applyTheme();
+
+    // Refresh prayer times with new ZIP code if changed
+    if (newZipCode && newZipCode !== oldZipCode) {
+        fetchPrayerTimes();
+    }
+
+    // Close modal
+    closeSettings();
+
+    // Show confirmation
+    console.log('Settings saved:', settings);
+}
+
+// Show prayer details modal
+function showPrayerDetails(prayerName, prayerTime) {
+    const modal = document.getElementById('prayerDetailsModal');
+    const info = PRAYER_INFO[prayerName];
+
+    if (!info) return;
+
+    // Update modal content
+    document.getElementById('detailsPrayerName').textContent = `${info.icon} ${prayerName}`;
+    document.getElementById('detailsPrayerTime').textContent = formatTime(prayerTime);
+
+    // Build rakats info
+    const rakatsHtml = info.rakats.map(r =>
+        `<div class="rakat-item"><span class="rakat-type">${r.type}:</span> ${r.count} Rakat${r.count > 1 ? 's' : ''}</div>`
+    ).join('');
+    document.getElementById('rakatsInfo').innerHTML = rakatsHtml;
+
+    // Set description
+    document.getElementById('prayerDescription').textContent = info.description;
+
+    // Show modal
+    modal.classList.add('show');
+}
+
+// Close prayer details modal
+function closePrayerDetails() {
+    const modal = document.getElementById('prayerDetailsModal');
+    modal.classList.remove('show');
+}
