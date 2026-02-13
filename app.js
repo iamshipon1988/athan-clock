@@ -1,6 +1,6 @@
 // Settings with defaults
 let settings = {
-    zipCode: "11426",
+    zipCode: "", // User must set their ZIP code
     country: "US",
     theme: "auto" // auto, default, ramadan
 };
@@ -355,6 +355,19 @@ async function initializePrayerTimes() {
 
     loadPrayerCache();
 
+    // Validate ZIP code
+    if (!settings.zipCode || settings.zipCode.trim() === '') {
+        document.getElementById('prayerGrid').innerHTML = `
+            <div class="loading" style="text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 15px;">📍</div>
+                <div style="font-size: 18px; margin-bottom: 10px;">Welcome to Athan Clock!</div>
+                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;">Please set your location to see prayer times</div>
+                <button onclick="openSettings()" style="padding: 12px 24px; font-size: 14px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600;">Open Settings</button>
+            </div>
+        `;
+        return;
+    }
+
     try {
         // Fetch today first (blocking)
         const todayData = await fetchPrayerTimesForDate(todayDate);
@@ -394,8 +407,15 @@ async function initializePrayerTimes() {
 
     } catch (error) {
         console.error('Error initializing prayer times:', error);
-        document.getElementById('prayerGrid').innerHTML =
-            '<div class="loading">Failed to load prayer times. Please check your connection and refresh.</div>';
+        document.getElementById('prayerGrid').innerHTML = `
+            <div class="loading" style="text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                <div style="font-size: 16px; margin-bottom: 10px;">Failed to load prayer times</div>
+                <div style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Please check your internet connection</div>
+                <button onclick="location.reload()" style="padding: 10px 20px; font-size: 13px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 8px;">Retry</button>
+                <button onclick="openSettings()" style="padding: 10px 20px; font-size: 13px; border: 2px solid #f4d571; background: transparent; color: #f4d571; border-radius: 8px; cursor: pointer; font-weight: 600;">Settings</button>
+            </div>
+        `;
     }
 }
 
@@ -899,7 +919,11 @@ setInterval(() => {
 
 // Check for prayer time and play athan
 function checkPrayerTime() {
-    if (!prayerTimesData) return;
+    // Only check if we have prayer data and are viewing today
+    if (!prayerTimesData || !todayDate || !currentViewedDate) return;
+
+    // CRITICAL: Only play athan when viewing today, not when browsing other dates
+    if (!isSameDay(currentViewedDate, todayDate)) return;
 
     const now = new Date();
     const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -911,6 +935,9 @@ function checkPrayerTime() {
         if (!prayerTimesData[prayer]) continue;
 
         const prayerTimeString = prayerTimesData[prayer].split(' ')[0];
+
+        // Validate prayer time format before comparing
+        if (!prayerTimeString || prayerTimeString.length < 4) continue;
 
         // Check if current time matches prayer time and hasn't been announced yet
         if (currentTime === prayerTimeString && lastAnnouncedPrayer !== prayer) {
@@ -1061,12 +1088,19 @@ function saveSettings() {
     const newZipCode = zipCodeInput.value.trim();
     const oldZipCode = settings.zipCode;
 
-    if (newZipCode && /^\d{5}$/.test(newZipCode)) {
-        settings.zipCode = newZipCode;
-    } else if (newZipCode) {
+    // Require ZIP code to be entered
+    if (!newZipCode || newZipCode === '') {
+        alert('Please enter a ZIP code to see prayer times');
+        return;
+    }
+
+    // Validate ZIP code format
+    if (!/^\d{5}$/.test(newZipCode)) {
         alert('Please enter a valid 5-digit ZIP code');
         return;
     }
+
+    settings.zipCode = newZipCode;
 
     // Update theme preference
     settings.theme = themeSelect.value;
@@ -1078,7 +1112,7 @@ function saveSettings() {
     applyTheme();
 
     // Clear cache and refresh if ZIP code changed
-    if (newZipCode && newZipCode !== oldZipCode) {
+    if (newZipCode !== oldZipCode) {
         clearPrayerCache();
         initializePrayerTimes();
     }
