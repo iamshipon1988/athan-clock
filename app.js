@@ -1,6 +1,6 @@
 // Settings with defaults
 let settings = {
-    zipCode: "", // User must set their ZIP code
+    zipCode: "11426", // Default ZIP code
     country: "US",
     theme: "auto" // auto, default, ramadan
 };
