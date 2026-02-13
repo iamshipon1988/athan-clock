@@ -290,6 +290,16 @@ fetchHijriDate();
 
 // ==================== CACHE-AWARE FETCH FUNCTIONS ====================
 
+// Fetch with timeout helper (for Fire Tablet and slow connections)
+function fetchWithTimeout(url, timeout = 15000) {
+    return Promise.race([
+        fetch(url),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Request timeout')), timeout)
+        )
+    ]);
+}
+
 // Fetch prayer times for a specific date (with caching)
 async function fetchPrayerTimesForDate(date) {
     // Check cache first
@@ -306,15 +316,23 @@ async function fetchPrayerTimesForDate(date) {
         };
     }
 
-    // Fetch from API
+    // Fetch from API with timeout
     try {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
 
-        const response = await fetch(
-            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${settings.zipCode},${settings.country}&method=${CALCULATION_METHOD}`
+        console.log(`Fetching prayer times for ${formatDateKey(date)}...`);
+
+        const response = await fetchWithTimeout(
+            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${settings.zipCode},${settings.country}&method=${CALCULATION_METHOD}`,
+            15000 // 15 second timeout for Fire Tablet
         );
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
         if (data.code === 200 && data.data && data.data.timings) {
@@ -324,6 +342,7 @@ async function fetchPrayerTimesForDate(date) {
             // Cache the result
             cachePrayerTimes(date, timings, hijriData);
 
+            console.log(`Successfully fetched prayer times for ${formatDateKey(date)}`);
             return { timings, hijriData };
         } else {
             throw new Error('Invalid API response');
@@ -368,11 +387,31 @@ async function initializePrayerTimes() {
         return;
     }
 
+    // Set loading timeout (20 seconds) for slow devices like Fire Tablet
+    const loadingTimeout = setTimeout(() => {
+        const grid = document.getElementById('prayerGrid');
+        if (grid && grid.innerHTML.includes('Loading prayer times')) {
+            console.warn('Loading timeout exceeded - showing error');
+            grid.innerHTML = `
+                <div class="loading" style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">⏱️</div>
+                    <div style="font-size: 16px; margin-bottom: 10px;">Loading is taking longer than expected</div>
+                    <div style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">This may be due to slow network. Try refreshing or check your connection.</div>
+                    <button onclick="location.reload()" style="padding: 10px 20px; font-size: 13px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 8px;">Retry</button>
+                    <button onclick="openSettings()" style="padding: 10px 20px; font-size: 13px; border: 2px solid #f4d571; background: transparent; color: #f4d571; border-radius: 8px; cursor: pointer; font-weight: 600;">Settings</button>
+                </div>
+            `;
+        }
+    }, 20000);
+
     try {
         // Fetch today first (blocking)
         const todayData = await fetchPrayerTimesForDate(todayDate);
         prayerTimesData = todayData.timings;
         currentHijriData = todayData.hijriData;
+
+        // Clear the loading timeout since we succeeded
+        clearTimeout(loadingTimeout);
 
         // Update UI with today's data
         displayPrayerTimes();
@@ -407,11 +446,17 @@ async function initializePrayerTimes() {
 
     } catch (error) {
         console.error('Error initializing prayer times:', error);
+        clearTimeout(loadingTimeout); // Clear timeout since we're showing error now
+
+        const errorMsg = error.message === 'Request timeout'
+            ? 'Connection timeout - network may be slow'
+            : 'Failed to load prayer times';
+
         document.getElementById('prayerGrid').innerHTML = `
             <div class="loading" style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
-                <div style="font-size: 16px; margin-bottom: 10px;">Failed to load prayer times</div>
-                <div style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Please check your internet connection</div>
+                <div style="font-size: 16px; margin-bottom: 10px;">${errorMsg}</div>
+                <div style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Please check your internet connection and try again</div>
                 <button onclick="location.reload()" style="padding: 10px 20px; font-size: 13px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 8px;">Retry</button>
                 <button onclick="openSettings()" style="padding: 10px 20px; font-size: 13px; border: 2px solid #f4d571; background: transparent; color: #f4d571; border-radius: 8px; cursor: pointer; font-weight: 600;">Settings</button>
             </div>
