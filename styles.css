@@ -164,6 +164,396 @@ body.ramadan-mode .prayer-card.ramadan-special {
     box-shadow: 0 0 20px rgba(139, 105, 20, 0.3);
 }
 
+/* ==================== KIDS THEME ==================== */
+body.kids-mode {
+    background: #FFF8DC;
+    background-image: url('assets/images/bg-kids.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    background-attachment: fixed;
+    font-family: 'Poppins', sans-serif;
+}
+
+body.kids-mode .container {
+    padding-bottom: 140px;
+}
+
+body.kids-mode::before {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body.kids-mode .header {
+    background: transparent;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+body.kids-mode .header-left {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+body.kids-mode .bismillah {
+    color: #00CED1;
+    text-shadow:
+        3px 3px 0px #FFF,
+        -2px -2px 0px #FFF,
+        2px -2px 0px #FFF,
+        -2px 2px 0px #FFF,
+        0 0 10px rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+body.kids-mode .current-time {
+    color: #FF1493;
+    text-shadow:
+        4px 4px 0px #FFF,
+        -3px -3px 0px #FFF,
+        3px -3px 0px #FFF,
+        -3px 3px 0px #FFF,
+        0 0 15px rgba(255, 255, 255, 0.9);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    font-size: 56px;
+    letter-spacing: 3px;
+}
+
+body.kids-mode .athan-button-container {
+    margin-bottom: 10px;
+}
+
+body.kids-mode .athan-button {
+    background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+    color: #FFF;
+    font-weight: 800;
+    border: 3px solid #FFF;
+    font-size: 15px;
+    border-radius: 25px;
+    padding: 12px 28px;
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.5);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+body.kids-mode .athan-button:hover {
+    background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 25px rgba(255, 20, 147, 0.7);
+    border-color: #FFD700;
+}
+
+body.kids-mode .date-info {
+    justify-content: flex-end;
+}
+
+body.kids-mode .date-container {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+body.kids-mode .gregorian-date,
+body.kids-mode .hijri-date {
+    background: #FFF;
+    border: 3px solid #FF8C00;
+    color: #000;
+    font-weight: 800;
+    text-shadow: none;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 12px;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+body.kids-mode .settings-button {
+    background: #00CED1;
+    border: 3px solid #FFF;
+    color: #FFF;
+    font-size: 24px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 4px 15px rgba(0, 206, 209, 0.5);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+body.kids-mode .settings-button:hover {
+    transform: scale(1.15) rotate(90deg);
+    background: #FFD700;
+    color: #000;
+    border-color: #FF8C00;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+    text-shadow: none;
+}
+
+body.kids-mode .next-prayer-section {
+    background: #FFD700;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    padding: 20px;
+}
+
+body.kids-mode .next-prayer-info-label,
+body.kids-mode .next-prayer-time-label,
+body.kids-mode .countdown-label {
+    color: #000;
+    font-weight: 700;
+    text-shadow: none;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+body.kids-mode .next-prayer-name {
+    color: #000;
+    font-weight: 900;
+    text-shadow: none;
+    font-size: 26px;
+}
+
+body.kids-mode .next-prayer-time {
+    color: #000;
+    font-weight: 900;
+    text-shadow: none;
+    font-size: 26px;
+}
+
+body.kids-mode .countdown {
+    color: #000;
+    font-weight: 700;
+    text-shadow: none;
+    font-size: 16px;
+}
+
+body.kids-mode .date-navigation-badge {
+    background: #FFD700;
+    border: none;
+    border-radius: 15px;
+}
+
+body.kids-mode .date-badge-date {
+    color: #000;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+body.kids-mode .back-to-today-button {
+    background: #00CED1;
+    color: #000;
+    border: none;
+    font-weight: 700;
+}
+
+body.kids-mode .back-to-today-button:hover {
+    background: #48D1CC;
+    transform: scale(1.05);
+}
+
+body.kids-mode .date-nav-button {
+    background: #00CED1;
+    border: none;
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+body.kids-mode .date-nav-button:hover:not(:disabled) {
+    background: #48D1CC;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 206, 209, 0.4);
+}
+
+body.kids-mode .prayer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+body.kids-mode .prayer-card {
+    background: #00CED1;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 206, 209, 0.3);
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 110px;
+}
+
+body.kids-mode .prayer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 206, 209, 0.4);
+}
+
+body.kids-mode .prayer-card.active {
+    background: #A0E7E5;
+    box-shadow: 0 6px 20px rgba(160, 231, 229, 0.6);
+}
+
+body.kids-mode .prayer-card.passed {
+    opacity: 0.7;
+}
+
+body.kids-mode .prayer-card .prayer-label {
+    background: transparent;
+    color: #000;
+    font-weight: 700;
+    text-shadow: none;
+    border-radius: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+}
+
+body.kids-mode .prayer-name {
+    color: #000;
+    font-weight: 700;
+    text-shadow: none;
+    font-size: 15px;
+}
+
+body.kids-mode .prayer-time {
+    color: #000;
+    font-weight: 900;
+    text-shadow: none;
+    font-size: 22px;
+}
+
+body.kids-mode .ramadan-banner {
+    background: #FFD700;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+body.kids-mode .ramadan-banner h2 {
+    color: #000;
+    text-shadow: none;
+    font-size: 20px;
+}
+
+body.kids-mode .ramadan-time-box {
+    background: #00CED1;
+    border: none;
+    border-radius: 15px;
+}
+
+body.kids-mode .ramadan-time-box h3 {
+    color: #000;
+    font-weight: 700;
+}
+
+body.kids-mode .ramadan-time-box .time {
+    color: #000;
+    font-weight: 900;
+}
+
+body.kids-mode .ramadan-time-box .note {
+    color: #2c2c2c;
+}
+
+body.kids-mode .prayer-card.ramadan-special {
+    background: #FFD700;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+}
+
+/* Kids theme modals */
+body.kids-mode .prayer-modal-content,
+body.kids-mode .prayer-details-content,
+body.kids-mode .settings-modal-content {
+    background: #FFF;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+body.kids-mode .prayer-modal h2,
+body.kids-mode .prayer-details-content h2,
+body.kids-mode .settings-modal-content h2 {
+    color: #000;
+    text-shadow: none;
+}
+
+body.kids-mode .prayer-modal-time,
+body.kids-mode .prayer-details-time {
+    color: #00CED1;
+    font-weight: 900;
+    text-shadow: none;
+}
+
+body.kids-mode .prayer-modal-button,
+body.kids-mode .modal-close {
+    background: #00CED1;
+    color: #000;
+    border: none;
+    font-weight: 700;
+}
+
+body.kids-mode .settings-save-button {
+    background: #00CED1;
+    color: #000;
+    border: none;
+    font-weight: 700;
+}
+
+body.kids-mode .settings-cancel-button {
+    background: #E0E0E0;
+    color: #000;
+    border: none;
+    font-weight: 600;
+}
+
+body.kids-mode .settings-copyright {
+    color: #666;
+    font-weight: 600;
+}
+
+body.kids-mode .settings-copyright a {
+    color: #00CED1;
+    font-weight: 700;
+}
+
+body.kids-mode .form-group label {
+    color: #2c2c2c;
+    font-weight: 600;
+}
+
+body.kids-mode .form-group input,
+body.kids-mode .form-group select {
+    background: #F5F5F5;
+    border: 2px solid #E0E0E0;
+    color: #2c2c2c;
+    font-weight: 500;
+}
+
+body.kids-mode .form-group input:focus,
+body.kids-mode .form-group select:focus {
+    border-color: #00CED1;
+    box-shadow: 0 0 0 3px rgba(0, 206, 209, 0.1);
+}
+
+body.kids-mode .preview-athan-button {
+    background: #FFD700;
+    border: none;
+    color: #000;
+    font-weight: 700;
+}
+
+body.kids-mode .preview-athan-button:hover {
+    background: #FFA500;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
 /* Islamic Pattern Background */
 .pattern-overlay {
     position: fixed;
@@ -199,7 +589,7 @@ body.ramadan-mode .prayer-card.ramadan-special {
     margin: 0 auto;
     padding: 15px 25px;
     z-index: 10;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -267,10 +657,6 @@ body.ramadan-mode .prayer-card.ramadan-special {
     transform: translateY(0);
 }
 
-.athan-button::before {
-    content: '🔊 ';
-}
-
 .date-info {
     display: flex;
     flex-direction: row;
@@ -331,9 +717,9 @@ body.ramadan-mode .prayer-card.ramadan-special {
 .ramadan-banner {
     background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
     color: #1a4d2e;
-    padding: 15px 20px;
+    padding: 12px 20px;
     border-radius: 10px;
-    margin: 10px 0;
+    margin: 8px 0;
     box-shadow: 0 4px 15px rgba(244, 213, 113, 0.3);
     flex-shrink: 0;
 }
@@ -847,73 +1233,270 @@ body.ramadan-mode .prayer-card .tomorrow-label {
 
 /* Responsive */
 @media (max-width: 768px) {
+    /* Optimize container for mobile portrait */
+    body {
+        min-height: 100vh;
+        height: auto;
+    }
+
+    .container {
+        padding: 10px 15px;
+        min-height: 100vh;
+        height: auto;
+    }
+
+    /* Compact header for mobile */
     .header {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        gap: 10px;
     }
 
     .header-left {
-        margin-bottom: 10px;
+        margin-bottom: 0;
+        text-align: left;
+        flex: 1;
     }
 
-    .athan-button-container {
-        padding: 10px 0;
-    }
-
-    .athan-button {
-        font-size: 12px;
-        padding: 8px 16px;
-    }
-
-    .date-info {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .date-container {
-        align-items: center;
-    }
-
-    .date-nav-prev {
-        left: 8px;
-    }
-
-    .date-nav-next {
-        right: 8px;
-    }
-
-    .date-nav-button {
-        width: 30px;
-        height: 30px;
+    .bismillah {
         font-size: 14px;
+        margin-bottom: 3px;
+        line-height: 1.2;
     }
 
     .current-time {
-        font-size: 36px;
+        font-size: 28px;
+        line-height: 1;
+    }
+
+    /* Hide athan button on mobile to save space */
+    .athan-button-container {
+        display: none;
+    }
+
+    /* Compact date/settings area */
+    .date-info {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+    }
+
+    .date-container {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-end;
+    }
+
+    .gregorian-date,
+    .hijri-date {
+        font-size: 10px;
+        padding: 4px 8px;
+        white-space: nowrap;
+    }
+
+    .settings-button {
+        font-size: 20px;
+        padding: 6px;
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Compact Ramadan banner */
+    .ramadan-banner h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .ramadan-times {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .ramadan-time-box {
+        padding: 10px;
+    }
+
+    .ramadan-time-box h3 {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .ramadan-time-box .time {
+        font-size: 20px;
+    }
+
+    .ramadan-time-box .note {
+        font-size: 10px;
+    }
+
+    /* Compact navigation buttons */
+    .date-nav-prev {
+        left: 6px;
+    }
+
+    .date-nav-next {
+        right: 6px;
+    }
+
+    .date-nav-button {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    /* Compact next prayer section */
+    .next-prayer-section {
+        padding: 12px 40px;
+        margin-bottom: 10px;
+        gap: 12px;
     }
 
     .next-prayer-section,
     .next-prayer-section.viewing-different-date {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 15px;
+        gap: 12px;
+    }
+
+    .next-prayer-info,
+    .next-prayer-time-info,
+    .countdown-info {
+        align-items: center;
+        text-align: center;
+    }
+
+    .next-prayer-info-label,
+    .next-prayer-time-label,
+    .countdown-label {
+        font-size: 10px;
+        margin-bottom: 3px;
     }
 
     .next-prayer-name,
     .next-prayer-time {
-        font-size: 28px;
+        font-size: 24px;
+        line-height: 1.2;
     }
 
     .countdown {
-        font-size: 16px;
+        font-size: 14px;
+        line-height: 1.2;
     }
 
-    .ramadan-times {
-        grid-template-columns: 1fr;
+    /* Compact date badge */
+    .date-navigation-badge {
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    .date-badge-date {
+        font-size: 11px;
+    }
+
+    .back-to-today-button {
+        font-size: 8px;
+        padding: 4px 10px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Compact prayer grid */
+    .prayer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin: 0;
+        flex: 1;
+        align-content: stretch;
+    }
+
+    .prayer-card {
+        padding: 10px 8px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .prayer-label {
+        font-size: 9px;
+        padding: 3px 8px;
+        margin-bottom: 6px;
+    }
+
+    .prayer-name {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .prayer-time {
+        font-size: 18px;
+    }
+
+    /* Adjust modals for mobile */
+    .prayer-modal-content,
+    .prayer-details-content,
+    .settings-modal-content {
+        padding: 25px 20px;
+        max-width: 90%;
+    }
+
+    .prayer-modal h2 {
+        font-size: 28px;
+    }
+
+    .prayer-modal-time {
+        font-size: 20px;
+    }
+}
+
+/* Extra small screens (portrait phones) */
+@media (max-width: 480px) and (orientation: portrait) {
+    .container {
+        padding: 8px 12px;
+    }
+
+    .header {
+        margin-bottom: 6px;
+    }
+
+    .current-time {
+        font-size: 24px;
+    }
+
+    .next-prayer-section {
+        padding: 10px 35px;
+        gap: 10px;
+    }
+
+    .next-prayer-name,
+    .next-prayer-time {
+        font-size: 20px;
+    }
+
+    .countdown {
+        font-size: 12px;
     }
 
     .prayer-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        flex: 1;
+        align-content: stretch;
+    }
+
+    .prayer-card {
+        padding: 8px 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .prayer-name {
+        font-size: 13px;
+    }
+
+    .prayer-time {
+        font-size: 16px;
     }
 }
 
@@ -1316,6 +1899,10 @@ body.ramadan-mode .form-group label {
     transition: all 0.3s ease;
 }
 
+.form-group select {
+    padding-right: 40px;
+}
+
 body.ramadan-mode .form-group input,
 body.ramadan-mode .form-group select {
     background: #ffffff;
@@ -1336,6 +1923,53 @@ body.ramadan-mode .form-group input:focus,
 body.ramadan-mode .form-group select:focus {
     border-color: #8b6914;
     box-shadow: 0 0 10px rgba(139, 105, 20, 0.3);
+}
+
+.preview-athan-button {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    border: 2px solid rgba(244, 213, 113, 0.5);
+    background: linear-gradient(135deg, rgba(244, 213, 113, 0.2) 0%, rgba(224, 196, 92, 0.2) 100%);
+    color: #f4d571;
+    margin-top: 8px;
+}
+
+body.ramadan-mode .preview-athan-button {
+    background: linear-gradient(135deg, rgba(212, 165, 74, 0.2) 0%, rgba(184, 144, 62, 0.2) 100%);
+    border-color: rgba(139, 105, 20, 0.5);
+    color: #8b6914;
+}
+
+body.kids-mode .preview-athan-button {
+    background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+    border-color: #FF1493;
+    color: #fff;
+    font-weight: 700;
+}
+
+.preview-athan-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(244, 213, 113, 0.3);
+    border-color: #f4d571;
+}
+
+body.ramadan-mode .preview-athan-button:hover {
+    box-shadow: 0 5px 15px rgba(139, 105, 20, 0.3);
+    border-color: #8b6914;
+}
+
+body.kids-mode .preview-athan-button:hover {
+    box-shadow: 0 5px 20px rgba(255, 105, 180, 0.5);
+    transform: translateY(-2px) scale(1.05);
+}
+
+.preview-athan-button:active {
+    transform: translateY(0);
 }
 
 .settings-buttons {

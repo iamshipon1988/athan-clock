@@ -2,7 +2,8 @@
 let settings = {
     zipCode: "11426", // Default ZIP code
     country: "US",
-    theme: "auto" // auto, default, ramadan
+    theme: "auto", // auto, default, ramadan, kids
+    athan: "default" // Athan voice selection
 };
 
 const CALCULATION_METHOD = 2; // ISNA method
@@ -804,20 +805,22 @@ function checkRamadanMode() {
 function applyTheme() {
     const body = document.body;
 
+    // Remove all theme classes first
+    body.classList.remove('ramadan-mode', 'kids-mode');
+
     if (settings.theme === 'auto') {
         // Auto mode: apply Ramadan theme during Ramadan
         if (isRamadan) {
             body.classList.add('ramadan-mode');
-        } else {
-            body.classList.remove('ramadan-mode');
         }
     } else if (settings.theme === 'ramadan') {
         // Always use Ramadan theme
         body.classList.add('ramadan-mode');
-    } else {
-        // Default theme
-        body.classList.remove('ramadan-mode');
+    } else if (settings.theme === 'kids') {
+        // Kids theme
+        body.classList.add('kids-mode');
     }
+    // else: Default theme (no class needed)
 }
 
 // ==================== DATE NAVIGATION FUNCTIONS ====================
@@ -1026,6 +1029,9 @@ document.addEventListener('touchend', (e) => {
 // Initialize
 initializePrayerTimes();
 
+// Set initial athan audio source
+updateAthanAudioSource();
+
 // Refresh prayer times at midnight
 setInterval(() => {
     const now = new Date();
@@ -1122,6 +1128,58 @@ function stopAthan() {
     modal.classList.remove('show');
 }
 
+// Update the athan audio source based on settings
+function updateAthanAudioSource() {
+    const audio = document.getElementById('athanAudio');
+    const source = audio.querySelector('source');
+    const athanFile = `athan/${settings.athan}.mp3`;
+
+    // Only update if the source has changed
+    if (source.src !== athanFile) {
+        source.src = athanFile;
+        audio.load(); // Reload the audio element with new source
+    }
+}
+
+// Preview the selected athan (play/stop toggle)
+function previewAthan() {
+    const athanSelect = document.getElementById('athanSelect');
+    const previewButton = document.getElementById('previewAthanButton');
+    const selectedAthan = athanSelect.value;
+    const audio = document.getElementById('athanAudio');
+    const source = audio.querySelector('source');
+
+    // Check if audio is currently playing
+    if (!audio.paused) {
+        // Stop the audio
+        audio.pause();
+        audio.currentTime = 0;
+        previewButton.innerHTML = '🔊 Play';
+        return;
+    }
+
+    // Update audio source to selected athan
+    const previewFile = `athan/${selectedAthan}.mp3`;
+    source.src = previewFile;
+    audio.load();
+
+    // Change button to stop state
+    previewButton.innerHTML = '⏹ Stop';
+
+    // Play the full athan
+    audio.currentTime = 0;
+    audio.play().catch(error => {
+        console.error('Error playing athan:', error);
+        alert('Unable to play athan. Please check your audio settings.');
+        previewButton.innerHTML = '🔊 Play';
+    });
+
+    // Reset button when audio ends
+    audio.onended = function() {
+        previewButton.innerHTML = '🔊 Play';
+    };
+}
+
 // Play athan manually (called from button)
 function playAthanManually() {
     const now = new Date();
@@ -1189,10 +1247,12 @@ function openSettings() {
     const modal = document.getElementById('settingsModal');
     const zipCodeInput = document.getElementById('zipCodeInput');
     const themeSelect = document.getElementById('themeSelect');
+    const athanSelect = document.getElementById('athanSelect');
 
     // Populate current settings
     zipCodeInput.value = settings.zipCode;
     themeSelect.value = settings.theme;
+    athanSelect.value = settings.athan;
 
     // Show modal
     modal.classList.add('show');
@@ -1206,6 +1266,7 @@ function closeSettings() {
 function saveSettings() {
     const zipCodeInput = document.getElementById('zipCodeInput');
     const themeSelect = document.getElementById('themeSelect');
+    const athanSelect = document.getElementById('athanSelect');
 
     // Validate ZIP code
     const newZipCode = zipCodeInput.value.trim();
@@ -1228,11 +1289,17 @@ function saveSettings() {
     // Update theme preference
     settings.theme = themeSelect.value;
 
+    // Update athan preference
+    settings.athan = athanSelect.value;
+
     // Save to localStorage
     saveSettingsToStorage();
 
     // Apply new theme immediately
     applyTheme();
+
+    // Update athan audio source
+    updateAthanAudioSource();
 
     // Clear cache and refresh if ZIP code changed
     if (newZipCode !== oldZipCode) {

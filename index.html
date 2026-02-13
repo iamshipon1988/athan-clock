@@ -115,7 +115,24 @@
                     <option value="auto">Auto (Ramadan theme during Ramadan)</option>
                     <option value="default">Default (Green)</option>
                     <option value="ramadan">Ramadan (Golden)</option>
+                    <option value="kids">Kids (Colorful & Fun)</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="athanSelect">Athan Voice</label>
+                <select id="athanSelect">
+                    <option value="default">Default</option>
+                    <option value="Makkah">Makkah</option>
+                    <option value="Madinah">Madinah</option>
+                    <option value="Alaqsa">Al-Aqsa</option>
+                    <option value="Al-Hussaini">Al-Hussaini</option>
+                    <option value="Hafez">Hafez</option>
+                    <option value="Minshawi">Minshawi</option>
+                    <option value="Naghshbandi">Naghshbandi</option>
+                    <option value="Saber">Saber</option>
+                    <option value="Sharif">Sharif</option>
+                </select>
+                <button type="button" class="preview-athan-button" id="previewAthanButton" onclick="previewAthan()">🔊 Play</button>
             </div>
             <div class="settings-buttons">
                 <button class="settings-cancel-button" onclick="closeSettings()">Cancel</button>
@@ -130,7 +147,7 @@
 
 <!-- Athan Audio -->
 <audio id="athanAudio" preload="auto">
-    <source src="athan.mp3" type="audio/mpeg">
+    <source src="athan/default.mp3" type="audio/mpeg">
 </audio>
 
 <script src="app.js"></script>
