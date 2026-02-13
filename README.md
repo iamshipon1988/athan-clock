@@ -1,6 +1,6 @@
 # Ramadan Athan Clock 🕌
 
-A beautiful, accessible Islamic prayer time application with dual themes, offline caching, and date navigation. Display accurate prayer times for any location with an elegant glassmorphic interface.
+A beautiful, accessible Islamic prayer time application with three vibrant themes, offline caching, and date navigation. Display accurate prayer times for any location with elegant glassmorphic interfaces designed for everyone - adults and kids alike.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -9,13 +9,15 @@ A beautiful, accessible Islamic prayer time application with dual themes, offlin
 
 ### Core Functionality
 - **Accurate Prayer Times**: Fetches prayer times using the Aladhan API
-- **Dual Themes**:
+- **Three Beautiful Themes**:
   - Default green theme with elegant dark aesthetic
   - Ramadan golden theme with warm, light colors
+  - Kids theme with vibrant, playful colors designed for children
   - Auto-switching during Ramadan
+- **Multiple Athan Voices**: Choose from 10 different athan voices including Makkah, Madinah, Al-Aqsa, and more
 - **Date Navigation**: Browse prayer times for yesterday, today, and up to 30 days in the future
 - **Offline Support**: Caches up to a week of prayer times for offline access
-- **Athan Audio**: Plays traditional athan at prayer times (customizable)
+- **Customizable Athan Audio**: Plays traditional athan at prayer times with voice selection
 - **Next Prayer Countdown**: Live countdown to the next prayer
 
 ### Smart Features
@@ -60,7 +62,8 @@ A beautiful, accessible Islamic prayer time application with dual themes, offlin
 3. **Configure your location**
    - Click the settings (⚙️) button
    - Enter your ZIP code
-   - Choose your theme preference
+   - Choose your theme preference (Auto, Default, Ramadan, or Kids)
+   - Select your preferred athan voice (Default, Makkah, Madinah, Al-Aqsa, etc.)
    - Click Save
 
 ## 🎨 Themes
@@ -77,10 +80,20 @@ A beautiful, accessible Islamic prayer time application with dual themes, offlin
 - Special highlighting for Suhoor and Iftar times
 - No text shadows for clean, accessible design
 
+### Kids Theme (Colorful & Fun)
+- Vibrant cyan, pink, yellow, and orange colors
+- Clean design inspired by Masjidal kids interface
+- High-contrast text with white outlines for excellent readability
+- Cyan bismillah and hot pink time display
+- Pink gradient athan button
+- Yellow next prayer section with cyan prayer cards
+- Perfect for children and family-friendly displays
+
 ### Theme Options
 - **Auto**: Automatically switches to Ramadan theme during Ramadan month
 - **Default**: Always use the green theme
 - **Ramadan**: Always use the golden theme
+- **Kids**: Always use the colorful kids theme
 
 ## 📱 Usage
 
@@ -133,13 +146,24 @@ When viewing future or past dates:
 ```
 athan-clock/
 ├── index.html          # Main HTML structure
-├── styles.css          # All styling (both themes)
+├── styles.css          # All styling (all three themes)
 ├── app.js             # Application logic
-├── athan.mp3          # Athan audio file
+├── athan/             # Athan audio files directory
+│   ├── default.mp3        # Default athan
+│   ├── Makkah.mp3         # Makkah athan
+│   ├── Madinah.mp3        # Madinah athan
+│   ├── Alaqsa.mp3         # Al-Aqsa athan
+│   ├── Al-Hussaini.mp3    # Al-Hussaini athan
+│   ├── Hafez.mp3          # Hafez athan
+│   ├── Minshawi.mp3       # Minshawi athan
+│   ├── Naghshbandi.mp3    # Naghshbandi athan
+│   ├── Saber.mp3          # Saber athan
+│   └── Sharif.mp3         # Sharif athan
 ├── assets/
 │   └── images/
 │       ├── bg-green.jpg    # Default theme background
-│       └── bg-ramadan.jpg  # Ramadan theme background
+│       ├── bg-ramadan.jpg  # Ramadan theme background
+│       └── bg-kids.jpg     # Kids theme background
 └── README.md          # This file
 ```
 
@@ -147,7 +171,18 @@ athan-clock/
 
 ### Settings Available
 1. **ZIP Code**: Enter your location's ZIP code for accurate prayer times
-2. **Theme**: Choose between Auto, Default (Green), or Ramadan (Golden)
+2. **Theme**: Choose between Auto, Default (Green), Ramadan (Golden), or Kids (Colorful & Fun)
+3. **Athan Voice**: Select from 10 different athan voices:
+   - Default
+   - Makkah
+   - Madinah
+   - Al-Aqsa
+   - Al-Hussaini
+   - Hafez
+   - Minshawi
+   - Naghshbandi
+   - Saber
+   - Sharif
 
 ### Customization
 To modify prayer calculation method, edit `app.js`:
@@ -180,7 +215,8 @@ Available methods:
 ### Athan not playing
 - Check browser audio permissions
 - Ensure volume is turned up
-- Verify `athan.mp3` file exists
+- Verify athan audio files exist in the `athan/` directory
+- Try previewing the athan in settings to test audio playback
 
 ### Cache issues
 - Open browser DevTools → Application → Local Storage
