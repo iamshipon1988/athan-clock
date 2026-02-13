@@ -1246,3 +1246,24 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => {
     console.log('Offline mode - using cached data');
 });
+
+// ==================== MODAL BACKDROP CLICK HANDLERS ====================
+
+// Close modals when clicking on backdrop (outside modal content)
+document.getElementById('prayerModal').addEventListener('click', (e) => {
+    if (e.target.id === 'prayerModal') {
+        stopAthan();
+    }
+});
+
+document.getElementById('prayerDetailsModal').addEventListener('click', (e) => {
+    if (e.target.id === 'prayerDetailsModal') {
+        closePrayerDetails();
+    }
+});
+
+document.getElementById('settingsModal').addEventListener('click', (e) => {
+    if (e.target.id === 'settingsModal') {
+        closeSettings();
+    }
+});
