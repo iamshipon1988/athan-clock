@@ -391,6 +391,24 @@ body.ramadan-mode .prayer-card.ramadan-special {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
     align-items: center;
+    transition: opacity 0.15s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide animations for next prayer section */
+.next-prayer-section.slide-out-left {
+    animation: slideOutLeft 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.next-prayer-section.slide-out-right {
+    animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.next-prayer-section.slide-in-left {
+    animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.next-prayer-section.slide-in-right {
+    animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .next-prayer-label {
@@ -591,18 +609,27 @@ body.ramadan-mode .back-to-today-button:hover {
 }
 
 .date-nav-button:hover:not(:disabled) {
-    background: rgba(244, 213, 113, 0.2);
+    background: rgba(244, 213, 113, 0.3);
     border-color: #f4d571;
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 0 15px rgba(244, 213, 113, 0.4);
 }
 
 .date-nav-button:active:not(:disabled) {
-    transform: translateY(-50%) scale(0.95);
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(244, 213, 113, 0.4);
+    box-shadow: 0 0 10px rgba(244, 213, 113, 0.6);
 }
 
 .date-nav-button:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+/* Visual feedback when button is pressed */
+.date-nav-button.pressing {
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(244, 213, 113, 0.4);
 }
 
 body.ramadan-mode .date-nav-button {
@@ -613,8 +640,21 @@ body.ramadan-mode .date-nav-button {
 }
 
 body.ramadan-mode .date-nav-button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.8);
     border-color: #8b6914;
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 0 15px rgba(139, 105, 20, 0.4);
+}
+
+body.ramadan-mode .date-nav-button:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 10px rgba(139, 105, 20, 0.6);
+}
+
+body.ramadan-mode .date-nav-button.pressing {
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 /* Prayer Times Grid */
@@ -625,6 +665,68 @@ body.ramadan-mode .date-nav-button:hover:not(:disabled) {
     margin: 10px 0;
     flex: 1;
     align-content: stretch;
+    transition: opacity 0.15s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide animations for date navigation */
+.prayer-grid.slide-out-left {
+    animation: slideOutLeft 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.prayer-grid.slide-out-right {
+    animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.prayer-grid.slide-in-left {
+    animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.prayer-grid.slide-in-right {
+    animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .prayer-card {

@@ -782,19 +782,58 @@ let navigationDebounceTimer = null;
 function navigateDateDebounced(offset) {
     clearTimeout(navigationDebounceTimer);
 
+    // Get the clicked button
+    const prevButton = document.getElementById('dateNavPrev');
+    const nextButton = document.getElementById('dateNavNext');
+    const clickedButton = offset < 0 ? prevButton : nextButton;
+
+    // Add visual feedback
+    clickedButton.classList.add('pressing');
+
     // Disable buttons during navigation
-    document.getElementById('dateNavPrev').disabled = true;
-    document.getElementById('dateNavNext').disabled = true;
+    prevButton.disabled = true;
+    nextButton.disabled = true;
 
     navigationDebounceTimer = setTimeout(() => {
+        // Remove pressing class
+        clickedButton.classList.remove('pressing');
         navigateDate(offset);
     }, 150);
 }
 
 // Navigate to different date
 function navigateDate(offset) {
-    currentViewedDate = addDays(currentViewedDate, offset);
-    loadPrayerTimesForCurrentView();
+    const prayerGrid = document.getElementById('prayerGrid');
+    const prayerSection = document.querySelector('.next-prayer-section');
+
+    // Determine animation direction
+    const slideOutClass = offset > 0 ? 'slide-out-left' : 'slide-out-right';
+    const slideInClass = offset > 0 ? 'slide-in-right' : 'slide-in-left';
+
+    // Add slide-out animation
+    prayerGrid.classList.add(slideOutClass);
+    prayerSection.classList.add(slideOutClass);
+
+    // Wait for slide-out animation to complete
+    setTimeout(() => {
+        // Remove slide-out classes
+        prayerGrid.classList.remove(slideOutClass);
+        prayerSection.classList.remove(slideOutClass);
+
+        // Update date and load new data
+        currentViewedDate = addDays(currentViewedDate, offset);
+        loadPrayerTimesForCurrentView();
+
+        // Add slide-in animation
+        prayerGrid.classList.add(slideInClass);
+        prayerSection.classList.add(slideInClass);
+
+        // Remove slide-in classes after animation completes
+        setTimeout(() => {
+            prayerGrid.classList.remove(slideInClass);
+            prayerSection.classList.remove(slideInClass);
+        }, 300);
+    }, 300);
 }
 
 // Navigate back to today
@@ -859,6 +898,7 @@ let touchStartX = 0;
 let touchEndX = 0;
 let touchStartY = 0;
 let touchEndY = 0;
+let isSwiping = false;
 const SWIPE_THRESHOLD = 50; // Minimum distance for a swipe
 
 function handleSwipeGesture() {
@@ -866,16 +906,31 @@ function handleSwipeGesture() {
     const verticalDistance = Math.abs(touchEndY - touchStartY);
 
     // Only process horizontal swipes (vertical distance should be small)
-    if (verticalDistance > 50) return;
+    if (verticalDistance > 50) {
+        isSwiping = false;
+        return;
+    }
 
     // Right swipe (go to previous day)
     if (swipeDistance > SWIPE_THRESHOLD) {
+        const prevButton = document.getElementById('dateNavPrev');
+        if (!prevButton.disabled) {
+            prevButton.classList.add('pressing');
+            setTimeout(() => prevButton.classList.remove('pressing'), 300);
+        }
         navigateDateDebounced(-1);
     }
     // Left swipe (go to next day)
     else if (swipeDistance < -SWIPE_THRESHOLD) {
+        const nextButton = document.getElementById('dateNavNext');
+        if (!nextButton.disabled) {
+            nextButton.classList.add('pressing');
+            setTimeout(() => nextButton.classList.remove('pressing'), 300);
+        }
         navigateDateDebounced(1);
     }
+
+    isSwiping = false;
 }
 
 // Add touch event listeners to the document body
@@ -887,6 +942,22 @@ document.addEventListener('touchstart', (e) => {
 
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
+    isSwiping = true;
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+    if (!isSwiping) return;
+
+    // Optional: Add subtle visual feedback during swipe
+    const currentX = e.changedTouches[0].screenX;
+    const diff = currentX - touchStartX;
+
+    // Only show feedback for horizontal swipes
+    if (Math.abs(diff) > 10) {
+        const prayerGrid = document.getElementById('prayerGrid');
+        const opacity = Math.max(0.7, 1 - Math.abs(diff) / 200);
+        prayerGrid.style.opacity = opacity;
+    }
 }, { passive: true });
 
 document.addEventListener('touchend', (e) => {
@@ -895,9 +966,16 @@ document.addEventListener('touchend', (e) => {
         return;
     }
 
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-    handleSwipeGesture();
+    if (isSwiping) {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+
+        // Reset opacity
+        const prayerGrid = document.getElementById('prayerGrid');
+        prayerGrid.style.opacity = '1';
+
+        handleSwipeGesture();
+    }
 }, { passive: true });
 
 // Initialize
