@@ -615,6 +615,15 @@ function updateNextPrayer() {
     const isViewingToday = currentViewedDate && todayDate && isSameDay(currentViewedDate, todayDate);
 
     if (!isViewingToday) {
+        // Restore visibility of all sections when viewing other dates
+        document.querySelector('.next-prayer-info').style.display = 'flex';
+        document.querySelector('.next-prayer-time-info').style.display = 'flex';
+        document.querySelector('.countdown-label').style.display = 'block';
+
+        // Remove all-complete class from countdown-info
+        const countdownInfo = document.querySelector('.countdown-info');
+        countdownInfo.classList.remove('all-complete');
+
         // Not viewing today - show sunrise/sunset and day info
         const sunriseTime = prayerTimesData['Sunrise'] ? prayerTimesData['Sunrise'].split(' ')[0] : '--:--';
         const sunsetTime = prayerTimesData['Sunset'] ? prayerTimesData['Sunset'].split(' ')[0] : '--:--';
@@ -670,6 +679,10 @@ function updateNextPrayer() {
     document.querySelector('.next-prayer-time-label').textContent = 'Prayer Time';
     document.querySelector('.countdown-label').textContent = 'Time Remaining';
 
+    // Restore visibility of all sections
+    document.querySelector('.next-prayer-info').style.display = 'flex';
+    document.querySelector('.next-prayer-time-info').style.display = 'flex';
+
     // Show countdown and label when viewing today
     const countdownElements = document.querySelectorAll('.countdown-label, #countdown');
     countdownElements.forEach(el => el.style.display = 'block');
@@ -698,31 +711,36 @@ function updateNextPrayer() {
 
     // If no prayer found today, it means all prayers have passed
     if (!nextPrayer) {
-        // Show tomorrow's Fajr as next prayer
-        const tomorrowDate = addDays(todayDate, 1);
-        const tomorrowCached = getCachedPrayerTimes(tomorrowDate);
+        // Hide next prayer and prayer time sections
+        document.querySelector('.next-prayer-info').style.display = 'none';
+        document.querySelector('.next-prayer-time-info').style.display = 'none';
 
-        if (tomorrowCached && tomorrowCached.timings['Fajr']) {
-            const fajrTimeString = tomorrowCached.timings['Fajr'].split(' ')[0];
-            document.getElementById('nextPrayerName').textContent = 'Fajr';
-            document.getElementById('nextPrayerTime').textContent = formatTime(fajrTimeString);
-            document.getElementById('countdown').textContent = 'All prayers completed for today';
-        } else {
-            // Fetch tomorrow's times in background
-            fetchPrayerTimesForDate(tomorrowDate).then(data => {
-                const fajrTimeString = data.timings['Fajr'].split(' ')[0];
-                document.getElementById('nextPrayerName').textContent = 'Fajr';
-                document.getElementById('nextPrayerTime').textContent = formatTime(fajrTimeString);
-                document.getElementById('countdown').textContent = 'All prayers completed for today';
-            }).catch(() => {
-                document.getElementById('nextPrayerName').textContent = 'Fajr';
-                document.getElementById('nextPrayerTime').textContent = '--:--';
-                document.getElementById('countdown').textContent = 'All prayers completed for today';
-            });
-        }
+        // Hide the countdown label but show the countdown message
+        document.querySelector('.countdown-label').style.display = 'none';
+        document.getElementById('countdown').style.display = 'block';
+
+        // Add all-complete class to countdown-info
+        const countdownInfo = document.querySelector('.countdown-info');
+        countdownInfo.classList.add('all-complete');
+
+        // Set the completion message with two lines
+        document.getElementById('countdown').innerHTML = `
+            <div class="complete-main">🌙 All prayers complete today</div>
+            <div class="complete-sub">May your prayers be accepted</div>
+        `;
+
         nextPrayerInfo = null;
         showingTomorrow = true;
     } else {
+        // Restore visibility of all sections
+        document.querySelector('.next-prayer-info').style.display = 'flex';
+        document.querySelector('.next-prayer-time-info').style.display = 'flex';
+        document.querySelector('.countdown-label').style.display = 'block';
+
+        // Remove all-complete class from countdown-info
+        const countdownInfo = document.querySelector('.countdown-info');
+        countdownInfo.classList.remove('all-complete');
+
         document.getElementById('nextPrayerName').textContent = nextPrayer.name;
         document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
         const countdownEls = document.querySelectorAll('.countdown-label, #countdown');
@@ -767,32 +785,23 @@ function checkRamadanMode() {
 
     let ramadanStart, ramadanEnd;
     if (year === 2025) {
-        ramadanStart = new Date('2025-03-01');
-        ramadanEnd = new Date('2025-03-30');
+        ramadanStart = new Date(2025, 2, 1); // March 1, 2025 (month is 0-indexed)
+        ramadanEnd = new Date(2025, 2, 30); // March 30, 2025
     } else if (year === 2026) {
-        ramadanStart = new Date('2026-02-17');
-        ramadanEnd = new Date('2026-03-18');
+        ramadanStart = new Date(2026, 1, 17); // February 17, 2026 (month is 0-indexed)
+        ramadanEnd = new Date(2026, 2, 18); // March 18, 2026
     } else {
         // Default to not Ramadan if year not configured
-        ramadanStart = new Date('2099-01-01');
-        ramadanEnd = new Date('2099-01-01');
+        ramadanStart = new Date(2099, 0, 1);
+        ramadanEnd = new Date(2099, 0, 1);
     }
 
-    isRamadan = RAMADAN_TEST_MODE || (now >= ramadanStart && now <= ramadanEnd);
+    // Compare only the date parts (ignore time)
+    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startDate = new Date(ramadanStart.getFullYear(), ramadanStart.getMonth(), ramadanStart.getDate());
+    const endDate = new Date(ramadanEnd.getFullYear(), ramadanEnd.getMonth(), ramadanEnd.getDate());
 
-    if (isRamadan) {
-        // Show Ramadan banner
-        document.getElementById('ramadanBanner').style.display = 'block';
-
-        // Suhoor ends at Imsak time (or Fajr if Imsak not available)
-        const suhoorTime = prayerTimesData['Imsak'] || prayerTimesData['Fajr'];
-        const suhoorTimeString = suhoorTime.split(' ')[0];
-        document.getElementById('suhoorTime').textContent = formatTime(suhoorTimeString);
-
-        // Iftar is at Maghrib time
-        const maghribTime = prayerTimesData['Maghrib'].split(' ')[0];
-        document.getElementById('iftarTime').textContent = formatTime(maghribTime);
-    }
+    isRamadan = RAMADAN_TEST_MODE || (todayDate >= startDate && todayDate <= endDate);
 
     // Apply theme based on user preference
     applyTheme();
