@@ -25,6 +25,8 @@ A beautiful, accessible Islamic prayer time application with three vibrant theme
 - **Moon Phase Indicator**: Shows Islamic calendar-based moon phases
 - **Daylight Duration**: Calculates and displays hours of daylight for any date
 - **Swipe Gestures**: Navigate between dates with touch swipes on mobile
+- **Mobile Sundial View**: Animated sun/moon icon follows an arc throughout the day
+- **Back to Today**: One-tap button to return to current day when viewing other dates on mobile
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **WCAG AA Accessible**: High contrast colors and proper text shadows for readability
 
@@ -105,9 +107,9 @@ A beautiful, accessible Islamic prayer time application with three vibrant theme
 
 ### Viewing Different Dates
 When viewing future or past dates:
-- **Sunrise/Sunset**: Displays sunrise and sunset times
-- **Moon Phase**: Shows Islamic calendar moon phase
-- **Daylight Duration**: Total hours of daylight
+- **Desktop/Tablet**: Displays sunrise/sunset times, moon phase, and daylight duration
+- **Mobile**: Shows sundial with animated sun/moon icon and current time
+- **Back to Today Button**: Tap to instantly return to today's prayer times (mobile only)
 - Prayer times shown without "next prayer" indication
 
 ### Prayer Cards
@@ -124,9 +126,9 @@ When viewing future or past dates:
 - **JavaScript**: Vanilla ES6+
 - **API**: [Aladhan API](https://aladhan.com/prayer-times-api) for prayer times
 - **Fonts**:
-  - Amiri (Arabic calligraphy)
-  - Libre Baskerville (numbers)
-  - Poppins (UI text)
+  - Amiri (Arabic bismillah)
+  - Source Sans 3 (UI text and numbers)
+  - Material Icons (icons and symbols)
 
 ### Caching Strategy
 - Stores 7 days of prayer times (today ±3 days)
@@ -161,9 +163,9 @@ athan-clock/
 │   └── Sharif.mp3         # Sharif athan
 ├── assets/
 │   └── images/
-│       ├── bg-green.jpg    # Default theme background
-│       ├── bg-ramadan.jpg  # Ramadan theme background
-│       └── bg-kids.jpg     # Kids theme background
+│       ├── bg-green-mobile.jpg  # Default theme background
+│       ├── bg-ramadan.jpg       # Ramadan theme background
+│       └── bg-kids.jpg          # Kids theme background
 └── README.md          # This file
 ```
 

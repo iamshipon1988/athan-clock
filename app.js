@@ -218,6 +218,57 @@ function cachePrayerTimes(date, timings, hijriData) {
     savePrayerCache();
 }
 
+// Check if mobile viewport
+function isMobileViewport() {
+    return window.innerWidth <= 480 && window.matchMedia('(orientation: portrait)').matches;
+}
+
+// Update sundial icon position for mobile
+function updateSundialIcon() {
+    if (!isMobileViewport()) return;
+
+    const nextPrayerSection = document.querySelector('.next-prayer-section');
+    if (!nextPrayerSection) return;
+
+    // Create icon if it doesn't exist
+    let sundialIcon = document.querySelector('.sundial-icon');
+    if (!sundialIcon) {
+        sundialIcon = document.createElement('div');
+        sundialIcon.className = 'sundial-icon';
+        nextPrayerSection.appendChild(sundialIcon);
+    }
+
+    const now = new Date();
+    const hour = now.getHours() + now.getMinutes() / 60.0;
+
+    // Determine if day or night (6am to 6pm is day)
+    const isDay = hour >= 6 && hour < 18;
+    sundialIcon.innerHTML = isDay
+        ? '<span class="material-icons">wb_sunny</span>'
+        : '<span class="material-icons">nights_stay</span>';
+
+    // Calculate position along arc (6am = left, 6pm = right)
+    // Map 6am-6pm (12 hours) to 0-1 progress
+    let progress = ((hour - 6) / 12);
+    progress = Math.max(0, Math.min(1, progress)); // Clamp to 0-1
+
+    // Calculate angle (180° to 0°, which is π to 0 radians)
+    const angle = Math.PI * (1 - progress);
+
+    // Arc parameters (matching CSS - 280px width, 140px radius)
+    const sectionWidth = nextPrayerSection.offsetWidth;
+    const radius = 140;
+    const centerX = sectionWidth / 2;
+    const centerY = 0 + 140; // top position (0) + radius
+
+    // Calculate icon position (icon is 40px, so offset by 20 to center)
+    const iconX = centerX + radius * Math.cos(angle) - 20;
+    const iconY = centerY - radius * Math.sin(angle) - 20;
+
+    sundialIcon.style.left = iconX + 'px';
+    sundialIcon.style.top = iconY + 'px';
+}
+
 // Update clock every second
 function updateClock() {
     const now = new Date();
@@ -227,6 +278,19 @@ function updateClock() {
         hour12: true
     });
     document.getElementById('clock').textContent = timeString;
+
+    // On mobile, also update the sundial time
+    if (isMobileViewport() && nextPrayerInfo) {
+        const currentTimeString = now.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+        document.getElementById('nextPrayerName').textContent = currentTimeString;
+    }
+
+    // Update sundial icon position
+    updateSundialIcon();
 }
 
 setInterval(updateClock, 1000);
@@ -526,8 +590,8 @@ async function fetchPrayerTimes() {
 
 // Display prayer times (updated for date navigation)
 function displayPrayerTimes() {
-    // All prayer times to display
-    const prayerList = [
+    // All prayer times to display (excluding Imsak for mobile)
+    let prayerList = [
         { key: 'Imsak', name: 'Sehri', label: 'Stop Eating (Suhoor)', isRamadanSpecial: true },
         { key: 'Fajr', name: 'Fajr', label: 'Dawn Prayer' },
         { key: 'Dhuhr', name: 'Dhuhr', label: 'Noon Prayer' },
@@ -535,6 +599,11 @@ function displayPrayerTimes() {
         { key: 'Maghrib', name: 'Maghrib', label: 'Sunset Prayer', isRamadanSpecial: true },
         { key: 'Isha', name: 'Isha', label: 'Night Prayer' }
     ];
+
+    // On mobile, exclude Imsak from main list (shown in Ramadan banner instead)
+    if (isMobileViewport()) {
+        prayerList = prayerList.filter(p => p.key !== 'Imsak');
+    }
 
     const grid = document.getElementById('prayerGrid');
     grid.innerHTML = '';
@@ -572,15 +641,22 @@ function displayPrayerTimes() {
             if (prayer.key === 'Imsak') {
                 ramadanLabel = '<div class="prayer-label">Seheri / Suhoor</div>';
             } else if (prayer.key === 'Maghrib') {
-                ramadanLabel = '<div class="prayer-label">Iftar Time</div>';
+                ramadanLabel = '';
             }
         }
 
         // No tomorrow label needed (replaced by date badge)
 
+        // Get rakats info
+        const prayerInfo = PRAYER_INFO[prayer.key];
+        const rakatsText = prayerInfo ? `${prayerInfo.rakats.map(r => r.count).reduce((a, b) => a + b, 0)} Rakats` : '';
+
         card.innerHTML = `
-            ${ramadanLabel}
-            <div class="prayer-name">${prayer.name}</div>
+            <div>
+                ${ramadanLabel}
+                <div class="prayer-name">${prayer.name}</div>
+                ${rakatsText ? `<div class="prayer-rakats">${rakatsText}</div>` : ''}
+            </div>
             <div class="prayer-time">${formatTime(timeString)}</div>
         `;
 
@@ -592,6 +668,34 @@ function displayPrayerTimes() {
 
         grid.appendChild(card);
     });
+
+    // Add Ramadan banner at the bottom on mobile
+    if (isMobileViewport() && isRamadan) {
+        const ramadanBanner = document.createElement('div');
+        ramadanBanner.className = 'ramadan-banner-mobile';
+
+        const imsakTime = prayerTimesData['Imsak'] ? prayerTimesData['Imsak'].split(' ')[0] : '--:--';
+        const maghribTime = prayerTimesData['Maghrib'] ? prayerTimesData['Maghrib'].split(' ')[0] : '--:--';
+
+        ramadanBanner.innerHTML = `
+            <div class="ramadan-banner-title">
+                <span class="moon-icon">🌙</span>
+                <span class="ramadan-text">Ramadan Mubarak</span>
+            </div>
+            <div class="ramadan-times-row">
+                <div class="ramadan-time-box">
+                    <div class="ramadan-time-label">Suhoor Ends</div>
+                    <div class="ramadan-time-value">${formatTime(imsakTime)}</div>
+                </div>
+                <div class="ramadan-time-box">
+                    <div class="ramadan-time-label">Iftar</div>
+                    <div class="ramadan-time-value">${formatTime(maghribTime)}</div>
+                </div>
+            </div>
+        `;
+
+        grid.appendChild(ramadanBanner);
+    }
 }
 
 // Parse time string to Date object for specific date
@@ -624,49 +728,74 @@ function updateNextPrayer() {
         const countdownInfo = document.querySelector('.countdown-info');
         countdownInfo.classList.remove('all-complete');
 
-        // Not viewing today - show sunrise/sunset and day info
-        const sunriseTime = prayerTimesData['Sunrise'] ? prayerTimesData['Sunrise'].split(' ')[0] : '--:--';
-        const sunsetTime = prayerTimesData['Sunset'] ? prayerTimesData['Sunset'].split(' ')[0] : '--:--';
+        // Not viewing today
+        if (isMobileViewport()) {
+            // Mobile: Show current time in sundial position
+            const now = new Date();
+            const currentTimeString = now.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            document.getElementById('nextPrayerName').textContent = currentTimeString;
 
-        // Update labels and values for sunrise/sunset
-        document.querySelector('.next-prayer-info-label').textContent = 'Sunrise';
-        document.getElementById('nextPrayerName').textContent = formatTime(sunriseTime);
+            // Hide next prayer time section
+            document.querySelector('.next-prayer-time-info').style.display = 'none';
 
-        document.querySelector('.next-prayer-time-label').textContent = 'Sunset';
-        document.getElementById('nextPrayerTime').textContent = formatTime(sunsetTime);
-
-        // Calculate and show daylight duration and Islamic date
-        if (prayerTimesData['Sunrise'] && prayerTimesData['Sunset']) {
-            const sunrise = parseTimeString(sunriseTime, currentViewedDate);
-            const sunset = parseTimeString(sunsetTime, currentViewedDate);
-            const daylightMs = sunset - sunrise;
-            const hours = Math.floor(daylightMs / (1000 * 60 * 60));
-            const minutes = Math.floor((daylightMs % (1000 * 60 * 60)) / (1000 * 60));
-
-            // Show daylight duration
-            document.querySelector('.countdown-label').textContent = 'Moon Phase';
-            document.querySelector('.countdown-label').style.display = 'block';
-
-            // Create summary with daylight duration and Islamic date (moon phase indicator)
-            let summaryText = `☀️ ${hours}h ${minutes}m daylight`;
-            if (currentHijriData) {
-                const hijriDay = parseInt(currentHijriData.day);
-                let moonPhase = '';
-                if (hijriDay === 1) moonPhase = '🌑 New Moon';
-                else if (hijriDay < 7) moonPhase = '🌒 Waxing Crescent';
-                else if (hijriDay < 14) moonPhase = '🌓 First Quarter';
-                else if (hijriDay === 14 || hijriDay === 15) moonPhase = '🌕 Full Moon';
-                else if (hijriDay < 22) moonPhase = '🌗 Last Quarter';
-                else moonPhase = '🌘 Waning Crescent';
-
-                summaryText = `${moonPhase}`;
-            }
-
-            document.getElementById('countdown').textContent = summaryText;
+            // Show "Back to Today" button in countdown area
+            document.querySelector('.countdown-label').style.display = 'none';
+            document.getElementById('countdown').innerHTML = `
+                <button class="back-to-today-mobile" onclick="navigateToToday()">
+                    <span class="material-icons">today</span>
+                    Back to Today
+                </button>
+            `;
             document.getElementById('countdown').style.display = 'block';
         } else {
-            document.querySelector('.countdown-label').style.display = 'none';
-            document.getElementById('countdown').style.display = 'none';
+            // Desktop: Show sunrise/sunset and day info
+            const sunriseTime = prayerTimesData['Sunrise'] ? prayerTimesData['Sunrise'].split(' ')[0] : '--:--';
+            const sunsetTime = prayerTimesData['Sunset'] ? prayerTimesData['Sunset'].split(' ')[0] : '--:--';
+
+            // Update labels and values for sunrise/sunset
+            document.querySelector('.next-prayer-info-label').textContent = 'Sunrise';
+            document.getElementById('nextPrayerName').textContent = formatTime(sunriseTime);
+
+            document.querySelector('.next-prayer-time-label').textContent = 'Sunset';
+            document.getElementById('nextPrayerTime').textContent = formatTime(sunsetTime);
+
+            // Calculate and show daylight duration and Islamic date
+            if (prayerTimesData['Sunrise'] && prayerTimesData['Sunset']) {
+                const sunrise = parseTimeString(sunriseTime, currentViewedDate);
+                const sunset = parseTimeString(sunsetTime, currentViewedDate);
+                const daylightMs = sunset - sunrise;
+                const hours = Math.floor(daylightMs / (1000 * 60 * 60));
+                const minutes = Math.floor((daylightMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                // Show daylight duration
+                document.querySelector('.countdown-label').textContent = 'Moon Phase';
+                document.querySelector('.countdown-label').style.display = 'block';
+
+                // Create summary with daylight duration and Islamic date (moon phase indicator)
+                let summaryText = `☀️ ${hours}h ${minutes}m daylight`;
+                if (currentHijriData) {
+                    const hijriDay = parseInt(currentHijriData.day);
+                    let moonPhase = '';
+                    if (hijriDay === 1) moonPhase = '🌑 New Moon';
+                    else if (hijriDay < 7) moonPhase = '🌒 Waxing Crescent';
+                    else if (hijriDay < 14) moonPhase = '🌓 First Quarter';
+                    else if (hijriDay === 14 || hijriDay === 15) moonPhase = '🌕 Full Moon';
+                    else if (hijriDay < 22) moonPhase = '🌗 Last Quarter';
+                    else moonPhase = '🌘 Waning Crescent';
+
+                    summaryText = `${moonPhase}`;
+                }
+
+                document.getElementById('countdown').textContent = summaryText;
+                document.getElementById('countdown').style.display = 'block';
+            } else {
+                document.querySelector('.countdown-label').style.display = 'none';
+                document.getElementById('countdown').style.display = 'none';
+            }
         }
 
         nextPrayerInfo = null;
@@ -741,8 +870,21 @@ function updateNextPrayer() {
         const countdownInfo = document.querySelector('.countdown-info');
         countdownInfo.classList.remove('all-complete');
 
-        document.getElementById('nextPrayerName').textContent = nextPrayer.name;
-        document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
+        // Check if mobile - show current time in nextPrayerName, prayer name in nextPrayerTime
+        if (isMobileViewport()) {
+            const now = new Date();
+            const currentTimeString = now.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            document.getElementById('nextPrayerName').textContent = currentTimeString;
+            document.getElementById('nextPrayerTime').textContent = nextPrayer.name;
+        } else {
+            document.getElementById('nextPrayerName').textContent = nextPrayer.name;
+            document.getElementById('nextPrayerTime').textContent = formatTime(nextPrayer.timeString);
+        }
+
         const countdownEls = document.querySelectorAll('.countdown-label, #countdown');
         countdownEls.forEach(el => el.style.display = 'block');
         nextPrayerInfo = nextPrayer;
@@ -1366,6 +1508,11 @@ window.addEventListener('online', () => {
 // Handle going offline
 window.addEventListener('offline', () => {
     console.log('Offline mode - using cached data');
+});
+
+// Handle window resize to reposition sundial icon
+window.addEventListener('resize', () => {
+    updateSundialIcon();
 });
 
 // ==================== MODAL BACKDROP CLICK HANDLERS ====================
