@@ -1796,6 +1796,10 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         color: #90A4AE;
     }
 
+    .countdown .complete-main {
+        margin-top: 80px;
+    }
+
     /* Back to Today button for mobile (past/future dates) */
     .back-to-today-mobile {
         display: flex;
@@ -2286,121 +2290,172 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         background: rgba(255, 255, 255, 0.3);
     }
 
-    /* Kids Colorful Theme colors for mobile */
+    /* Kids Theme colors for mobile (matching green theme) */
+    body.kids-mode * {
+        text-shadow: none !important;
+        background: transparent !important;
+        color: #ffffff;
+    }
+
+    body.kids-mode {
+        background: url(assets/images/bg-kids.jpg) center center / cover no-repeat fixed;
+    }
+
+    body.kids-mode .header {
+        background: transparent !important;
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    body.kids-mode .gregorian-date, body.kids-mode .hijri-date {
+        background: transparent !important;
+        border: none !important;
+        width: 100%;
+        text-align: center;
+        box-shadow: none;
+    }
+
+    body.kids-mode .countdown .complete-main,
+    body.kids-mode .countdown .complete-sub {
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        color: #ffffff;
+    }
+
+    body.kids-mode .prayer-grid {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        gap: 0;
+    }
+
     body.kids-mode .bismillah {
-        color: #00CED1;
-        font-size: 18px;
+        color: #FFFFFF;
+        font-weight: 700;
     }
 
     body.kids-mode .gregorian-date {
-        color: #2C3E50;
-        background: none;
-        border: none;
-        width: 100%;
-        text-align: center;
+        color: #FFFFFF;
+        font-weight: 700;
     }
 
     body.kids-mode .hijri-date {
-        color: #00CED1;
-        background: none;
-        border: none;
-        width: 100%;
-        text-align: center;
+        color: #FFFFFF;
+        font-weight: 600;
+        opacity: 0.9;
     }
 
     body.kids-mode .settings-button {
         background: transparent;
-        color: #FF1493;
+        border: none;
+        color: #FFFFFF;
+    }
+
+    body.kids-mode .settings-button .material-icons {
+        color: #FFFFFF;
+        font-size: 20px;
+        border: none;
     }
 
     body.kids-mode .date-nav-button {
-        background: rgba(0, 206, 209, 0.3);
-        border-color: #00CED1;
-        color: #00CED1;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    body.kids-mode .date-nav-button .material-icons {
+        color: #FFFFFF;
+        font-size: 30px;
     }
 
     body.kids-mode .next-prayer-section::before {
-        border-color: rgba(255, 193, 7, 0.6);
+        border-color: rgba(255, 255, 255, 0.4);
     }
 
     body.kids-mode .sundial-icon .material-icons {
-        color: #FFC107;
+        color: #FFFFFF;
     }
 
-    body.kids-mode .next-prayer-name,
+    body.kids-mode .next-prayer-name {
+        color: #FFFFFF;
+        font-weight: 700;
+    }
+
     body.kids-mode .next-prayer-time {
-        color: #FF1493;
-    }
-
-    body.kids-mode .countdown-info::before {
-        color: #00CED1;
-        display: none;
+        color: #FFFFFF;
+        font-weight: 600;
     }
 
     body.kids-mode .countdown {
-        color: #00CED1;
+        color: #FFFFFF;
+        opacity: 0.9;
     }
 
-    body.kids-mode .prayer-grid {
-        background: rgba(255, 255, 255, 0.7);
+    body.kids-mode .prayer-card::before {
+        border-color: rgba(255, 255, 255, 0.4);
+        background: transparent;
+    }
+
+    body.kids-mode .prayer-card::after {
+        background: rgba(255, 255, 255, 0.2);
     }
 
     body.kids-mode .prayer-name {
-        color: #2C3E50;
+        color: #FFFFFF;
+        font-weight: 600;
     }
 
     body.kids-mode .prayer-rakats {
-        color: #00CED1;
+        color: #FFFFFF;
+        opacity: 0.8;
     }
 
     body.kids-mode .prayer-time {
-        color: #FF1493;
+        color: #FFFFFF;
+        font-weight: 700;
     }
 
-    body.kids-mode .prayer-card.active::before,
-    body.kids-mode .prayer-card.passed::before {
-        background: #FFC107;
-        border-color: #FFC107;
+    body.kids-mode .prayer-card.active {
+        border-color: rgba(255, 255, 255, 0.6);
     }
 
-    body.kids-mode .prayer-card.passed .prayer-name,
-    body.kids-mode .prayer-card.passed .prayer-time {
-        color: #00CED1;
+    body.kids-mode .prayer-card.active::before {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.6);
     }
 
-    body.kids-mode .prayer-card.passed::after {
-        background: #FFC107;
+    body.kids-mode .prayer-card.passed {
+        opacity: 0.5;
+    }
+
+    body.kids-mode .ramadan-banner-mobile {
+        background: rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     body.kids-mode .ramadan-text {
-        color: #2C3E50;
-    }
-
-    body.kids-mode .ramadan-time-box {
-        background: rgba(0, 206, 209, 0.1);
-        border-color: rgba(0, 206, 209, 0.4);
+        color: #FFFFFF;
     }
 
     body.kids-mode .ramadan-time-label {
-        color: #2C3E50;
-    }
-
-    body.kids-mode .ramadan-time-sublabel {
-        color: #00CED1;
+        color: #FFFFFF;
+        opacity: 0.9;
     }
 
     body.kids-mode .ramadan-time-value {
-        color: #FF1493;
+        color: #FFFFFF;
+        font-weight: 700;
     }
 
     body.kids-mode .back-to-today-mobile {
-        background: rgba(0, 206, 209, 0.2);
-        border-color: #00CED1;
-        color: #FF1493;
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.4);
+        color: #FFFFFF;
     }
 
     body.kids-mode .back-to-today-mobile:hover {
-        background: rgba(0, 206, 209, 0.3);
+        background: rgba(255, 255, 255, 0.3) !important;
     }
 }
 
