@@ -1393,6 +1393,88 @@ athanAudio.onpause = function() {
     console.log('Athan paused');
 };
 
+// Detect user location and get ZIP code
+async function detectLocation() {
+    const button = document.getElementById('detectLocationButton');
+    const zipCodeInput = document.getElementById('zipCodeInput');
+
+    // Check if geolocation is supported
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+        return;
+    }
+
+    // Disable button and show loading state
+    button.disabled = true;
+    button.innerHTML = '<span class="material-icons rotating">refresh</span>';
+
+    try {
+        // Get user's position
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                timeout: 10000,
+                maximumAge: 300000 // 5 minutes cache
+            });
+        });
+
+        const { latitude, longitude } = position.coords;
+        console.log(`Location detected: ${latitude}, ${longitude}`);
+
+        // Use BigDataCloud reverse geocoding API (free, no API key required)
+        const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch location data');
+        }
+
+        const data = await response.json();
+        console.log('Location data:', data);
+
+        // Extract ZIP code (postcode)
+        const zipCode = data.postcode || data.postalCode;
+
+        if (zipCode && /^\d{5}$/.test(zipCode)) {
+            zipCodeInput.value = zipCode;
+            console.log(`ZIP code detected: ${zipCode}`);
+
+            // Show success feedback
+            button.innerHTML = '<span class="material-icons">check_circle</span>';
+            setTimeout(() => {
+                button.innerHTML = '<span class="material-icons">my_location</span>';
+                button.disabled = false;
+            }, 2000);
+        } else {
+            throw new Error('Could not determine ZIP code from location');
+        }
+
+    } catch (error) {
+        console.error('Error detecting location:', error);
+
+        // Show error feedback
+        button.innerHTML = '<span class="material-icons">error</span>';
+
+        let errorMessage = 'Could not detect location. ';
+        if (error.code === 1) {
+            errorMessage += 'Please enable location permissions.';
+        } else if (error.code === 2) {
+            errorMessage += 'Location unavailable.';
+        } else if (error.code === 3) {
+            errorMessage += 'Request timeout.';
+        } else {
+            errorMessage += error.message || 'Please try again.';
+        }
+
+        alert(errorMessage);
+
+        setTimeout(() => {
+            button.innerHTML = '<span class="material-icons">my_location</span>';
+            button.disabled = false;
+        }, 2000);
+    }
+}
+
 // Settings Modal Functions
 function openSettings() {
     const modal = document.getElementById('settingsModal');

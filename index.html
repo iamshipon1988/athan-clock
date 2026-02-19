@@ -95,7 +95,12 @@
         <div class="settings-form">
             <div class="form-group">
                 <label for="zipCodeInput">ZIP Code</label>
-                <input type="text" id="zipCodeInput" placeholder="Enter ZIP code" maxlength="5">
+                <div class="zip-input-group">
+                    <input type="text" id="zipCodeInput" placeholder="Enter ZIP code" maxlength="5">
+                    <button type="button" class="detect-location-button" id="detectLocationButton" onclick="detectLocation()" title="Detect my location">
+                        <span class="material-icons">my_location</span>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label for="themeSelect">Theme Preference</label>
