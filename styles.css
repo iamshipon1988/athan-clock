@@ -378,7 +378,7 @@ body.kids-mode .prayer-grid {
 }
 
 body.kids-mode .prayer-card {
-    background: #00CED1;
+    background: #ffffff;
     border: none;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 206, 209, 0.3);
@@ -397,9 +397,9 @@ body.kids-mode .prayer-card:hover {
 }
 
 body.kids-mode .prayer-card.active {
-    background: #A0E7E5;
+    background: #00CED1;
     box-shadow: 0 6px 20px rgba(160, 231, 229, 0.6);
-    border: 5px solid #f4d571;
+    border-top: 5px solid #f4d571;
 }
 
 body.kids-mode .prayer-card.active:before {
@@ -468,11 +468,6 @@ body.kids-mode .ramadan-time-box .time {
 
 body.kids-mode .ramadan-time-box .note {
     color: #2c2c2c;
-}
-
-body.kids-mode .prayer-card.ramadan-special {
-    background: #FFD700;
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
 }
 
 /* Kids theme modals */
