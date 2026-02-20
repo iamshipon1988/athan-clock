@@ -285,7 +285,6 @@ body.kids-mode .settings-button {
 }
 
 body.kids-mode .settings-button:hover {
-    transform: scale(1.15) rotate(90deg);
     background: #FFD700;
     color: #000;
     border-color: #FF8C00;
@@ -693,10 +692,38 @@ body.kids-mode .preview-athan-button:hover {
     flex-shrink: 0;
 }
 
+/* Branding symbol: hidden on mobile, shown on tablet/desktop */
+.header-symbol {
+    display: none;
+}
+
 /* Desktop/Tablet: Position settings button to right of date */
 @media (min-width: 481px) {
     .header {
         position: relative;
+    }
+
+    .header-symbol {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: rgba(244, 213, 113, 0.12);
+        border: 1px solid rgba(244, 213, 113, 0.25);
+        border-radius: 14px;
+        padding: 10px;
+    }
+
+    .header-symbol-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .guide-button {
+        position: absolute;
+        right: 50px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .settings-button {
@@ -709,6 +736,37 @@ body.kids-mode .preview-athan-button:hover {
 
 .settings-button:hover {
     box-shadow: 0 4px 15px rgba(244, 213, 113, 0.5);
+}
+
+/* Guide button (main app header — links to guide.html) */
+.guide-button {
+    background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
+    color: #1a4d2e;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(244, 213, 113, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    border: none;
+}
+
+.guide-button .material-icons {
+    font-size: 18px;
+}
+
+.guide-button:hover {
+    box-shadow: 0 4px 15px rgba(244, 213, 113, 0.5);
+}
+
+/* Mobile bottom nav — hidden on desktop, shown on mobile portrait only */
+.mobile-bottom-nav {
+    display: none;
 }
 
 .gregorian-date, .hijri-date {
@@ -1059,7 +1117,7 @@ body.ramadan-mode .back-to-today-button:hover {
 @media (min-width: 481px) {
     .date-info {
         position: static;
-        padding-right: 50px;
+        padding-right: 100px;
     }
 
     .date-nav-button {
@@ -1383,6 +1441,15 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         height: 32px;
     }
 
+    .guide-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .guide-button .material-icons {
+        font-size: 16px;
+    }
+
     /* Compact Ramadan banner */
     .ramadan-banner h2 {
         font-size: 18px;
@@ -1599,23 +1666,9 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         display: none;
     }
 
-    .header-left .settings-button {
-        position: absolute;
-        right: 0;
-        width: 40px;
-        height: 40px;
-        background: transparent;
-        border: none;
-        color: #37474F;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-    }
-
-    .header-left .settings-button .material-icons {
-        font-size: 24px;
+    .header-left .settings-button,
+    .header-left .guide-button {
+        display: none;
     }
 
     /* Date navigation row */
@@ -2151,6 +2204,12 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         background: url(assets/images/bg-green-mobile.jpg) bottom center / cover no-repeat fixed;
     }
 
+    body:not(.ramadan-mode):not(.kids-mode) .mobile-bottom-nav {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
     body:not(.ramadan-mode):not(.kids-mode) .header {
         background: transparent !important;
         /* backdrop-filter: blur(10px); */
@@ -2498,6 +2557,112 @@ body.ramadan-mode .prayer-card .tomorrow-label {
 
     body.kids-mode .back-to-today-mobile:hover {
         background: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    /* ── Mobile bottom navigation bar ── */
+    .mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        background: rgba(255, 255, 255, 0.97);
+        border-top: 1px solid rgba(55, 71, 79, 0.12);
+        z-index: 300;
+        align-items: stretch;
+    }
+
+    .bottom-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: rgba(55, 71, 79, 0.45);
+        text-decoration: none;
+        padding: 6px 8px;
+        transition: color 0.15s ease;
+        font-family: 'Source Sans 3', sans-serif;
+        position: relative;
+    }
+
+    .bottom-nav-item:active {
+        opacity: 0.6;
+    }
+
+    .bottom-nav-item .material-icons {
+        font-size: 22px;
+    }
+
+    .bottom-nav-label {
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+    }
+
+    /* Active state */
+    .bottom-nav-item.active {
+        color: #C9A961;
+    }
+
+    .bottom-nav-item.active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 28%;
+        right: 28%;
+        height: 2px;
+        background: #C9A961;
+        border-radius: 0 0 3px 3px;
+    }
+
+    /* Push content above the bottom nav */
+    .container {
+        padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Ramadan bottom nav */
+    body.ramadan-mode .mobile-bottom-nav {
+        background: rgba(255, 248, 235, 0.97);
+        border-top-color: rgba(139, 105, 20, 0.12);
+    }
+
+    body.ramadan-mode .bottom-nav-item {
+        color: rgba(139, 105, 20, 0.45);
+    }
+
+    body.ramadan-mode .bottom-nav-item.active {
+        color: #8B6914;
+    }
+
+    body.ramadan-mode .bottom-nav-item.active::before {
+        background: #8B6914;
+    }
+
+    /* Kids bottom nav */
+    body.kids-mode .mobile-bottom-nav {
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    body.kids-mode .bottom-nav-item {
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    body.kids-mode .bottom-nav-item.active {
+        color: #FFFFFF;
+    }
+
+    body.kids-mode .bottom-nav-item.active::before {
+        background: #FFFFFF;
     }
 }
 
@@ -3169,4 +3334,712 @@ body.ramadan-mode .settings-copyright {
 body.ramadan-mode .settings-copyright a {
     color: #8b6914;
     font-weight: 600;
+}
+
+/* ============================================================
+   GUIDE PAGE
+   ============================================================ */
+
+/* Page header (back button + title + symbol) */
+.guide-page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.guide-back-btn {
+    background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
+    color: #1a4d2e;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(244, 213, 113, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+.guide-back-btn:hover {
+    box-shadow: 0 4px 15px rgba(244, 213, 113, 0.5);
+}
+
+.guide-back-btn .material-icons {
+    font-size: 20px;
+}
+
+.guide-page-title-area {
+    flex: 1;
+}
+
+.guide-page-title {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
+.guide-page-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 3px 0 0;
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+.guide-page-symbol {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+/* Sections container */
+.guide-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 32px;
+}
+
+/* Individual accordion section */
+.guide-section {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.guide-section.open {
+    border-color: rgba(244, 213, 113, 0.5);
+}
+
+/* Clickable section header */
+.guide-section-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    gap: 12px;
+    transition: background 0.2s ease;
+    text-align: left;
+}
+
+.guide-section-header:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.guide-section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+}
+
+.guide-section-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.guide-section-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.guide-section-title {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: #f4d571;
+    line-height: 1.2;
+}
+
+.guide-section-subtitle {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+.guide-chevron {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 24px !important;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+/* Collapsible body */
+.guide-section-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.guide-section-body-inner {
+    padding: 4px 20px 22px;
+}
+
+/* Intro paragraph */
+.guide-intro {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    border-left: 3px solid rgba(244, 213, 113, 0.5);
+}
+
+/* Sub-section heading */
+.guide-sub-heading {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #f4d571;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin: 20px 0 12px;
+}
+
+/* Numbered steps */
+.guide-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.guide-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.guide-step-num {
+    background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
+    color: #1a4d2e;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+.guide-step-content {
+    flex: 1;
+}
+
+.guide-step-content strong {
+    display: block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.guide-step-content p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+}
+
+.guide-step-content em {
+    color: #f4d571;
+    font-style: normal;
+    font-weight: 500;
+}
+
+/* Icon + text point list */
+.guide-points {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.guide-point {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.guide-point-icon {
+    color: #f4d571;
+    font-size: 20px !important;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.guide-point p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+/* Info note box */
+.guide-note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: rgba(244, 213, 113, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid rgba(244, 213, 113, 0.55);
+    margin-top: 20px;
+}
+
+.guide-note-icon {
+    color: #f4d571;
+    font-size: 18px !important;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.guide-note p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+}
+
+/* Rakat table */
+.guide-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    margin-bottom: 8px;
+}
+
+.guide-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+}
+
+.guide-table th {
+    background: rgba(244, 213, 113, 0.18);
+    color: #f4d571;
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+}
+
+.guide-table th:first-child {
+    text-align: left;
+}
+
+.guide-table td {
+    padding: 10px 14px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.82);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.guide-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.fard-cell {
+    font-weight: 700;
+    color: #f4d571 !important;
+}
+
+.prayer-name-cell {
+    text-align: left !important;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Eid type cards */
+.guide-eid-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.guide-eid-type {
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.guide-eid-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
+    color: #1a4d2e;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    letter-spacing: 0.3px;
+}
+
+.guide-eid-type p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+}
+
+/* ── Guide page overrides ── */
+body.guidePage .bismillah {
+    display: block;
+    flex: none;
+    padding: 10px 0 15px;
+}
+body.guidePage .guide-page-header {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    flex-direction: row;
+    gap: 8px;
+}
+
+/* ── Ramadan theme overrides ── */
+body.ramadan-mode .guide-page-header {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(139, 105, 20, 0.3);
+}
+
+body.ramadan-mode .guide-page-header .bismillah {
+    color: #8b6914;
+    text-shadow: none;
+}
+
+body.ramadan-mode .guide-page-title {
+    color: #6b5016;
+    text-shadow: none;
+}
+
+body.ramadan-mode .guide-page-subtitle {
+    color: rgba(107, 80, 22, 0.7);
+}
+
+body.ramadan-mode .guide-back-btn {
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+}
+
+body.ramadan-mode .guide-section {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(139, 105, 20, 0.22);
+}
+
+body.ramadan-mode .guide-section.open {
+    border-color: rgba(139, 105, 20, 0.5);
+}
+
+body.ramadan-mode .guide-section-header:hover {
+    background: rgba(212, 165, 74, 0.08);
+}
+
+body.ramadan-mode .guide-section-title {
+    color: #6b5016;
+}
+
+body.ramadan-mode .guide-section-subtitle {
+    color: rgba(107, 80, 22, 0.65);
+}
+
+body.ramadan-mode .guide-chevron {
+    color: rgba(107, 80, 22, 0.5);
+}
+
+body.ramadan-mode .guide-intro {
+    color: #3a3939;
+    background: rgba(212, 165, 74, 0.08);
+    border-left-color: rgba(212, 165, 74, 0.6);
+}
+
+body.ramadan-mode .guide-sub-heading {
+    color: #8b6914;
+}
+
+body.ramadan-mode .guide-step-num {
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+}
+
+body.ramadan-mode .guide-step-content strong {
+    color: #3a3939;
+}
+
+body.ramadan-mode .guide-step-content p {
+    color: #555;
+}
+
+body.ramadan-mode .guide-step-content em {
+    color: #8b6914;
+}
+
+body.ramadan-mode .guide-note {
+    background: rgba(212, 165, 74, 0.1);
+    border-left-color: rgba(212, 165, 74, 0.65);
+}
+
+body.ramadan-mode .guide-note p {
+    color: #555;
+}
+
+body.ramadan-mode .guide-note-icon {
+    color: #8b6914;
+}
+
+body.ramadan-mode .guide-point p {
+    color: #3a3939;
+}
+
+body.ramadan-mode .guide-point-icon {
+    color: #8b6914;
+}
+
+body.ramadan-mode .guide-table-wrapper {
+    border-color: rgba(139, 105, 20, 0.2);
+}
+
+body.ramadan-mode .guide-table th {
+    background: rgba(212, 165, 74, 0.15);
+    color: #6b5016;
+}
+
+body.ramadan-mode .guide-table td {
+    color: #3a3939;
+    border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+body.ramadan-mode .fard-cell {
+    color: #8b6914 !important;
+}
+
+body.ramadan-mode .prayer-name-cell {
+    color: #3a3939;
+}
+
+body.ramadan-mode .guide-eid-type {
+    background: rgba(212, 165, 74, 0.07);
+    border-color: rgba(139, 105, 20, 0.18);
+}
+
+body.ramadan-mode .guide-eid-type p {
+    color: #555;
+}
+
+body.ramadan-mode .guide-eid-badge {
+    background: linear-gradient(135deg, #d4a54a 0%, #b8903e 100%);
+    color: #2c1f0a;
+}
+
+/* ── Kids theme overrides ── */
+body.kids-mode .guide-page-header {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+body.kids-mode .guide-page-header .bismillah {
+    color: #009B9E;
+    text-shadow: none;
+}
+
+body.kids-mode .guide-page-title {
+    color: #131313;
+    text-shadow: none;
+}
+
+body.kids-mode .guide-page-subtitle {
+    color: #666;
+}
+
+body.kids-mode .guide-back-btn {
+    background: #00CED1;
+    color: #000;
+    box-shadow: 0 2px 10px rgba(0, 206, 209, 0.3);
+}
+
+body.kids-mode .guide-section {
+    background: #ffffff;
+    border: 2px solid #e8e8e8;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    backdrop-filter: none;
+}
+
+body.kids-mode .guide-section.open {
+    border-color: #00CED1;
+}
+
+body.kids-mode .guide-section-header:hover {
+    background: rgba(0, 206, 209, 0.06);
+}
+
+body.kids-mode .guide-section-title {
+    color: #00CED1;
+    font-size: 18px;
+}
+
+body.kids-mode .guide-section-subtitle {
+    color: #666;
+}
+
+body.kids-mode .guide-chevron {
+    color: #aaa;
+}
+
+body.kids-mode .guide-intro {
+    color: #333;
+    background: rgba(0, 206, 209, 0.06);
+    border-left-color: #00CED1;
+}
+
+body.kids-mode .guide-intro strong {
+    color: #131313;
+}
+
+body.kids-mode .guide-sub-heading {
+    color: #00CED1;
+}
+
+body.kids-mode .guide-step-num {
+    background: #00CED1;
+    color: #000;
+    box-shadow: 0 2px 6px rgba(0, 206, 209, 0.3);
+}
+
+body.kids-mode .guide-step-content strong {
+    color: #131313;
+}
+
+body.kids-mode .guide-step-content p {
+    color: #555;
+}
+
+body.kids-mode .guide-step-content em {
+    color: #009B9E;
+    font-weight: 600;
+}
+
+body.kids-mode .guide-note {
+    background: rgba(0, 206, 209, 0.07);
+    border-left-color: #00CED1;
+}
+
+body.kids-mode .guide-note p {
+    color: #555;
+}
+
+body.kids-mode .guide-note-icon {
+    color: #00CED1;
+}
+
+body.kids-mode .guide-point p {
+    color: #333;
+}
+
+body.kids-mode .guide-point-icon {
+    color: #00CED1;
+}
+
+body.kids-mode .guide-table-wrapper {
+    border-color: #e8e8e8;
+}
+
+body.kids-mode .guide-table th {
+    background: rgba(0, 206, 209, 0.1);
+    color: #009B9E;
+}
+
+body.kids-mode .guide-table td {
+    color: #333;
+    border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+body.kids-mode .fard-cell {
+    color: #00868A !important;
+}
+
+body.kids-mode .prayer-name-cell {
+    color: #131313;
+}
+
+body.kids-mode .guide-eid-type {
+    background: rgba(0, 206, 209, 0.05);
+    border-color: #e8e8e8;
+}
+
+body.kids-mode .guide-eid-type p {
+    color: #555;
+}
+
+body.kids-mode .guide-eid-badge {
+    background: #00CED1;
+    color: #000;
+}
+
+/* ── Guide page responsive ── */
+@media (max-width: 768px) {
+    .guide-page-header {
+        gap: 12px;
+        padding: 12px 14px;
+        margin-bottom: 14px;
+    }
+
+    .guide-page-title {
+        font-size: 20px;
+    }
+
+    .guide-page-symbol {
+        width: 36px;
+        height: 36px;
+    }
+
+    .guide-eid-types {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-back-btn {
+        width: 36px;
+        height: 36px;
+    }
 }

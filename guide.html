@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Prayer Guide - Nimazi</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="styles.css" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Nimazi" />
+<link rel="manifest" href="/assets/favicon/site.webmanifest" />
+</head>
+
+<body class="guidePage">
+<div class="pattern-overlay"></div>
+<div class="geometric-pattern"></div>
+
+<div class="container">
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+
+    <div class="guide-page-header">
+        <div class="guide-page-title-area">
+            <h1 class="guide-page-title">Prayer Guide</h1>
+        </div>
+    </div>
+
+    <div class="guide-sections">
+
+        <!-- ── Wudu ── -->
+        <div class="guide-section" id="section-wudu">
+            <button class="guide-section-header" onclick="toggleSection('section-wudu')" aria-expanded="false" aria-controls="body-wudu">
+                <div class="guide-section-title-row">
+                    <span class="guide-section-icon">💧</span>
+                    <div class="guide-section-title-group">
+                        <span class="guide-section-title">Wudu</span>
+                        <span class="guide-section-subtitle">Ritual Purification</span>
+                    </div>
+                </div>
+                <span class="material-icons guide-chevron">expand_more</span>
+            </button>
+            <div class="guide-section-body" id="body-wudu">
+                <div class="guide-section-body-inner">
+                    <p class="guide-intro">Wudu (ablution) is required before every Salah. It purifies the body and prepares the heart for prayer. Use clean water and perform each step in order.</p>
+
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <span class="guide-step-num">1</span>
+                            <div class="guide-step-content">
+                                <strong>Intention &amp; Bismillah</strong>
+                                <p>Form the intention in your heart to purify yourself for prayer. Say <em>Bismillah</em> — "In the name of Allah."</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">2</span>
+                            <div class="guide-step-content">
+                                <strong>Wash Hands</strong>
+                                <p>Wash both hands up to the wrists three times, cleaning between the fingers.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">3</span>
+                            <div class="guide-step-content">
+                                <strong>Rinse Mouth</strong>
+                                <p>Take water into your mouth, swirl it around thoroughly, and spit it out — three times.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">4</span>
+                            <div class="guide-step-content">
+                                <strong>Clean Nose</strong>
+                                <p>Sniff water gently into your nostrils and blow it out — three times.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">5</span>
+                            <div class="guide-step-content">
+                                <strong>Wash Face</strong>
+                                <p>Wash your entire face three times — from the hairline to the chin, and from ear to ear.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">6</span>
+                            <div class="guide-step-content">
+                                <strong>Wash Arms</strong>
+                                <p>Wash the right arm up to and including the elbow, three times. Then wash the left arm the same way.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">7</span>
+                            <div class="guide-step-content">
+                                <strong>Wipe Head</strong>
+                                <p>Wet both hands and pass them once over your head — front to back, then back to front.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">8</span>
+                            <div class="guide-step-content">
+                                <strong>Clean Ears</strong>
+                                <p>With the same wet hands, wipe the inside of the ears with index fingers and the outside with thumbs, once.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">9</span>
+                            <div class="guide-step-content">
+                                <strong>Wash Feet</strong>
+                                <p>Wash the right foot up to and including the ankle, three times, cleaning between the toes. Then wash the left foot.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-note">
+                        <span class="material-icons guide-note-icon">info</span>
+                        <p>Wudu is broken by using the bathroom, passing wind, deep sleep, or losing consciousness. A full Ghusl (ritual bath) is required after intimacy, menstruation, or post-natal bleeding.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── How to Pray ── -->
+        <div class="guide-section" id="section-prayer">
+            <button class="guide-section-header" onclick="toggleSection('section-prayer')" aria-expanded="false" aria-controls="body-prayer">
+                <div class="guide-section-title-row">
+                    <span class="guide-section-icon">🕌</span>
+                    <div class="guide-section-title-group">
+                        <span class="guide-section-title">How to Pray</span>
+                        <span class="guide-section-subtitle">Daily Salah</span>
+                    </div>
+                </div>
+                <span class="material-icons guide-chevron">expand_more</span>
+            </button>
+            <div class="guide-section-body" id="body-prayer">
+                <div class="guide-section-body-inner">
+                    <p class="guide-intro">Salah is performed five times daily. Each prayer is made up of units called <strong>Rakats</strong>. Ensure you have performed Wudu and are facing the Qibla (direction of Mecca) before you begin.</p>
+
+                    <h3 class="guide-sub-heading">Daily Prayer Rakats</h3>
+                    <div class="guide-table-wrapper">
+                        <table class="guide-table">
+                            <thead>
+                                <tr>
+                                    <th>Prayer</th>
+                                    <th>Sunnah Before</th>
+                                    <th>Fard</th>
+                                    <th>Sunnah After</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="prayer-name-cell">🌅 Fajr</td>
+                                    <td>2</td>
+                                    <td class="fard-cell">2</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td class="prayer-name-cell">☀️ Dhuhr</td>
+                                    <td>4</td>
+                                    <td class="fard-cell">4</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td class="prayer-name-cell">🌤️ Asr</td>
+                                    <td>—</td>
+                                    <td class="fard-cell">4</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td class="prayer-name-cell">🌇 Maghrib</td>
+                                    <td>—</td>
+                                    <td class="fard-cell">3</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td class="prayer-name-cell">🌙 Isha</td>
+                                    <td>—</td>
+                                    <td class="fard-cell">4</td>
+                                    <td>2 + 3 Witr</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="guide-sub-heading">Steps for Each Rakat</h3>
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <span class="guide-step-num">1</span>
+                            <div class="guide-step-content">
+                                <strong>Takbiratul Ihram — Opening</strong>
+                                <p>Stand upright facing the Qibla. Raise your hands to ear level and say <em>"Allahu Akbar"</em> (Allah is the Greatest). This marks the beginning of the prayer.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">2</span>
+                            <div class="guide-step-content">
+                                <strong>Qiyam — Standing</strong>
+                                <p>Place your right hand over your left on your chest. Silently recite <em>Surah Al-Fatiha</em>, then any short surah or verses from the Quran (e.g., Surah Al-Ikhlas).</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">3</span>
+                            <div class="guide-step-content">
+                                <strong>Ruku — Bowing</strong>
+                                <p>Say <em>"Allahu Akbar"</em> and bow with your back flat, hands on knees. Say <em>"Subhana Rabbiyal Azeem"</em> (Glory be to my Lord, the Most Great) three times.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">4</span>
+                            <div class="guide-step-content">
+                                <strong>Rise from Ruku</strong>
+                                <p>Stand upright saying <em>"Sami Allahu liman hamidah"</em> (Allah hears those who praise Him). Then say <em>"Rabbana wa lakal hamd"</em> (Our Lord, all praise is for You).</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">5</span>
+                            <div class="guide-step-content">
+                                <strong>First Sujood — Prostration</strong>
+                                <p>Say <em>"Allahu Akbar"</em> and lower yourself so your forehead, nose, both palms, both knees, and toes all touch the ground. Say <em>"Subhana Rabbiyal A'la"</em> (Glory be to my Lord, the Most High) three times.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">6</span>
+                            <div class="guide-step-content">
+                                <strong>Jalsa — Sitting</strong>
+                                <p>Say <em>"Allahu Akbar"</em> and rise briefly to a seated position between the two prostrations.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">7</span>
+                            <div class="guide-step-content">
+                                <strong>Second Sujood</strong>
+                                <p>Say <em>"Allahu Akbar"</em> and prostrate again, repeating <em>"Subhana Rabbiyal A'la"</em> three times. This completes one Rakat.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">8</span>
+                            <div class="guide-step-content">
+                                <strong>Continue or Conclude</strong>
+                                <p>Rise for the next Rakat (say <em>"Allahu Akbar"</em>, repeat from Step 2). After every 2 Rakats sit for <strong>Tashahhud</strong>. In the final Rakat, recite Tashahhud → Durood Ibrahim → Du'a, then conclude with <strong>Tasleem</strong>: turn right saying <em>"Assalamu Alaikum wa Rahmatullah"</em>, then left.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-note">
+                        <span class="material-icons guide-note-icon">info</span>
+                        <p>Fajr and Asr are prayed silently throughout. In congregation, Maghrib and Isha's first two Rakats are recited aloud by the Imam; the remaining Rakats are silent.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tarawih ── -->
+        <div class="guide-section" id="section-tarawih">
+            <button class="guide-section-header" onclick="toggleSection('section-tarawih')" aria-expanded="false" aria-controls="body-tarawih">
+                <div class="guide-section-title-row">
+                    <span class="guide-section-icon">🌙</span>
+                    <div class="guide-section-title-group">
+                        <span class="guide-section-title">Tarawih</span>
+                        <span class="guide-section-subtitle">Ramadan Night Prayer</span>
+                    </div>
+                </div>
+                <span class="material-icons guide-chevron">expand_more</span>
+            </button>
+            <div class="guide-section-body" id="body-tarawih">
+                <div class="guide-section-body-inner">
+                    <p class="guide-intro">Tarawih (تراويح) is a special Sunnah prayer performed every night during Ramadan, after Isha. Its name means "rest" — a short break is taken after every four Rakats.</p>
+
+                    <h3 class="guide-sub-heading">Overview</h3>
+                    <div class="guide-points">
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">schedule</span>
+                            <p><strong>When:</strong> Every night of Ramadan, after the Isha prayer</p>
+                        </div>
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">format_list_numbered</span>
+                            <p><strong>Rakats:</strong> 8 Rakats (widely practiced) or 20 Rakats (traditional), always prayed in pairs of 2</p>
+                        </div>
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">group</span>
+                            <p><strong>Where:</strong> At the masjid in congregation (recommended) or at home alone or with family</p>
+                        </div>
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">menu_book</span>
+                            <p><strong>Recitation:</strong> The Imam traditionally recites portions of the Quran each night, completing the entire Quran over 30 nights</p>
+                        </div>
+                    </div>
+
+                    <h3 class="guide-sub-heading">How to Perform Tarawih</h3>
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <span class="guide-step-num">1</span>
+                            <div class="guide-step-content">
+                                <strong>Pray Isha First</strong>
+                                <p>Complete the full Isha prayer (Fard and Sunnah). Tarawih begins immediately after.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">2</span>
+                            <div class="guide-step-content">
+                                <strong>Make Intention</strong>
+                                <p>Intend in your heart to pray Tarawih for the sake of Allah. Stand facing the Qibla.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">3</span>
+                            <div class="guide-step-content">
+                                <strong>Pray in Pairs</strong>
+                                <p>Pray 2 Rakats at a time, following the same steps as regular Salah. After each pair, complete Tasleem to end that set.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">4</span>
+                            <div class="guide-step-content">
+                                <strong>Rest Between Sets</strong>
+                                <p>After every 4 Rakats (two pairs), take a brief rest. Use this time for dhikr (remembrance of Allah) or personal du'a.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">5</span>
+                            <div class="guide-step-content">
+                                <strong>Complete with Witr</strong>
+                                <p>End the night with Witr prayer (1, 3, 5, or 7 Rakats). When praying 3 Rakats of Witr, recite <em>Du'a Qunut</em> in the final Rakat before Ruku or after rising from it.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-note">
+                        <span class="material-icons guide-note-icon">star</span>
+                        <p>The last 10 nights of Ramadan are especially blessed. Pray extra earnestly on the odd nights (21st, 23rd, 25th, 27th, 29th) in search of <em>Laylatul Qadr</em> — the Night of Power, better than a thousand months.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Eid Prayer ── -->
+        <div class="guide-section" id="section-eid">
+            <button class="guide-section-header" onclick="toggleSection('section-eid')" aria-expanded="false" aria-controls="body-eid">
+                <div class="guide-section-title-row">
+                    <span class="guide-section-icon">🎉</span>
+                    <div class="guide-section-title-group">
+                        <span class="guide-section-title">Eid Prayer</span>
+                        <span class="guide-section-subtitle">Eid al-Fitr &amp; Eid al-Adha</span>
+                    </div>
+                </div>
+                <span class="material-icons guide-chevron">expand_more</span>
+            </button>
+            <div class="guide-section-body" id="body-eid">
+                <div class="guide-section-body-inner">
+
+                    <div class="guide-eid-types">
+                        <div class="guide-eid-type">
+                            <span class="guide-eid-badge">Eid al-Fitr</span>
+                            <p>1st of Shawwal — marks the end of Ramadan. Eat a few dates (odd number) before heading to the prayer.</p>
+                        </div>
+                        <div class="guide-eid-type">
+                            <span class="guide-eid-badge">Eid al-Adha</span>
+                            <p>10th of Dhul Hijjah — honors Prophet Ibrahim's sacrifice. Eat after the prayer, following the sacrifice.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="guide-sub-heading">Preparation</h3>
+                    <div class="guide-points">
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">shower</span>
+                            <p>Perform Ghusl (full ritual bath) before the Eid prayer</p>
+                        </div>
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">checkroom</span>
+                            <p>Dress in your best, cleanest clothing — perfume is Sunnah for men</p>
+                        </div>
+                        <div class="guide-point">
+                            <span class="material-icons guide-point-icon">campaign</span>
+                            <p>Recite the Eid Takbir on the way to prayer: <em>"Allahu Akbar, Allahu Akbar, La ilaha illallah, Allahu Akbar, Allahu Akbar, wa lillahil hamd"</em></p>
+                        </div>
+                    </div>
+
+                    <h3 class="guide-sub-heading">Eid Prayer (2 Rakats)</h3>
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <span class="guide-step-num">1</span>
+                            <div class="guide-step-content">
+                                <strong>Opening Takbir</strong>
+                                <p>Make the Takbiratul Ihram — raise hands to ear level and say <em>"Allahu Akbar"</em> — to begin the prayer. Fold your hands on your chest.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">2</span>
+                            <div class="guide-step-content">
+                                <strong>First Rakat — 7 Additional Takbirs</strong>
+                                <p>Before reciting Al-Fatiha, say <em>"Allahu Akbar"</em> seven additional times, lowering hands between each one. You may say <em>"Subhanallah wal hamdulillah wa la ilaha illallah wallahu akbar"</em> quietly between each Takbir.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">3</span>
+                            <div class="guide-step-content">
+                                <strong>First Rakat — Recitation &amp; Completion</strong>
+                                <p>Recite Surah Al-Fatiha followed by a surah (the Imam typically recites Surah Al-A'la). Complete the Rakat with Ruku and two Sujoods as in regular prayer.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">4</span>
+                            <div class="guide-step-content">
+                                <strong>Second Rakat — 5 Additional Takbirs</strong>
+                                <p>Stand for the second Rakat. Before reciting Al-Fatiha, say <em>"Allahu Akbar"</em> five additional times in the same manner.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">5</span>
+                            <div class="guide-step-content">
+                                <strong>Second Rakat — Recitation &amp; Completion</strong>
+                                <p>Recite Al-Fatiha and a surah (the Imam typically recites Surah Al-Ghashiyah). Complete with Ruku, Sujood, Tashahhud, and Tasleem.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <span class="guide-step-num">6</span>
+                            <div class="guide-step-content">
+                                <strong>Khutbah (Sermon)</strong>
+                                <p>After the prayer the Imam delivers two Khutbahs. It is Sunnah to remain seated and listen attentively.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-note">
+                        <span class="material-icons guide-note-icon">favorite</span>
+                        <p>Greet fellow Muslims with <em>"Eid Mubarak"</em> (Blessed Eid) or <em>"Taqabbal Allahu Minna wa Minkum"</em> (May Allah accept from us and from you). Visit family, give to charity, and spread joy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /.guide-sections -->
+
+</div><!-- /.container -->
+
+
+
+<!-- Mobile Bottom Navigation -->
+<div class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item" aria-label="Prayer Times">
+        <span class="material-icons">home</span>
+        <span class="bottom-nav-label">Athan</span>
+    </a>
+    <a href="guide.html" class="bottom-nav-item active" aria-label="Prayer Guide">
+        <span class="material-icons">accessibility_new</span>
+        <span class="bottom-nav-label">Guide</span>
+    </a>
+    <button class="bottom-nav-item" onclick="openSettings()" aria-label="Settings">
+        <span class="material-icons">settings</span>
+        <span class="bottom-nav-label">Settings</span>
+    </button>
+</div>
+
+<script src="guide.js"></script>
+</body>
+</html>

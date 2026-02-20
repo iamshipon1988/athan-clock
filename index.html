@@ -28,6 +28,9 @@
         <div class="header-left">
             <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
             <div class="current-time" id="clock">--:--</div>
+            <a href="guide.html" class="guide-button" aria-label="Prayer Guide">
+                <span class="material-icons">accessibility_new</span>
+            </a>
             <button class="settings-button" onclick="openSettings()">
                 <span class="material-icons">settings</span>
             </button>
@@ -143,6 +146,22 @@
             <a href="https://nimazi.com" target="_blank" rel="noopener noreferrer">Nimazi</a> by <a href="https://sazzad.me" target="_blank" rel="noopener noreferrer">Sazzad Hossain</a>
         </div>
     </div>
+</div>
+
+<!-- Mobile Bottom Navigation -->
+<div class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item active" aria-label="Prayer Times">
+        <span class="material-icons">home</span>
+        <span class="bottom-nav-label">Athan</span>
+    </a>
+    <a href="guide.html" class="bottom-nav-item" aria-label="Prayer Guide">
+        <span class="material-icons">accessibility_new</span>
+        <span class="bottom-nav-label">Guide</span>
+    </a>
+    <button class="bottom-nav-item" onclick="openSettings()" aria-label="Settings">
+        <span class="material-icons">settings</span>
+        <span class="bottom-nav-label">Settings</span>
+    </button>
 </div>
 
 <!-- Athan Audio -->
