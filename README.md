@@ -1,6 +1,9 @@
-# Ramadan Athan Clock 🕌
+# Nimazi 🕌
+### Your Muslim Prayer Companion
 
 A beautiful, accessible Islamic prayer time application with three vibrant themes, offline caching, and date navigation. Display accurate prayer times for any location with elegant glassmorphic interfaces designed for everyone - adults and kids alike.
+
+🌐 **Live at [nimazi.com](https://nimazi.com)**
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -46,8 +49,8 @@ A beautiful, accessible Islamic prayer time application with three vibrant theme
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/athan-clock.git
-   cd athan-clock
+   git clone https://github.com/iamshipon1988/nimazi.git
+   cd nimazi
    ```
 
 2. **Open the application**
@@ -146,7 +149,7 @@ When viewing future or past dates:
 ## 📂 Project Structure
 
 ```
-athan-clock/
+nimazi/
 ├── index.html          # Main HTML structure
 ├── styles.css          # All styling (all three themes)
 ├── app.js             # Application logic

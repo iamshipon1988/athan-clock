@@ -444,7 +444,7 @@ async function initializePrayerTimes() {
         document.getElementById('prayerGrid').innerHTML = `
             <div class="loading" style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 15px;">📍</div>
-                <div style="font-size: 18px; margin-bottom: 10px;">Welcome to Athan Clock!</div>
+                <div style="font-size: 18px; margin-bottom: 10px;">Welcome to Nimazi!</div>
                 <div style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;">Please set your location to see prayer times</div>
                 <button onclick="openSettings()" style="padding: 12px 24px; font-size: 14px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600;">Open Settings</button>
             </div>
