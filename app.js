@@ -16,43 +16,43 @@ const PRAYER_INFO = {
     Fajr: {
         icon: '🌅',
         rakats: [
-            { type: 'Sunnah', count: 2 },
-            { type: 'Fard', count: 2 }
+            { type: 'Sunnah', count: 2, required: false },
+            { type: 'Fard', count: 2, required: true }
         ],
         description: 'The pre-dawn prayer. Wake up before sunrise to pray and start your day with blessings.'
     },
     Dhuhr: {
         icon: '☀️',
         rakats: [
-            { type: 'Sunnah', count: 4 },
-            { type: 'Fard', count: 4 },
-            { type: 'Sunnah', count: 2 }
+            { type: 'Sunnah', count: 4, required: false },
+            { type: 'Fard', count: 4, required: true },
+            { type: 'Sunnah', count: 2, required: false }
         ],
         description: 'The noon prayer. A midday break to reconnect with Allah and recharge spiritually.'
     },
     Asr: {
         icon: '🌤️',
         rakats: [
-            { type: 'Sunnah', count: 4 },
-            { type: 'Fard', count: 4 }
+            { type: 'Sunnah', count: 4, required: false },
+            { type: 'Fard', count: 4, required: true }
         ],
         description: 'The afternoon prayer. Performed in the late afternoon before the sun begins to set.'
     },
     Maghrib: {
         icon: '🌆',
         rakats: [
-            { type: 'Fard', count: 3 },
-            { type: 'Sunnah', count: 2 }
+            { type: 'Fard', count: 3, required: true },
+            { type: 'Sunnah', count: 2, required: false }
         ],
         description: 'The sunset prayer. Pray just after the sun sets and break your fast during Ramadan.'
     },
     Isha: {
         icon: '🌙',
         rakats: [
-            { type: 'Sunnah', count: 4 },
-            { type: 'Fard', count: 4 },
-            { type: 'Sunnah', count: 2 },
-            { type: 'Witr', count: 3 }
+            { type: 'Sunnah', count: 4, required: false },
+            { type: 'Fard', count: 4, required: true },
+            { type: 'Sunnah', count: 2, required: false },
+            { type: 'Witr', count: 3, required: false }
         ],
         description: 'The night prayer. Complete your day with worship and reflection before sleep.'
     }
@@ -647,9 +647,10 @@ function displayPrayerTimes() {
 
         // No tomorrow label needed (replaced by date badge)
 
-        // Get rakats info
+        // Get rakats info (show only required rakats)
         const prayerInfo = PRAYER_INFO[prayer.key];
-        const rakatsText = prayerInfo ? `${prayerInfo.rakats.map(r => r.count).reduce((a, b) => a + b, 0)} Rakats` : '';
+        const requiredRakats = prayerInfo ? prayerInfo.rakats.filter(r => r.required).reduce((sum, r) => sum + r.count, 0) : 0;
+        const rakatsText = requiredRakats > 0 ? `${requiredRakats} Rakats (Required)` : '';
 
         card.innerHTML = `
             <div>
@@ -1241,7 +1242,10 @@ function playAthan(prayerName, prayerTime) {
     const infoDiv = document.getElementById('modalPrayerInfo');
     if (PRAYER_INFO[prayerName]) {
         const info = PRAYER_INFO[prayerName];
-        const rakatsText = info.rakats.map(r => `${r.count} ${r.type}`).join(' + ');
+        const rakatsText = info.rakats.map(r => {
+            const label = r.required ? `${r.count} ${r.type} (Required)` : `${r.count} ${r.type}`;
+            return label;
+        }).join(' + ');
         infoDiv.innerHTML = `
             <div style="font-weight: 600; margin-bottom: 5px;">${info.icon} ${rakatsText}</div>
             <div style="font-size: 13px; opacity: 0.9;">${info.description}</div>
@@ -1558,10 +1562,15 @@ function showPrayerDetails(prayerName, prayerTime) {
     document.getElementById('detailsPrayerName').textContent = `${info.icon} ${prayerName}`;
     document.getElementById('detailsPrayerTime').textContent = formatTime(prayerTime);
 
-    // Build rakats info
-    const rakatsHtml = info.rakats.map(r =>
-        `<div class="rakat-item"><span class="rakat-type">${r.type}:</span> ${r.count} Rakat${r.count > 1 ? 's' : ''}</div>`
-    ).join('');
+    // Build rakats info with required/optional distinction
+    const rakatsHtml = info.rakats.map(r => {
+        const requiredClass = r.required ? 'rakat-required' : 'rakat-optional';
+        const requiredLabel = r.required ? ' (Required)' : ' (Optional)';
+        return `<div class="rakat-item ${requiredClass}">
+            <span class="rakat-type">${r.type}${requiredLabel}:</span>
+            ${r.count} Rakat${r.count > 1 ? 's' : ''}
+        </div>`;
+    }).join('');
     document.getElementById('rakatsInfo').innerHTML = rakatsHtml;
 
     // Set description

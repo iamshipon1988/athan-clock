@@ -2816,6 +2816,42 @@ body.ramadan-mode .rakats-info .rakat-type {
     font-weight: 700;
 }
 
+/* Required vs Optional rakats styling */
+.rakat-item.rakat-required {
+    font-weight: 600;
+}
+
+.rakat-item.rakat-required .rakat-type {
+    color: #4CAF50;
+    font-weight: 700;
+}
+
+.rakat-item.rakat-optional {
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+.rakat-item.rakat-optional .rakat-type {
+    color: #90CAF9;
+    font-weight: 500;
+}
+
+body.ramadan-mode .rakat-item.rakat-required .rakat-type {
+    color: #2E7D32;
+}
+
+body.ramadan-mode .rakat-item.rakat-optional .rakat-type {
+    color: #1976D2;
+}
+
+body.kids-mode .rakat-item.rakat-required .rakat-type {
+    color: #00C853;
+}
+
+body.kids-mode .rakat-item.rakat-optional .rakat-type {
+    color: #2196F3;
+}
+
 .prayer-description {
     font-size: 14px;
     line-height: 1.6;
