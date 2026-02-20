@@ -1498,6 +1498,10 @@ function openSettings() {
 function closeSettings() {
     const modal = document.getElementById('settingsModal');
     modal.classList.remove('show');
+    if (settingsOpenedViaHash) {
+        settingsOpenedViaHash = false;
+        history.back();
+    }
 }
 
 function saveSettings() {
@@ -1626,3 +1630,11 @@ document.getElementById('settingsModal').addEventListener('click', (e) => {
         closeSettings();
     }
 });
+
+// Auto-open settings if redirected from another page via #settings hash
+let settingsOpenedViaHash = false;
+if (window.location.hash === '#settings') {
+    history.replaceState(null, '', window.location.pathname);
+    settingsOpenedViaHash = true;
+    openSettings();
+}

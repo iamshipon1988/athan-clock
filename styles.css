@@ -3469,14 +3469,14 @@ body.ramadan-mode .settings-copyright a {
 
 .guide-section-title {
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 600;
     color: #f4d571;
     line-height: 1.2;
 }
 
 .guide-section-subtitle {
-    font-size: 12px;
+    font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
     font-family: 'Source Sans 3', sans-serif;
 }
@@ -3502,7 +3502,7 @@ body.ramadan-mode .settings-copyright a {
 /* Intro paragraph */
 .guide-intro {
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.75;
     color: rgba(255, 255, 255, 0.85);
     margin-bottom: 20px;
@@ -3515,7 +3515,7 @@ body.ramadan-mode .settings-copyright a {
 /* Sub-section heading */
 .guide-sub-heading {
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: #f4d571;
     text-transform: uppercase;
@@ -3546,7 +3546,7 @@ body.ramadan-mode .settings-copyright a {
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 12px;
+    font-size: 13px;
     flex-shrink: 0;
     margin-top: 1px;
     font-family: 'Source Sans 3', sans-serif;
@@ -3559,7 +3559,7 @@ body.ramadan-mode .settings-copyright a {
 .guide-step-content strong {
     display: block;
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: #ffffff;
     margin-bottom: 4px;
@@ -3567,7 +3567,7 @@ body.ramadan-mode .settings-copyright a {
 
 .guide-step-content p {
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.78);
     margin: 0;
@@ -3602,7 +3602,7 @@ body.ramadan-mode .settings-copyright a {
 
 .guide-point p {
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
     margin: 0;
@@ -3728,6 +3728,7 @@ body.guidePage .bismillah {
     display: block;
     flex: none;
     padding: 10px 0 15px;
+    text-align: center;
 }
 body.guidePage .guide-page-header {
     background: rgba(255, 255, 255, 0.9);
@@ -4041,5 +4042,400 @@ body.kids-mode .guide-eid-badge {
     .guide-back-btn {
         width: 36px;
         height: 36px;
+    }
+}
+
+/* ══════════════════════════════════════════
+   About Page
+   ══════════════════════════════════════════ */
+
+body.aboutPage .bismillah {
+    display: block;
+    flex: none;
+    padding: 10px 0 15px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.about-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0 28px;
+}
+
+.about-logo {
+    max-width: 340px;
+    width: 100%;
+    height: auto;
+}
+
+.about-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: 32px;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 22px 24px;
+}
+
+.about-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #f4d571;
+    margin: 0 0 16px;
+    line-height: 1.2;
+}
+
+.about-card-icon {
+    font-size: 20px !important;
+    flex-shrink: 0;
+}
+
+.about-body {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 12px;
+}
+
+.about-body:last-child {
+    margin-bottom: 0;
+}
+
+/* Feature list */
+.about-feature-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.about-feature-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.about-feature-icon {
+    color: #f4d571;
+    font-size: 20px !important;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.about-feature-list li div {
+    flex: 1;
+}
+
+.about-feature-list li strong {
+    display: block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 3px;
+}
+
+.about-feature-list li p {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0;
+}
+
+/* GitHub card */
+.about-card-github {
+    border-color: rgba(244, 213, 113, 0.35);
+}
+
+.about-github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
+    color: #1a4d2e;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 12px rgba(244, 213, 113, 0.3);
+}
+
+.about-github-link:hover {
+    box-shadow: 0 4px 18px rgba(244, 213, 113, 0.5);
+    transform: translateY(-1px);
+}
+
+.about-github-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.about-link-arrow {
+    font-size: 16px !important;
+}
+
+/* Credits */
+.about-credits {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-credit-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+}
+
+.about-credit-label {
+    color: rgba(255, 255, 255, 0.55);
+    min-width: 110px;
+    flex-shrink: 0;
+}
+
+.about-credit-link {
+    color: #f4d571;
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.15s ease;
+}
+
+.about-credit-link:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
+
+/* ── Ramadan overrides ── */
+body.ramadan-mode .about-card {
+    background: rgba(255, 248, 235, 0.18);
+    border-color: rgba(139, 105, 20, 0.2);
+}
+
+body.ramadan-mode .about-card-title {
+    color: #8B6914;
+}
+
+body.ramadan-mode .about-card-icon {
+    color: #8B6914;
+}
+
+body.ramadan-mode .about-tagline {
+    color: #8B6914;
+}
+
+body.ramadan-mode .about-body {
+    color: rgba(60, 40, 5, 0.82);
+}
+
+body.ramadan-mode .about-feature-list li strong {
+    color: rgba(60, 40, 5, 0.9);
+}
+
+body.ramadan-mode .about-feature-list li p {
+    color: rgba(60, 40, 5, 0.65);
+}
+
+body.ramadan-mode .about-feature-icon {
+    color: #8B6914;
+}
+
+body.ramadan-mode .about-github-link {
+    background: linear-gradient(135deg, #c8941e 0%, #a67a10 100%);
+    color: #fff8e7;
+}
+
+body.ramadan-mode .about-credit-label {
+    color: rgba(60, 40, 5, 0.5);
+}
+
+body.ramadan-mode .about-credit-link {
+    color: #8B6914;
+}
+
+body.ramadan-mode .about-card-github {
+    border-color: rgba(139, 105, 20, 0.35);
+}
+
+/* ── Kids overrides ── */
+body.kids-mode .about-card-title {
+    color: #ffffff;
+}
+
+body.kids-mode .about-tagline {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+body.kids-mode .about-github-link {
+    color: #1a3a5c;
+}
+
+body.kids-mode .about-credit-link {
+    color: #ffffff;
+}
+
+/* ══════════════════════════════════════════
+   Desktop / tablet side navigation
+   ══════════════════════════════════════════ */
+
+/* ── Desktop / tablet side navigation ── */
+.desktop-side-nav {
+    display: none;
+}
+
+@media (min-width: 481px) {
+    /* Offset body so content clears the 60px sidebar */
+    body {
+        padding-left: 60px;
+    }
+
+    .desktop-side-nav {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 60px;
+        background: rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        gap: 5vh;
+    }
+
+    .side-nav-item {
+        position: relative;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s ease, background 0.2s ease;
+        font-family: 'Source Sans 3', sans-serif;
+    }
+
+    .side-nav-item:hover,
+    .side-nav-item:focus {
+        color: #f4d571;
+        background: rgba(255, 255, 255, 0.1);
+        outline: none;
+    }
+
+    .side-nav-item.active {
+        color: #f4d571;
+        background: rgba(244, 213, 113, 0.18);
+    }
+
+    .side-nav-item .material-icons {
+        font-size: 22px;
+    }
+
+    .side-nav-tooltip {
+        position: absolute;
+        left: calc(100% + 12px);
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.82);
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 500;
+        font-family: 'Source Sans 3', sans-serif;
+        padding: 5px 10px;
+        border-radius: 6px;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        z-index: 500;
+    }
+
+    .side-nav-item:hover .side-nav-tooltip {
+        opacity: 1;
+    }
+
+    /* Hide header nav buttons — sidebar handles navigation on desktop */
+    .header-left .guide-button,
+    .header-left .settings-button {
+        display: none;
+    }
+
+    /* Remove padding-right reserved for header buttons */
+    .date-info {
+        padding-right: 0 !important;
+    }
+
+    /* Ramadan theme sidebar */
+    body.ramadan-mode .desktop-side-nav {
+        background: rgba(255, 248, 235, 0.18);
+        border-right-color: rgba(139, 105, 20, 0.15);
+    }
+
+    body.ramadan-mode .side-nav-item {
+        color: rgba(139, 105, 20, 0.5);
+    }
+
+    body.ramadan-mode .side-nav-item:hover,
+    body.ramadan-mode .side-nav-item:focus {
+        color: #8B6914;
+        background: rgba(139, 105, 20, 0.1);
+    }
+
+    body.ramadan-mode .side-nav-item.active {
+        color: #8B6914;
+        background: rgba(139, 105, 20, 0.12);
+    }
+
+    /* Kids theme sidebar */
+    body.kids-mode .desktop-side-nav {
+        background: rgba(0, 0, 0, 0.4);
+        border-right-color: rgba(255, 255, 255, 0.15);
+    }
+
+    body.kids-mode .side-nav-item {
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    body.kids-mode .side-nav-item:hover,
+    body.kids-mode .side-nav-item:focus {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    body.kids-mode .side-nav-item.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.18);
     }
 }
