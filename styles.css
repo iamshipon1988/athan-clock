@@ -4609,8 +4609,8 @@ body.kids-mode .settings-page-title {
     }
 
     .side-nav-item .nav-symbol-img {
-        width: 22px;
-        height: 22px;
+        width: 26px;
+        height: 26px;
         opacity: 0.5;
         transition: opacity 0.15s ease;
     }
@@ -4699,4 +4699,156 @@ body.kids-mode .settings-page-title {
         color: #ffffff;
         background: rgba(255, 255, 255, 0.18);
     }
+}
+
+/* ============================================================
+   ONBOARDING MODAL
+   ============================================================ */
+
+.onboarding-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.onboarding-modal.show {
+    display: flex;
+}
+
+.onboarding-content {
+    background: linear-gradient(160deg, rgba(26, 77, 46, 0.97) 0%, rgba(10, 35, 20, 0.99) 100%);
+    border: 2px solid rgba(244, 213, 113, 0.35);
+    border-radius: 24px;
+    padding: 40px 36px 36px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.35s ease-out;
+}
+
+.onboarding-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    color: rgba(244, 213, 113, 0.75);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.onboarding-logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    filter: brightness(0) invert(1) opacity(0.9);
+}
+
+.onboarding-title {
+    font-family: 'Amiri', serif;
+    font-size: 30px;
+    color: #f4d571;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.onboarding-subtitle {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.55;
+    margin-bottom: 28px;
+}
+
+.onboarding-input-group {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.onboarding-location-input {
+    flex: 1;
+    padding: 13px 16px;
+    font-size: 15px;
+    border: 2px solid rgba(244, 213, 113, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    outline: none;
+}
+
+.onboarding-location-input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.onboarding-location-input:focus {
+    border-color: #f4d571;
+    box-shadow: 0 0 10px rgba(244, 213, 113, 0.25);
+}
+
+.onboarding-location-input.error {
+    border-color: #ff6b6b;
+    animation: shake 0.4s ease;
+}
+
+.onboarding-detect-btn {
+    padding: 0 14px;
+    border: 2px solid rgba(244, 213, 113, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f4d571;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.onboarding-detect-btn:hover {
+    background: rgba(244, 213, 113, 0.15);
+    border-color: #f4d571;
+}
+
+.onboarding-detect-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.onboarding-save-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%);
+    color: #1a4d2e;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 4px;
+}
+
+.onboarding-save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 213, 113, 0.4);
+}
+
+.onboarding-save-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-6px); }
+    60%       { transform: translateX(6px); }
+    80%       { transform: translateX(-3px); }
 }

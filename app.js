@@ -460,14 +460,7 @@ async function initializePrayerTimes() {
 
     // Validate location
     if (!settings.location || settings.location.trim() === '') {
-        document.getElementById('prayerGrid').innerHTML = `
-            <div class="loading" style="text-align: center;">
-                <div style="font-size: 48px; margin-bottom: 15px;">📍</div>
-                <div style="font-size: 18px; margin-bottom: 10px;">Welcome to Nimazi!</div>
-                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;">Please set your location to see prayer times</div>
-                <button onclick="openSettings()" style="padding: 12px 24px; font-size: 14px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600;">Open Settings</button>
-            </div>
-        `;
+        showOnboarding();
         return;
     }
 
@@ -1516,4 +1509,220 @@ document.getElementById('prayerDetailsModal').addEventListener('click', (e) => {
         closePrayerDetails();
     }
 });
+
+// ==================== ONBOARDING ====================
+
+function showOnboarding() {
+    document.getElementById('onboardingModal').classList.add('show');
+    // Focus input after animation
+    setTimeout(() => {
+        const input = document.getElementById('onboardingLocationInput');
+        if (input) input.focus();
+    }, 350);
+    setupOnboardingAutocomplete();
+}
+
+function saveOnboardingLocation() {
+    const input = document.getElementById('onboardingLocationInput');
+    const location = input.value.trim();
+
+    if (!location) {
+        input.classList.add('error');
+        setTimeout(() => input.classList.remove('error'), 500);
+        return;
+    }
+
+    const lat = input.dataset.lat ? parseFloat(input.dataset.lat) : null;
+    const lng = input.dataset.lng ? parseFloat(input.dataset.lng) : null;
+    const locationType = input.dataset.locationType || 'address';
+
+    const existing = JSON.parse(localStorage.getItem('athanClockSettings') || '{}');
+    localStorage.setItem('athanClockSettings', JSON.stringify({
+        ...existing,
+        location, lat, lng, locationType
+    }));
+
+    document.getElementById('onboardingModal').classList.remove('show');
+
+    // Reload settings and initialize
+    const defaults = { location: '', lat: null, lng: null, locationType: 'address', theme: 'auto', athan: 'default' };
+    const saved = localStorage.getItem('athanClockSettings');
+    Object.assign(settings, defaults, saved ? JSON.parse(saved) : {});
+
+    initializePrayerTimes();
+}
+
+async function onboardingDetectLocation() {
+    const button = document.getElementById('onboardingDetectBtn');
+    const input  = document.getElementById('onboardingLocationInput');
+
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+        return;
+    }
+
+    button.disabled = true;
+    button.innerHTML = '<span class="material-icons rotating">refresh</span>';
+
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                timeout: 10000,
+                maximumAge: 300000
+            });
+        });
+
+        const { latitude, longitude } = position.coords;
+        const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+        );
+        if (!response.ok) throw new Error('Failed to fetch location data');
+
+        const data    = await response.json();
+        const city    = data.city || data.locality || data.principalSubdivision;
+        const country = data.countryName || data.countryCode;
+        const label   = city ? `${city}, ${country}` : country;
+
+        if (label) {
+            input.value = label;
+            input.dataset.lat          = latitude;
+            input.dataset.lng          = longitude;
+            input.dataset.locationType = 'coords';
+            hideOnboardingSuggestions();
+            button.innerHTML = '<span class="material-icons">check_circle</span>';
+            setTimeout(() => {
+                button.innerHTML = '<span class="material-icons">my_location</span>';
+                button.disabled  = false;
+            }, 2000);
+        } else {
+            throw new Error('Could not determine location name');
+        }
+    } catch (error) {
+        button.innerHTML = '<span class="material-icons">error</span>';
+        let msg = 'Could not detect location. ';
+        if (error.code === 1)      msg += 'Please enable location permissions.';
+        else if (error.code === 2) msg += 'Location unavailable.';
+        else if (error.code === 3) msg += 'Request timeout.';
+        else                       msg += error.message || 'Please try again.';
+        alert(msg);
+        setTimeout(() => {
+            button.innerHTML = '<span class="material-icons">my_location</span>';
+            button.disabled  = false;
+        }, 2000);
+    }
+}
+
+let _onboardingAutocompleteTimeout = null;
+
+function setupOnboardingAutocomplete() {
+    const input = document.getElementById('onboardingLocationInput');
+    if (input._onboardingAutocompleteSetup) return;
+    input._onboardingAutocompleteSetup = true;
+
+    input.addEventListener('input', () => {
+        delete input.dataset.lat;
+        delete input.dataset.lng;
+        delete input.dataset.locationType;
+        clearTimeout(_onboardingAutocompleteTimeout);
+        const query = input.value.trim();
+        if (query.length < 3) { hideOnboardingSuggestions(); return; }
+        _onboardingAutocompleteTimeout = setTimeout(() => fetchOnboardingSuggestions(query), 350);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        const list = document.getElementById('onboardingLocationSuggestions');
+        if (!list) return;
+        const items = Array.from(list.querySelectorAll('.location-suggestion-item'));
+        if (!items.length) return;
+        const activeIdx = items.findIndex(i => i.classList.contains('active'));
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = activeIdx < items.length - 1 ? activeIdx + 1 : 0;
+            items.forEach(i => i.classList.remove('active'));
+            items[next].classList.add('active');
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = activeIdx > 0 ? activeIdx - 1 : items.length - 1;
+            items.forEach(i => i.classList.remove('active'));
+            items[prev].classList.add('active');
+        } else if (e.key === 'Enter') {
+            const active = list.querySelector('.location-suggestion-item.active');
+            if (active) { e.preventDefault(); active.click(); }
+        } else if (e.key === 'Escape') {
+            hideOnboardingSuggestions();
+        }
+    });
+
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const list = document.getElementById('onboardingLocationSuggestions');
+            const active = list && list.querySelector('.location-suggestion-item.active');
+            if (!active) saveOnboardingLocation();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#onboardingLocationSuggestions') && e.target.id !== 'onboardingLocationInput') {
+            hideOnboardingSuggestions();
+        }
+    });
+}
+
+async function fetchOnboardingSuggestions(query) {
+    try {
+        const res = await fetch(
+            `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=en`
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        showOnboardingSuggestions(data.features || []);
+    } catch (e) {
+        // Silently fail — user can still type manually
+    }
+}
+
+function showOnboardingSuggestions(features) {
+    hideOnboardingSuggestions();
+    if (!features.length) return;
+
+    const input   = document.getElementById('onboardingLocationInput');
+    const wrapper = input.closest('.onboarding-input-group');
+    const list    = document.createElement('ul');
+    list.id        = 'onboardingLocationSuggestions';
+    list.className = 'location-suggestions';
+
+    features.forEach(feature => {
+        const p      = feature.properties || {};
+        const coords = feature.geometry.coordinates;
+        const lng    = coords[0];
+        const lat    = coords[1];
+        const name    = p.name || p.county || '';
+        const state   = p.state || '';
+        const country = p.country || '';
+        if (!name && !country) return;
+        const inputLabel = name && country ? `${name}, ${country}` : (name || country);
+        const sublabel   = [state, country].filter(Boolean).join(', ');
+        const li = document.createElement('li');
+        li.className = 'location-suggestion-item';
+        li.innerHTML = `
+            <span class="suggestion-primary">${name || country}</span>
+            ${sublabel ? `<span class="suggestion-secondary">${sublabel}</span>` : ''}
+        `;
+        li.addEventListener('click', () => {
+            input.value = inputLabel;
+            input.dataset.lat          = lat;
+            input.dataset.lng          = lng;
+            input.dataset.locationType = 'coords';
+            hideOnboardingSuggestions();
+        });
+        list.appendChild(li);
+    });
+
+    if (list.children.length) wrapper.appendChild(list);
+}
+
+function hideOnboardingSuggestions() {
+    const el = document.getElementById('onboardingLocationSuggestions');
+    if (el) el.remove();
+}
 
