@@ -1,3 +1,16 @@
+/* ============================================================
+   DESIGN TOKENS
+   Central place for theme colors — update here, applies everywhere.
+   ============================================================ */
+:root {
+    --color-accent:        #f4d571;
+    --color-accent-dark:   #e0c45c;
+    --color-green-deep:    #1a4d2e;
+    --color-green-text:    #0f2818;
+    --color-ramadan:       #8b6914;
+    --color-ramadan-dark:  #6b5016;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +24,7 @@ body, html {
     color: #fff;
     overflow-x: hidden;
     overflow-y: auto;
-    background: url('assets/images/bg-green-mobile.jpg') bottom left / auto 100% repeat-x fixed;
+    background: url('../assets/images/bg-green-mobile.jpg') bottom left / auto 100% repeat-x fixed;
     position: relative;
 }
 
@@ -34,7 +47,7 @@ body .container {
 
 /* Ramadan Theme - Golden Light with Background Image */
 body.ramadan-mode {
-    background: url('assets/images/bg-ramadan.jpg') center center / cover no-repeat fixed;
+    background: url('../assets/images/bg-ramadan.jpg') center center / cover no-repeat fixed;
     color: #3a3939;
 }
 
@@ -169,17 +182,13 @@ body.ramadan-mode .prayer-card.ramadan-special {
 /* ==================== KIDS THEME ==================== */
 body.kids-mode {
     background: #FFF8DC;
-    background-image: url('assets/images/bg-kids.jpg');
+    background-image: url('../assets/images/bg-kids.jpg');
     background-size: cover;
     background-position: center bottom;
     background-attachment: fixed;
     font-family: 'Source Sans 3', sans-serif;
     color: #131313;
 }
-
-/* body.kids-mode .container {
-    padding-bottom: 140px;
-} */
 
 body.kids-mode::before {
     background: rgba(0, 0, 0, 0.2);
@@ -311,13 +320,7 @@ body.kids-mode .countdown-label {
     letter-spacing: 0.5px;
 }
 
-body.kids-mode .next-prayer-name {
-    color: #000;
-    font-weight: 900;
-    text-shadow: none;
-    font-size: 26px;
-}
-
+body.kids-mode .next-prayer-name,
 body.kids-mode .next-prayer-time {
     color: #000;
     font-weight: 900;
@@ -2204,7 +2207,7 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         color: #ffffff;
     }
     body:not(.ramadan-mode):not(.kids-mode) {
-        background: url(assets/images/bg-green-mobile.jpg) bottom center / cover no-repeat fixed;
+        background: url(../assets/images/bg-green-mobile.jpg) bottom center / cover no-repeat fixed;
     }
 
     body:not(.ramadan-mode):not(.kids-mode) .mobile-bottom-nav {
@@ -2367,7 +2370,7 @@ body.ramadan-mode .prayer-card .tomorrow-label {
     }
 
     body.kids-mode {
-        background: url(assets/images/bg-kids.jpg) bottom center / cover no-repeat fixed;
+        background: url(../assets/images/bg-kids.jpg) bottom center / cover no-repeat fixed;
     }
 
     body.kids-mode .container {
@@ -2569,7 +2572,7 @@ body.ramadan-mode .prayer-card .tomorrow-label {
         bottom: 0;
         left: 0;
         right: 0;
-        height: 60px;
+        height: calc(60px + env(safe-area-inset-bottom, 0px));
         padding-bottom: env(safe-area-inset-bottom, 0px);
         background: rgba(255, 255, 255, 0.97);
         border-top: 1px solid rgba(55, 71, 79, 0.12);
@@ -2679,6 +2682,28 @@ body.ramadan-mode .prayer-card .tomorrow-label {
     }
 }
 
+/* ============================================================
+   PWA / HOME SCREEN STANDALONE MODE
+   Extra breathing room when the app is installed to the
+   home screen and runs outside the browser chrome.
+   Applies on iOS (Add to Home Screen) and Android (Install App).
+   ============================================================ */
+@media (display-mode: standalone) {
+    /* Taller nav bar so tap targets never compete with the
+       iOS home indicator swipe gesture area */
+    .mobile-bottom-nav {
+        height: calc(68px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Push page content up to match the taller bar */
+    @media (max-width: 768px) {
+        .container {
+            padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+        }
+    }
+}
+
 /* Loading Animation */
 .loading {
     text-align: center;
@@ -2696,6 +2721,36 @@ body.ramadan-mode .prayer-card .tomorrow-label {
     40% { content: '..'; }
     60%, 100% { content: '...'; }
 }
+
+/* Error state (shown in the prayer grid on timeout or network failure) */
+.error-state { text-align: center; padding: 20px; }
+.error-state .error-icon    { font-size: 48px; margin-bottom: 15px; }
+.error-state .error-title   { font-size: 16px; margin-bottom: 10px; }
+.error-state .error-message { font-size: 13px; opacity: 0.8; margin-bottom: 15px; }
+
+.action-btn-primary,
+.action-btn-secondary {
+    padding: 10px 20px;
+    font-size: 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.action-btn-primary {
+    border: none;
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    color: var(--color-green-deep);
+    margin-right: 8px;
+}
+.action-btn-secondary {
+    border: 2px solid var(--color-accent);
+    background: transparent;
+    color: var(--color-accent);
+}
+.action-btn-primary:hover,
+.action-btn-secondary:hover { transform: translateY(-1px); }
 
 /* Landscape Optimization for Fire Tablet 7 */
 @media (orientation: landscape) and (max-height: 600px) {
@@ -3299,6 +3354,11 @@ body.kids-mode .suggestion-secondary {
 
 .form-group select {
     padding-right: 40px;
+}
+
+.form-group select option {
+    background: #ffffff;
+    color: #1a1a1a;
 }
 
 body.ramadan-mode .form-group input,

@@ -383,7 +383,6 @@ async function fetchPrayerTimesForDate(date) {
     // Check cache first
     const cached = getCachedPrayerTimes(date);
     if (cached) {
-        console.log(`Using cached data for ${formatDateKey(date)}`);
         return {
             timings: cached.timings,
             hijriData: {
@@ -399,8 +398,6 @@ async function fetchPrayerTimesForDate(date) {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-
-        console.log(`Fetching prayer times for ${formatDateKey(date)}...`);
 
         const apiUrl = (settings.locationType === 'coords' && settings.lat && settings.lng)
             ? `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${settings.lat}&longitude=${settings.lng}&method=${CALCULATION_METHOD}`
@@ -426,7 +423,6 @@ async function fetchPrayerTimesForDate(date) {
 
             cachePrayerTimes(date, timings, hijriData);
 
-            console.log(`Successfully fetched prayer times for ${formatDateKey(date)}`);
             return { timings, hijriData };
         } else {
             throw new Error('Invalid API response');
@@ -436,7 +432,6 @@ async function fetchPrayerTimesForDate(date) {
 
         // If fetch failed and we have cached data (even expired), use it
         if (cached) {
-            console.log('Using stale cache as fallback');
             return {
                 timings: cached.timings,
                 hijriData: {
@@ -449,6 +444,18 @@ async function fetchPrayerTimesForDate(date) {
 
         throw error;
     }
+}
+
+// Renders an error message into the prayer grid (timeout or network failure).
+function showErrorState(icon, title, msg) {
+    document.getElementById('prayerGrid').innerHTML = `
+        <div class="loading error-state">
+            <div class="error-icon">${icon}</div>
+            <div class="error-title">${title}</div>
+            <div class="error-message">${msg}</div>
+            <button class="action-btn-primary" onclick="location.reload()">Retry</button>
+            <button class="action-btn-secondary" onclick="openSettings()">Settings</button>
+        </div>`;
 }
 
 // Initialize and prefetch prayer times (called on page load)
@@ -468,16 +475,8 @@ async function initializePrayerTimes() {
     const loadingTimeout = setTimeout(() => {
         const grid = document.getElementById('prayerGrid');
         if (grid && grid.innerHTML.includes('Loading prayer times')) {
-            console.warn('Loading timeout exceeded - showing error');
-            grid.innerHTML = `
-                <div class="loading" style="text-align: center;">
-                    <div style="font-size: 48px; margin-bottom: 15px;">⏱️</div>
-                    <div style="font-size: 16px; margin-bottom: 10px;">Loading is taking longer than expected</div>
-                    <div style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">This may be due to slow network. Try refreshing or check your connection.</div>
-                    <button onclick="location.reload()" style="padding: 10px 20px; font-size: 13px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 8px;">Retry</button>
-                    <button onclick="openSettings()" style="padding: 10px 20px; font-size: 13px; border: 2px solid #f4d571; background: transparent; color: #f4d571; border-radius: 8px; cursor: pointer; font-weight: 600;">Settings</button>
-                </div>
-            `;
+            showErrorState('⏱️', 'Loading is taking longer than expected',
+                'This may be due to slow network. Try refreshing or check your connection.');
         }
     }, 20000);
 
@@ -487,7 +486,6 @@ async function initializePrayerTimes() {
         prayerTimesData = todayData.timings;
         currentHijriData = todayData.hijriData;
 
-        // Clear the loading timeout since we succeeded
         clearTimeout(loadingTimeout);
 
         // Update UI with today's data
@@ -502,8 +500,7 @@ async function initializePrayerTimes() {
         for (let i = -CACHE_DAYS_RANGE; i <= CACHE_DAYS_RANGE; i++) {
             if (i === 0) continue; // Already fetched today
             const date = addDays(todayDate, i);
-            const cached = getCachedPrayerTimes(date);
-            if (!cached) {
+            if (!getCachedPrayerTimes(date)) {
                 prefetchPromises.push(
                     fetchPrayerTimesForDate(date).catch(err => {
                         console.warn(`Failed to prefetch ${formatDateKey(date)}:`, err);
@@ -512,32 +509,21 @@ async function initializePrayerTimes() {
             }
         }
 
-        // Prefetch in background
         if (prefetchPromises.length > 0) {
-            Promise.all(prefetchPromises).then(() => {
-                console.log('Background prefetch completed');
-            }).catch(err => {
+            Promise.all(prefetchPromises).catch(err => {
                 console.warn('Some prefetch requests failed:', err);
             });
         }
 
     } catch (error) {
         console.error('Error initializing prayer times:', error);
-        clearTimeout(loadingTimeout); // Clear timeout since we're showing error now
+        clearTimeout(loadingTimeout);
 
-        const errorMsg = error.message === 'Request timeout'
-            ? 'Connection timeout - network may be slow'
+        const title = error.message === 'Request timeout'
+            ? 'Connection timeout — network may be slow'
             : 'Failed to load prayer times';
 
-        document.getElementById('prayerGrid').innerHTML = `
-            <div class="loading" style="text-align: center;">
-                <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
-                <div style="font-size: 16px; margin-bottom: 10px;">${errorMsg}</div>
-                <div style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Please check your internet connection and try again</div>
-                <button onclick="location.reload()" style="padding: 10px 20px; font-size: 13px; border: none; background: linear-gradient(135deg, #f4d571 0%, #e0c45c 100%); color: #1a4d2e; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 8px;">Retry</button>
-                <button onclick="openSettings()" style="padding: 10px 20px; font-size: 13px; border: 2px solid #f4d571; background: transparent; color: #f4d571; border-radius: 8px; cursor: pointer; font-weight: 600;">Settings</button>
-            </div>
-        `;
+        showErrorState('⚠️', title, 'Please check your internet connection and try again.');
     }
 }
 
@@ -571,34 +557,6 @@ async function loadPrayerTimesForCurrentView() {
     }
 }
 
-// Fetch prayer times (LEGACY - kept for backward compatibility, will be removed)
-async function fetchPrayerTimes() {
-    try {
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const year = today.getFullYear();
-
-        const legacyUrl = (settings.locationType === 'coords' && settings.lat && settings.lng)
-            ? `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${settings.lat}&longitude=${settings.lng}&method=${CALCULATION_METHOD}`
-            : `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${encodeURIComponent(settings.location)}&method=${CALCULATION_METHOD}`;
-        const response = await fetch(legacyUrl);
-        const data = await response.json();
-
-        if (data.code === 200 && data.data && data.data.timings) {
-            prayerTimesData = data.data.timings;
-            displayPrayerTimes();
-            updateNextPrayer();
-            checkRamadanMode();
-        } else {
-            throw new Error('Invalid API response');
-        }
-    } catch (error) {
-        console.error('Error fetching prayer times:', error);
-        document.getElementById('prayerGrid').innerHTML =
-            '<div class="loading">Failed to load prayer times. Please check your connection and refresh.</div>';
-    }
-}
 
 // Display prayer times (updated for date navigation)
 function displayPrayerTimes() {
@@ -961,32 +919,9 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 
 // Check if we're in Ramadan and show special times
+// Ramadan dates are maintained in utils.js — update RAMADAN_DATES there each year.
 function checkRamadanMode() {
-    // Ramadan dates - Update these each year:
-    // 2025: March 1 - March 30
-    // 2026: February 17 - March 18
-    const now = new Date();
-    const year = now.getFullYear();
-
-    let ramadanStart, ramadanEnd;
-    if (year === 2025) {
-        ramadanStart = new Date(2025, 2, 1); // March 1, 2025 (month is 0-indexed)
-        ramadanEnd = new Date(2025, 2, 30); // March 30, 2025
-    } else if (year === 2026) {
-        ramadanStart = new Date(2026, 1, 17); // February 17, 2026 (month is 0-indexed)
-        ramadanEnd = new Date(2026, 2, 18); // March 18, 2026
-    } else {
-        // Default to not Ramadan if year not configured
-        ramadanStart = new Date(2099, 0, 1);
-        ramadanEnd = new Date(2099, 0, 1);
-    }
-
-    // Compare only the date parts (ignore time)
-    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startDate = new Date(ramadanStart.getFullYear(), ramadanStart.getMonth(), ramadanStart.getDate());
-    const endDate = new Date(ramadanEnd.getFullYear(), ramadanEnd.getMonth(), ramadanEnd.getDate());
-
-    isRamadan = RAMADAN_TEST_MODE || (todayDate >= startDate && todayDate <= endDate);
+    isRamadan = RAMADAN_TEST_MODE || isCurrentlyRamadan();
 
     // Apply theme based on user preference
     applyTheme();
@@ -1414,30 +1349,9 @@ setInterval(checkPrayerTime, 1000);
 // Audio element setup - ensure it stays playing
 const athanAudio = document.getElementById('athanAudio');
 
-// Handle audio errors
-athanAudio.onerror = function(e) {
-    console.error('Audio error:', e);
-};
-
-// Handle audio stalling
-athanAudio.onstalled = function() {
-    console.warn('Audio stalled, attempting to resume...');
-};
-
-// Handle audio suspension (browser paused it)
-athanAudio.onsuspend = function() {
-    console.warn('Audio suspended by browser');
-};
-
-// Log when audio starts playing
-athanAudio.onplay = function() {
-    console.log('Athan started playing');
-};
-
-// Log when audio is paused
-athanAudio.onpause = function() {
-    console.log('Athan paused');
-};
+athanAudio.onerror    = (e) => console.error('Audio error:', e);
+athanAudio.onstalled  = ()  => console.warn('Audio stalled');
+athanAudio.onsuspend  = ()  => console.warn('Audio suspended by browser');
 
 
 // Show prayer details modal
@@ -1479,15 +1393,13 @@ function closePrayerDetails() {
 
 // Handle coming back online
 window.addEventListener('online', () => {
-    console.log('Back online - refreshing current view');
     if (currentViewedDate && todayDate) {
         loadPrayerTimesForCurrentView();
     }
 });
 
-// Handle going offline
 window.addEventListener('offline', () => {
-    console.log('Offline mode - using cached data');
+    // Prayer times are cached — the app continues to work offline
 });
 
 // Handle window resize to reposition sundial icon
@@ -1513,17 +1425,15 @@ document.getElementById('prayerDetailsModal').addEventListener('click', (e) => {
 // ==================== ONBOARDING ====================
 
 function showOnboarding() {
-    document.getElementById('onboardingModal').classList.add('show');
-    // Focus input after animation
-    setTimeout(() => {
-        const input = document.getElementById('onboardingLocationInput');
-        if (input) input.focus();
-    }, 350);
-    setupOnboardingAutocomplete();
+    const modal   = document.getElementById('onboardingModal');
+    const inputEl = document.getElementById('onboardingLocationInput');
+    modal.classList.add('show');
+    setTimeout(() => inputEl && inputEl.focus(), 350);
+    setupLocationAutocomplete(inputEl, inputEl.parentElement, saveOnboardingLocation);
 }
 
 function saveOnboardingLocation() {
-    const input = document.getElementById('onboardingLocationInput');
+    const input    = document.getElementById('onboardingLocationInput');
     const location = input.value.trim();
 
     if (!location) {
@@ -1532,197 +1442,29 @@ function saveOnboardingLocation() {
         return;
     }
 
-    const lat = input.dataset.lat ? parseFloat(input.dataset.lat) : null;
-    const lng = input.dataset.lng ? parseFloat(input.dataset.lng) : null;
+    const lat          = input.dataset.lat ? parseFloat(input.dataset.lat) : null;
+    const lng          = input.dataset.lng ? parseFloat(input.dataset.lng) : null;
     const locationType = input.dataset.locationType || 'address';
 
     const existing = JSON.parse(localStorage.getItem('athanClockSettings') || '{}');
     localStorage.setItem('athanClockSettings', JSON.stringify({
-        ...existing,
-        location, lat, lng, locationType
+        ...existing, location, lat, lng, locationType,
     }));
 
     document.getElementById('onboardingModal').classList.remove('show');
 
-    // Reload settings and initialize
+    // Reload settings and re-initialize
     const defaults = { location: '', lat: null, lng: null, locationType: 'address', theme: 'auto', athan: 'default' };
     const saved = localStorage.getItem('athanClockSettings');
     Object.assign(settings, defaults, saved ? JSON.parse(saved) : {});
-
     initializePrayerTimes();
 }
 
-async function onboardingDetectLocation() {
-    const button = document.getElementById('onboardingDetectBtn');
-    const input  = document.getElementById('onboardingLocationInput');
-
-    if (!navigator.geolocation) {
-        alert('Geolocation is not supported by your browser');
-        return;
-    }
-
-    button.disabled = true;
-    button.innerHTML = '<span class="material-icons rotating">refresh</span>';
-
-    try {
-        const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-                timeout: 10000,
-                maximumAge: 300000
-            });
-        });
-
-        const { latitude, longitude } = position.coords;
-        const response = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-        );
-        if (!response.ok) throw new Error('Failed to fetch location data');
-
-        const data    = await response.json();
-        const city    = data.city || data.locality || data.principalSubdivision;
-        const country = data.countryName || data.countryCode;
-        const label   = city ? `${city}, ${country}` : country;
-
-        if (label) {
-            input.value = label;
-            input.dataset.lat          = latitude;
-            input.dataset.lng          = longitude;
-            input.dataset.locationType = 'coords';
-            hideOnboardingSuggestions();
-            button.innerHTML = '<span class="material-icons">check_circle</span>';
-            setTimeout(() => {
-                button.innerHTML = '<span class="material-icons">my_location</span>';
-                button.disabled  = false;
-            }, 2000);
-        } else {
-            throw new Error('Could not determine location name');
-        }
-    } catch (error) {
-        button.innerHTML = '<span class="material-icons">error</span>';
-        let msg = 'Could not detect location. ';
-        if (error.code === 1)      msg += 'Please enable location permissions.';
-        else if (error.code === 2) msg += 'Location unavailable.';
-        else if (error.code === 3) msg += 'Request timeout.';
-        else                       msg += error.message || 'Please try again.';
-        alert(msg);
-        setTimeout(() => {
-            button.innerHTML = '<span class="material-icons">my_location</span>';
-            button.disabled  = false;
-        }, 2000);
-    }
-}
-
-let _onboardingAutocompleteTimeout = null;
-
-function setupOnboardingAutocomplete() {
-    const input = document.getElementById('onboardingLocationInput');
-    if (input._onboardingAutocompleteSetup) return;
-    input._onboardingAutocompleteSetup = true;
-
-    input.addEventListener('input', () => {
-        delete input.dataset.lat;
-        delete input.dataset.lng;
-        delete input.dataset.locationType;
-        clearTimeout(_onboardingAutocompleteTimeout);
-        const query = input.value.trim();
-        if (query.length < 3) { hideOnboardingSuggestions(); return; }
-        _onboardingAutocompleteTimeout = setTimeout(() => fetchOnboardingSuggestions(query), 350);
-    });
-
-    input.addEventListener('keydown', (e) => {
-        const list = document.getElementById('onboardingLocationSuggestions');
-        if (!list) return;
-        const items = Array.from(list.querySelectorAll('.location-suggestion-item'));
-        if (!items.length) return;
-        const activeIdx = items.findIndex(i => i.classList.contains('active'));
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            const next = activeIdx < items.length - 1 ? activeIdx + 1 : 0;
-            items.forEach(i => i.classList.remove('active'));
-            items[next].classList.add('active');
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            const prev = activeIdx > 0 ? activeIdx - 1 : items.length - 1;
-            items.forEach(i => i.classList.remove('active'));
-            items[prev].classList.add('active');
-        } else if (e.key === 'Enter') {
-            const active = list.querySelector('.location-suggestion-item.active');
-            if (active) { e.preventDefault(); active.click(); }
-        } else if (e.key === 'Escape') {
-            hideOnboardingSuggestions();
-        }
-    });
-
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const list = document.getElementById('onboardingLocationSuggestions');
-            const active = list && list.querySelector('.location-suggestion-item.active');
-            if (!active) saveOnboardingLocation();
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#onboardingLocationSuggestions') && e.target.id !== 'onboardingLocationInput') {
-            hideOnboardingSuggestions();
-        }
-    });
-}
-
-async function fetchOnboardingSuggestions(query) {
-    try {
-        const res = await fetch(
-            `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=en`
-        );
-        if (!res.ok) return;
-        const data = await res.json();
-        showOnboardingSuggestions(data.features || []);
-    } catch (e) {
-        // Silently fail — user can still type manually
-    }
-}
-
-function showOnboardingSuggestions(features) {
-    hideOnboardingSuggestions();
-    if (!features.length) return;
-
-    const input   = document.getElementById('onboardingLocationInput');
-    const wrapper = input.closest('.onboarding-input-group');
-    const list    = document.createElement('ul');
-    list.id        = 'onboardingLocationSuggestions';
-    list.className = 'location-suggestions';
-
-    features.forEach(feature => {
-        const p      = feature.properties || {};
-        const coords = feature.geometry.coordinates;
-        const lng    = coords[0];
-        const lat    = coords[1];
-        const name    = p.name || p.county || '';
-        const state   = p.state || '';
-        const country = p.country || '';
-        if (!name && !country) return;
-        const inputLabel = name && country ? `${name}, ${country}` : (name || country);
-        const sublabel   = [state, country].filter(Boolean).join(', ');
-        const li = document.createElement('li');
-        li.className = 'location-suggestion-item';
-        li.innerHTML = `
-            <span class="suggestion-primary">${name || country}</span>
-            ${sublabel ? `<span class="suggestion-secondary">${sublabel}</span>` : ''}
-        `;
-        li.addEventListener('click', () => {
-            input.value = inputLabel;
-            input.dataset.lat          = lat;
-            input.dataset.lng          = lng;
-            input.dataset.locationType = 'coords';
-            hideOnboardingSuggestions();
-        });
-        list.appendChild(li);
-    });
-
-    if (list.children.length) wrapper.appendChild(list);
-}
-
-function hideOnboardingSuggestions() {
-    const el = document.getElementById('onboardingLocationSuggestions');
-    if (el) el.remove();
+// Thin wrapper so the HTML onclick attribute stays simple
+function onboardingDetectLocation() {
+    detectUserLocation(
+        document.getElementById('onboardingLocationInput'),
+        document.getElementById('onboardingDetectBtn')
+    );
 }
 

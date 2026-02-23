@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <title>Settings - Nimazi</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="styles.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
 
 <link rel="icon" type="image/png" href="assets/favicon/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
@@ -19,6 +19,9 @@
 </head>
 
 <body class="settingsPage">
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('athanClockSettings')||'{}'),t=s.theme||'auto';if(t==='ramadan'){document.body.classList.add('ramadan-mode');}else if(t==='kids'){document.body.classList.add('kids-mode');}else if(t==='auto'){var n=new Date(),y=n.getFullYear(),rd={2025:[new Date(2025,2,1),new Date(2025,2,30)],2026:[new Date(2026,1,17),new Date(2026,2,18)],2027:[new Date(2027,1,6),new Date(2027,2,7)]};if(rd[y]&&n>=rd[y][0]&&n<=rd[y][1])document.body.classList.add('ramadan-mode');}}catch(e){}})();
+</script>
 <div class="pattern-overlay"></div>
 <div class="geometric-pattern"></div>
 
@@ -130,7 +133,8 @@
     <source src="athan/default.mp3" type="audio/mpeg">
 </audio>
 
-<script src="guide.js"></script>
-<script src="settings.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/guide.js"></script>
+<script src="js/settings.js"></script>
 </body>
 </html>

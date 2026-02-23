@@ -1,29 +1,8 @@
-// Apply theme from main app settings
+// Apply theme from main app settings.
+// Ramadan dates are maintained in utils.js — update RAMADAN_DATES there each year.
 (function () {
-    // Ramadan dates - keep in sync with app.js
-    function isCurrentlyRamadan() {
-        const now = new Date();
-        const y = now.getFullYear();
-        // Compare date-only (ignore time), matching app.js behavior
-        const today = new Date(y, now.getMonth(), now.getDate());
-        let start, end;
-        if (y === 2025) {
-            start = new Date(2025, 2, 1);
-            end   = new Date(2025, 2, 30);
-        } else if (y === 2026) {
-            start = new Date(2026, 1, 17);
-            end   = new Date(2026, 2, 18);
-        } else if (y === 2027) {
-            start = new Date(2027, 1, 6);
-            end   = new Date(2027, 2, 7);
-        }
-        return !!(start && end && today >= start && today <= end);
-    }
-
-    // Always remove theme classes first
     document.body.classList.remove('ramadan-mode', 'kids-mode');
 
-    // Read theme; default to 'auto' (matches app.js default) when no settings saved yet
     let theme = 'auto';
     const saved = localStorage.getItem('athanClockSettings');
     if (saved) {
