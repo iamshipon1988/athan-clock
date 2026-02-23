@@ -5,7 +5,7 @@ A lightweight, open-source Islamic prayer time web app. Enter any city, postal c
 
 🌐 **Live at [nimazi.com](https://nimazi.com)**
 
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/license-Personal%20Use-blue)
 
 ---
 
@@ -116,7 +116,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for project conventions, how to run local
 
 ## License
 
-MIT — free for personal and commercial use.
+Free for personal, non-commercial use. Commercial use is not permitted without prior written permission from the author. See [LICENSE](LICENSE) for full terms.
 
 ---
 
