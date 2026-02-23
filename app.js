@@ -1,7 +1,9 @@
 // Settings with defaults
 let settings = {
-    zipCode: "11426", // Default ZIP code
-    country: "US",
+    location: '',       // City, postal code, or address string
+    lat: null,          // Latitude from GPS detect
+    lng: null,          // Longitude from GPS detect
+    locationType: 'address', // 'address' or 'coords'
     theme: "auto", // auto, default, ramadan, kids
     athan: "default" // Athan voice selection
 };
@@ -64,6 +66,7 @@ let isRamadan = false;
 let lastAnnouncedPrayer = null;
 let showingTomorrow = false;
 let currentHijriData = null;    // Hijri data for current viewed date
+let locationTimezone = null;    // IANA timezone from Aladhan API (e.g. "America/New_York")
 
 // Date navigation and caching state
 let currentViewedDate = null;  // Date being viewed (user navigates this)
@@ -78,7 +81,13 @@ const CACHE_EXPIRY_DAYS = 7;    // Entries older than 7 days are stale
 function loadSettings() {
     const savedSettings = localStorage.getItem('athanClockSettings');
     if (savedSettings) {
-        settings = { ...settings, ...JSON.parse(savedSettings) };
+        const parsed = JSON.parse(savedSettings);
+        // Migrate legacy zipCode field
+        if (!parsed.location && parsed.zipCode) {
+            parsed.location = parsed.zipCode;
+            parsed.locationType = 'address';
+        }
+        settings = { ...settings, ...parsed };
     }
 }
 
@@ -127,14 +136,15 @@ function loadPrayerCache() {
 
         // Validate cache version and settings
         if (parsed.cacheVersion !== CACHE_VERSION ||
-            parsed.zipCode !== settings.zipCode ||
-            parsed.country !== settings.country) {
+            parsed.location !== settings.location ||
+            parsed.locationType !== settings.locationType) {
             console.log('Cache invalidated: version or settings mismatch');
             prayerCache = createEmptyCache();
             return;
         }
 
         prayerCache = parsed;
+        if (parsed.timezone) locationTimezone = parsed.timezone;
         cleanExpiredEntries();
     } catch (error) {
         console.error('Error loading cache:', error);
@@ -146,8 +156,9 @@ function loadPrayerCache() {
 function createEmptyCache() {
     return {
         cacheVersion: CACHE_VERSION,
-        zipCode: settings.zipCode,
-        country: settings.country,
+        location: settings.location,
+        locationType: settings.locationType,
+        timezone: null,
         lastUpdated: Date.now(),
         dates: {}
     };
@@ -239,7 +250,16 @@ function updateSundialIcon() {
     }
 
     const now = new Date();
-    const hour = now.getHours() + now.getMinutes() / 60.0;
+    let hour;
+    if (locationTimezone) {
+        const tp = new Intl.DateTimeFormat('en-US', {
+            timeZone: locationTimezone, hour: 'numeric', minute: 'numeric', hour12: false
+        }).formatToParts(now);
+        hour = (parseInt(tp.find(p => p.type === 'hour').value) % 24)
+             + parseInt(tp.find(p => p.type === 'minute').value) / 60.0;
+    } else {
+        hour = now.getHours() + now.getMinutes() / 60.0;
+    }
 
     // Determine if day or night (6am to 6pm is day)
     const isDay = hour >= 6 && hour < 18;
@@ -272,19 +292,16 @@ function updateSundialIcon() {
 // Update clock every second
 function updateClock() {
     const now = new Date();
+    const tzOpts = locationTimezone ? { timeZone: locationTimezone } : {};
     const timeString = now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
+        ...tzOpts, hour: '2-digit', minute: '2-digit', hour12: true
     });
     document.getElementById('clock').textContent = timeString;
 
     // On mobile, also update the sundial time
     if (isMobileViewport() && nextPrayerInfo) {
         const currentTimeString = now.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
+            ...tzOpts, hour: 'numeric', minute: '2-digit', hour12: true
         });
         document.getElementById('nextPrayerName').textContent = currentTimeString;
     }
@@ -299,11 +316,9 @@ updateClock();
 // Update Gregorian date
 function updateGregorianDate() {
     const now = new Date();
+    const tzOpts = locationTimezone ? { timeZone: locationTimezone } : {};
     const dateString = now.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        ...tzOpts, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
     document.getElementById('gregorianDate').textContent = dateString;
 }
@@ -312,11 +327,9 @@ updateGregorianDate();
 
 // Update Gregorian date to show currently viewed date
 function updateGregorianDateForViewed() {
+    const tzOpts = locationTimezone ? { timeZone: locationTimezone } : {};
     const dateString = currentViewedDate.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        ...tzOpts, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
     document.getElementById('gregorianDate').textContent = dateString;
 }
@@ -389,10 +402,11 @@ async function fetchPrayerTimesForDate(date) {
 
         console.log(`Fetching prayer times for ${formatDateKey(date)}...`);
 
-        const response = await fetchWithTimeout(
-            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${settings.zipCode},${settings.country}&method=${CALCULATION_METHOD}`,
-            15000 // 15 second timeout for Fire Tablet
-        );
+        const apiUrl = (settings.locationType === 'coords' && settings.lat && settings.lng)
+            ? `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${settings.lat}&longitude=${settings.lng}&method=${CALCULATION_METHOD}`
+            : `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${encodeURIComponent(settings.location)}&method=${CALCULATION_METHOD}`;
+
+        const response = await fetchWithTimeout(apiUrl, 15000);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -404,7 +418,12 @@ async function fetchPrayerTimesForDate(date) {
             const timings = data.data.timings;
             const hijriData = data.data.date.hijri;
 
-            // Cache the result
+            // Store and cache the location timezone
+            if (data.data.meta && data.data.meta.timezone) {
+                locationTimezone = data.data.meta.timezone;
+                prayerCache.timezone = locationTimezone;
+            }
+
             cachePrayerTimes(date, timings, hijriData);
 
             console.log(`Successfully fetched prayer times for ${formatDateKey(date)}`);
@@ -439,8 +458,8 @@ async function initializePrayerTimes() {
 
     loadPrayerCache();
 
-    // Validate ZIP code
-    if (!settings.zipCode || settings.zipCode.trim() === '') {
+    // Validate location
+    if (!settings.location || settings.location.trim() === '') {
         document.getElementById('prayerGrid').innerHTML = `
             <div class="loading" style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 15px;">📍</div>
@@ -567,10 +586,10 @@ async function fetchPrayerTimes() {
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const year = today.getFullYear();
 
-        // Use timingsByAddress endpoint which works with current dates
-        const response = await fetch(
-            `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${settings.zipCode},${settings.country}&method=${CALCULATION_METHOD}`
-        );
+        const legacyUrl = (settings.locationType === 'coords' && settings.lat && settings.lng)
+            ? `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${settings.lat}&longitude=${settings.lng}&method=${CALCULATION_METHOD}`
+            : `https://api.aladhan.com/v1/timingsByAddress/${day}-${month}-${year}?address=${encodeURIComponent(settings.location)}&method=${CALCULATION_METHOD}`;
+        const response = await fetch(legacyUrl);
         const data = await response.json();
 
         if (data.code === 200 && data.data && data.data.timings) {
@@ -699,12 +718,43 @@ function displayPrayerTimes() {
     }
 }
 
-// Parse time string to Date object for specific date
+// Parse time string to Date object anchored to the location's timezone.
+// e.g. "05:43" in "Europe/London" returns the UTC moment when London's clock reads 05:43.
 function parseTimeString(timeString, forDate = null) {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const date = forDate ? new Date(forDate) : new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date;
+    const baseDate = forDate ? new Date(forDate) : new Date();
+    const [h, m] = timeString.split(':').map(Number);
+
+    if (!locationTimezone) {
+        // Fallback: use browser local time (single-timezone setup)
+        const d = new Date(baseDate);
+        d.setHours(h, m, 0, 0);
+        return d;
+    }
+
+    const y  = baseDate.getFullYear();
+    const mo = String(baseDate.getMonth() + 1).padStart(2, '0');
+    const d  = String(baseDate.getDate()).padStart(2, '0');
+
+    // Treat the prayer time naively as UTC to get a rough anchor
+    const roughUTC = new Date(`${y}-${mo}-${d}T${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00Z`);
+
+    // Find what the target timezone's clock reads at that UTC moment
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: locationTimezone,
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false
+    }).formatToParts(roughUTC);
+
+    const localH = parseInt(parts.find(p => p.type === 'hour').value) % 24;
+    const localM = parseInt(parts.find(p => p.type === 'minute').value);
+
+    // Compute the UTC offset in minutes and correct the timestamp
+    let offsetMins = (localH - h) * 60 + (localM - m);
+    if (offsetMins >  720) offsetMins -= 1440;  // handle day-boundary wraparound
+    if (offsetMins < -720) offsetMins += 1440;
+
+    return new Date(roughUTC.getTime() - offsetMins * 60000);
 }
 
 // Format time to 12-hour format
@@ -874,10 +924,9 @@ function updateNextPrayer() {
         // Check if mobile - show current time in nextPrayerName, prayer name in nextPrayerTime
         if (isMobileViewport()) {
             const now = new Date();
+            const tzOpts = locationTimezone ? { timeZone: locationTimezone } : {};
             const currentTimeString = now.toLocaleTimeString('en-US', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
+                ...tzOpts, hour: 'numeric', minute: '2-digit', hour12: true
             });
             document.getElementById('nextPrayerName').textContent = currentTimeString;
             document.getElementById('nextPrayerTime').textContent = nextPrayer.name;
@@ -1397,87 +1446,6 @@ athanAudio.onpause = function() {
     console.log('Athan paused');
 };
 
-// Detect user location and get ZIP code
-async function detectLocation() {
-    const button = document.getElementById('detectLocationButton');
-    const zipCodeInput = document.getElementById('zipCodeInput');
-
-    // Check if geolocation is supported
-    if (!navigator.geolocation) {
-        alert('Geolocation is not supported by your browser');
-        return;
-    }
-
-    // Disable button and show loading state
-    button.disabled = true;
-    button.innerHTML = '<span class="material-icons rotating">refresh</span>';
-
-    try {
-        // Get user's position
-        const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-                timeout: 10000,
-                maximumAge: 300000 // 5 minutes cache
-            });
-        });
-
-        const { latitude, longitude } = position.coords;
-        console.log(`Location detected: ${latitude}, ${longitude}`);
-
-        // Use BigDataCloud reverse geocoding API (free, no API key required)
-        const response = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-        );
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch location data');
-        }
-
-        const data = await response.json();
-        console.log('Location data:', data);
-
-        // Extract ZIP code (postcode)
-        const zipCode = data.postcode || data.postalCode;
-
-        if (zipCode && /^\d{5}$/.test(zipCode)) {
-            zipCodeInput.value = zipCode;
-            console.log(`ZIP code detected: ${zipCode}`);
-
-            // Show success feedback
-            button.innerHTML = '<span class="material-icons">check_circle</span>';
-            setTimeout(() => {
-                button.innerHTML = '<span class="material-icons">my_location</span>';
-                button.disabled = false;
-            }, 2000);
-        } else {
-            throw new Error('Could not determine ZIP code from location');
-        }
-
-    } catch (error) {
-        console.error('Error detecting location:', error);
-
-        // Show error feedback
-        button.innerHTML = '<span class="material-icons">error</span>';
-
-        let errorMessage = 'Could not detect location. ';
-        if (error.code === 1) {
-            errorMessage += 'Please enable location permissions.';
-        } else if (error.code === 2) {
-            errorMessage += 'Location unavailable.';
-        } else if (error.code === 3) {
-            errorMessage += 'Request timeout.';
-        } else {
-            errorMessage += error.message || 'Please try again.';
-        }
-
-        alert(errorMessage);
-
-        setTimeout(() => {
-            button.innerHTML = '<span class="material-icons">my_location</span>';
-            button.disabled = false;
-        }, 2000);
-    }
-}
 
 // Show prayer details modal
 function showPrayerDetails(prayerName, prayerTime) {
