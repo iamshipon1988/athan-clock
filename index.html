@@ -31,9 +31,9 @@
             <a href="guide.html" class="guide-button" aria-label="Prayer Guide">
                 <span class="material-icons">accessibility_new</span>
             </a>
-            <button class="settings-button" onclick="openSettings()">
+            <a href="settings.html" class="settings-button" aria-label="Settings">
                 <span class="material-icons">settings</span>
-            </button>
+            </a>
         </div>
         <div class="date-info">
             <button class="date-nav-button date-nav-prev" id="dateNavPrev" onclick="navigateDateDebounced(-1)" aria-label="Previous day">
@@ -98,55 +98,6 @@
     </div>
 </div>
 
-<!-- Settings Modal -->
-<div class="settings-modal" id="settingsModal">
-    <div class="settings-modal-content">
-        <h2>⚙️ Settings</h2>
-        <div class="settings-form">
-            <div class="form-group">
-                <label for="zipCodeInput">ZIP Code</label>
-                <div class="zip-input-group">
-                    <input type="text" id="zipCodeInput" placeholder="Enter ZIP code" maxlength="5">
-                    <button type="button" class="detect-location-button" id="detectLocationButton" onclick="detectLocation()" title="Detect my location">
-                        <span class="material-icons">my_location</span>
-                    </button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="themeSelect">Theme Preference</label>
-                <select id="themeSelect">
-                    <option value="auto">Auto (Ramadan theme during Ramadan)</option>
-                    <option value="default">Default (Green)</option>
-                    <option value="ramadan">Ramadan (Golden)</option>
-                    <option value="kids">Kids (Colorful & Fun)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="athanSelect">Athan Voice</label>
-                <select id="athanSelect">
-                    <option value="default">Default</option>
-                    <option value="Makkah">Makkah</option>
-                    <option value="Madinah">Madinah</option>
-                    <option value="Alaqsa">Al-Aqsa</option>
-                    <option value="Al-Hussaini">Al-Hussaini</option>
-                    <option value="Hafez">Hafez</option>
-                    <option value="Minshawi">Minshawi</option>
-                    <option value="Naghshbandi">Naghshbandi</option>
-                    <option value="Saber">Saber</option>
-                    <option value="Sharif">Sharif</option>
-                </select>
-                <button type="button" class="preview-athan-button" id="previewAthanButton" onclick="previewAthan()">🔊 Play</button>
-            </div>
-            <div class="settings-buttons">
-                <button class="settings-cancel-button" onclick="closeSettings()">Cancel</button>
-                <button class="settings-save-button" onclick="saveSettings()">Save</button>
-            </div>
-        </div>
-        <div class="settings-copyright">
-            <a href="https://nimazi.com" target="_blank" rel="noopener noreferrer">Nimazi</a> by <a href="https://sazzad.me" target="_blank" rel="noopener noreferrer">Sazzad Hossain</a>
-        </div>
-    </div>
-</div>
 
 <!-- Desktop Side Navigation -->
 <nav class="desktop-side-nav">
@@ -158,12 +109,12 @@
         <span class="material-icons">clean_hands</span>
         <span class="side-nav-tooltip">Guide</span>
     </a>
-    <button class="side-nav-item" onclick="openSettings()" aria-label="Settings">
+    <a href="settings.html" class="side-nav-item" aria-label="Settings">
         <span class="material-icons">settings</span>
         <span class="side-nav-tooltip">Settings</span>
-    </button>
+    </a>
     <a href="about.html" class="side-nav-item" aria-label="About">
-        <span class="material-icons">info</span>
+        <img src="assets/branding/symbol-flat.svg" class="nav-symbol-img" alt="">
         <span class="side-nav-tooltip">About</span>
     </a>
 </nav>
@@ -178,12 +129,12 @@
         <span class="material-icons">clean_hands</span>
         <span class="bottom-nav-label">Guide</span>
     </a>
-    <button class="bottom-nav-item" onclick="openSettings()" aria-label="Settings">
+    <a href="settings.html" class="bottom-nav-item" aria-label="Settings">
         <span class="material-icons">settings</span>
         <span class="bottom-nav-label">Settings</span>
-    </button>
+    </a>
     <a href="about.html" class="bottom-nav-item" aria-label="About">
-        <span class="material-icons">info</span>
+        <img src="assets/branding/symbol-flat.svg" class="nav-symbol-img" alt="">
         <span class="bottom-nav-label">About</span>
     </a>
 </div>

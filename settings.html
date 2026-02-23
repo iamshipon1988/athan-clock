@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Settings - Nimazi</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="styles.css" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Nimazi" />
+<link rel="manifest" href="/assets/favicon/site.webmanifest" />
+</head>
+
+<body class="settingsPage">
+<div class="pattern-overlay"></div>
+<div class="geometric-pattern"></div>
+
+<div class="container">
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+
+    <div class="settings-page-header">
+        <h1 class="settings-page-title">
+            <span class="material-icons settings-page-title-icon">settings</span>
+            Settings
+        </h1>
+    </div>
+
+    <div class="settings-page-body">
+        <div class="settings-page-card">
+
+            <div class="form-group">
+                <label for="zipCodeInput">ZIP Code</label>
+                <div class="zip-input-group">
+                    <input type="text" id="zipCodeInput" placeholder="Enter ZIP code" maxlength="5" inputmode="numeric" pattern="\d{5}">
+                    <button type="button" class="detect-location-button" id="detectLocationButton" onclick="detectLocation()" title="Detect my location">
+                        <span class="material-icons">my_location</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="themeSelect">Theme</label>
+                <select id="themeSelect">
+                    <option value="auto">Auto (Ramadan theme during Ramadan)</option>
+                    <option value="default">Default (Green)</option>
+                    <option value="ramadan">Ramadan (Golden)</option>
+                    <option value="kids">Kids (Colorful &amp; Fun)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="athanSelect">Athan Voice</label>
+                <select id="athanSelect">
+                    <option value="default">Default</option>
+                    <option value="Makkah">Makkah</option>
+                    <option value="Madinah">Madinah</option>
+                    <option value="Alaqsa">Al-Aqsa</option>
+                    <option value="Al-Hussaini">Al-Hussaini</option>
+                    <option value="Hafez">Hafez</option>
+                    <option value="Minshawi">Minshawi</option>
+                    <option value="Naghshbandi">Naghshbandi</option>
+                    <option value="Saber">Saber</option>
+                    <option value="Sharif">Sharif</option>
+                </select>
+                <button type="button" class="preview-athan-button" id="previewAthanButton" onclick="previewAthan()">🔊 Play</button>
+            </div>
+
+        </div>
+
+        <div class="settings-page-actions">
+            <button class="settings-cancel-button" onclick="cancelSettings()">Cancel</button>
+            <button class="settings-save-button" onclick="saveSettings()">Save</button>
+        </div>
+
+        <div class="settings-copyright">
+            <a href="https://nimazi.com" target="_blank" rel="noopener noreferrer">Nimazi</a> by <a href="https://sazzad.me" target="_blank" rel="noopener noreferrer">Sazzad Hossain</a>
+        </div>
+    </div>
+
+</div><!-- /.container -->
+
+<!-- Desktop Side Navigation -->
+<nav class="desktop-side-nav">
+    <a href="index.html" class="side-nav-item" aria-label="Prayer Times">
+        <span class="material-icons">accessibility_new</span>
+        <span class="side-nav-tooltip">Prayer</span>
+    </a>
+    <a href="guide.html" class="side-nav-item" aria-label="Prayer Guide">
+        <span class="material-icons">clean_hands</span>
+        <span class="side-nav-tooltip">Guide</span>
+    </a>
+    <a href="settings.html" class="side-nav-item active" aria-label="Settings">
+        <span class="material-icons">settings</span>
+        <span class="side-nav-tooltip">Settings</span>
+    </a>
+    <a href="about.html" class="side-nav-item" aria-label="About">
+        <img src="assets/branding/symbol-flat.svg" class="nav-symbol-img" alt="">
+        <span class="side-nav-tooltip">About</span>
+    </a>
+</nav>
+
+<!-- Mobile Bottom Navigation -->
+<div class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item" aria-label="Prayer Times">
+        <span class="material-icons">accessibility_new</span>
+        <span class="bottom-nav-label">Prayer</span>
+    </a>
+    <a href="guide.html" class="bottom-nav-item" aria-label="Prayer Guide">
+        <span class="material-icons">clean_hands</span>
+        <span class="bottom-nav-label">Guide</span>
+    </a>
+    <a href="settings.html" class="bottom-nav-item active" aria-label="Settings">
+        <span class="material-icons">settings</span>
+        <span class="bottom-nav-label">Settings</span>
+    </a>
+    <a href="about.html" class="bottom-nav-item" aria-label="About">
+        <img src="assets/branding/symbol-flat.svg" class="nav-symbol-img" alt="">
+        <span class="bottom-nav-label">About</span>
+    </a>
+</div>
+
+<audio id="athanAudio" preload="auto">
+    <source src="athan/default.mp3" type="audio/mpeg">
+</audio>
+
+<script src="guide.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

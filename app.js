@@ -1479,82 +1479,6 @@ async function detectLocation() {
     }
 }
 
-// Settings Modal Functions
-function openSettings() {
-    const modal = document.getElementById('settingsModal');
-    const zipCodeInput = document.getElementById('zipCodeInput');
-    const themeSelect = document.getElementById('themeSelect');
-    const athanSelect = document.getElementById('athanSelect');
-
-    // Populate current settings
-    zipCodeInput.value = settings.zipCode;
-    themeSelect.value = settings.theme;
-    athanSelect.value = settings.athan;
-
-    // Show modal
-    modal.classList.add('show');
-}
-
-function closeSettings() {
-    const modal = document.getElementById('settingsModal');
-    modal.classList.remove('show');
-    if (settingsOpenedViaHash) {
-        settingsOpenedViaHash = false;
-        history.back();
-    }
-}
-
-function saveSettings() {
-    const zipCodeInput = document.getElementById('zipCodeInput');
-    const themeSelect = document.getElementById('themeSelect');
-    const athanSelect = document.getElementById('athanSelect');
-
-    // Validate ZIP code
-    const newZipCode = zipCodeInput.value.trim();
-    const oldZipCode = settings.zipCode;
-
-    // Require ZIP code to be entered
-    if (!newZipCode || newZipCode === '') {
-        alert('Please enter a ZIP code to see prayer times');
-        return;
-    }
-
-    // Validate ZIP code format
-    if (!/^\d{5}$/.test(newZipCode)) {
-        alert('Please enter a valid 5-digit ZIP code');
-        return;
-    }
-
-    settings.zipCode = newZipCode;
-
-    // Update theme preference
-    settings.theme = themeSelect.value;
-
-    // Update athan preference
-    settings.athan = athanSelect.value;
-
-    // Save to localStorage
-    saveSettingsToStorage();
-
-    // Apply new theme immediately
-    applyTheme();
-
-    // Update athan audio source
-    updateAthanAudioSource();
-
-    // Clear cache and refresh if ZIP code changed
-    if (newZipCode !== oldZipCode) {
-        clearPrayerCache();
-        initializePrayerTimes();
-    }
-
-    // Close modal
-    closeSettings();
-
-    // Show confirmation
-    console.log('Settings saved:', settings);
-}
-
 // Show prayer details modal
 function showPrayerDetails(prayerName, prayerTime) {
     const modal = document.getElementById('prayerDetailsModal');
@@ -1625,16 +1549,3 @@ document.getElementById('prayerDetailsModal').addEventListener('click', (e) => {
     }
 });
 
-document.getElementById('settingsModal').addEventListener('click', (e) => {
-    if (e.target.id === 'settingsModal') {
-        closeSettings();
-    }
-});
-
-// Auto-open settings if redirected from another page via #settings hash
-let settingsOpenedViaHash = false;
-if (window.location.hash === '#settings') {
-    history.replaceState(null, '', window.location.pathname);
-    settingsOpenedViaHash = true;
-    openSettings();
-}

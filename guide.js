@@ -1,34 +1,45 @@
 // Apply theme from main app settings
 (function () {
-    const saved = localStorage.getItem('athanClockSettings');
-    if (!saved) return;
-    try {
-        const s = JSON.parse(saved);
-        document.body.classList.remove('ramadan-mode', 'kids-mode');
-
-        if (s.theme === 'ramadan') {
-            document.body.classList.add('ramadan-mode');
-        } else if (s.theme === 'kids') {
-            document.body.classList.add('kids-mode');
-        } else if (s.theme === 'auto') {
-            const now = new Date();
-            const y = now.getFullYear();
-            let start, end;
-            if (y === 2025) {
-                start = new Date(2025, 2, 1);
-                end   = new Date(2025, 2, 30);
-            } else if (y === 2026) {
-                start = new Date(2026, 1, 17);
-                end   = new Date(2026, 2, 18);
-            } else if (y === 2027) {
-                start = new Date(2027, 1, 6);
-                end   = new Date(2027, 2, 7);
-            }
-            if (start && end && now >= start && now <= end) {
-                document.body.classList.add('ramadan-mode');
-            }
+    // Ramadan dates - keep in sync with app.js
+    function isCurrentlyRamadan() {
+        const now = new Date();
+        const y = now.getFullYear();
+        // Compare date-only (ignore time), matching app.js behavior
+        const today = new Date(y, now.getMonth(), now.getDate());
+        let start, end;
+        if (y === 2025) {
+            start = new Date(2025, 2, 1);
+            end   = new Date(2025, 2, 30);
+        } else if (y === 2026) {
+            start = new Date(2026, 1, 17);
+            end   = new Date(2026, 2, 18);
+        } else if (y === 2027) {
+            start = new Date(2027, 1, 6);
+            end   = new Date(2027, 2, 7);
         }
-    } catch (e) { /* ignore parse errors */ }
+        return !!(start && end && today >= start && today <= end);
+    }
+
+    // Always remove theme classes first
+    document.body.classList.remove('ramadan-mode', 'kids-mode');
+
+    // Read theme; default to 'auto' (matches app.js default) when no settings saved yet
+    let theme = 'auto';
+    const saved = localStorage.getItem('athanClockSettings');
+    if (saved) {
+        try {
+            const s = JSON.parse(saved);
+            theme = s.theme || 'auto';
+        } catch (e) { /* ignore parse errors */ }
+    }
+
+    if (theme === 'ramadan') {
+        document.body.classList.add('ramadan-mode');
+    } else if (theme === 'kids') {
+        document.body.classList.add('kids-mode');
+    } else if (theme === 'auto' && isCurrentlyRamadan()) {
+        document.body.classList.add('ramadan-mode');
+    }
 })();
 
 function toggleSection(id) {
