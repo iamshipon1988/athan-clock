@@ -164,6 +164,16 @@
     <source src="athan/default.mp3" type="audio/mpeg">
 </audio>
 
+<!-- Install nudge — shown once on first mobile visit when not already installed -->
+<div class="install-nudge" id="installNudge">
+    <span class="material-icons install-nudge-icon">add_to_home_screen</span>
+    <div class="install-nudge-text">Add Nimazi to your home screen for the best experience.</div>
+    <a href="about.html#install" class="install-nudge-link">How?</a>
+    <button class="install-nudge-dismiss" onclick="dismissInstallNudge()" aria-label="Dismiss">
+        <span class="material-icons">close</span>
+    </button>
+</div>
+
 <script src="js/utils.js"></script>
 <script src="js/app.js"></script>
 

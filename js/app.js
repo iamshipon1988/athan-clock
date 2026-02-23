@@ -1468,3 +1468,22 @@ function onboardingDetectLocation() {
     );
 }
 
+// ─── Install nudge ────────────────────────────────────────────────────────────
+// Shown once on first mobile visit when the app is not already installed.
+function showInstallNudge() {
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    if (localStorage.getItem('nimazi_install_nudge')) return;
+    if (window.innerWidth > 768) return;
+    const nudge = document.getElementById('installNudge');
+    if (!nudge) return;
+    setTimeout(() => nudge.classList.add('show'), 3000);
+}
+
+function dismissInstallNudge() {
+    localStorage.setItem('nimazi_install_nudge', '1');
+    const nudge = document.getElementById('installNudge');
+    if (nudge) nudge.classList.remove('show');
+}
+
+showInstallNudge();
+
