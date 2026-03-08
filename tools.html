@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>Settings - Nimazi</title>
+<title>Islamic Tools - Nimazi</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -18,7 +18,7 @@
 <link rel="manifest" href="assets/favicon/site.webmanifest" />
 </head>
 
-<body class="settingsPage">
+<body class="toolsPage">
 <script>
 (function(){try{var s=JSON.parse(localStorage.getItem('athanClockSettings')||'{}'),t=s.theme||'auto';if(t==='ramadan'){document.body.classList.add('ramadan-mode');}else if(t==='kids'){document.body.classList.add('kids-mode');}else if(t==='auto'){var n=new Date(),y=n.getFullYear(),rd={2025:[new Date(2025,2,1),new Date(2025,2,30)],2026:[new Date(2026,1,17),new Date(2026,2,18)],2027:[new Date(2027,1,6),new Date(2027,2,7)]};if(rd[y]&&n>=rd[y][0]&&n<=rd[y][1])document.body.classList.add('ramadan-mode');}}catch(e){}})();
 </script>
@@ -28,66 +28,53 @@
 <div class="container">
     <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
 
-    <div class="settings-page-header">
-        <h1 class="settings-page-title">
-            <span class="material-icons settings-page-title-icon">settings</span>
-            Settings
-        </h1>
+    <div class="tools-hero">
+        <p class="tools-hero-eyebrow">From the makers of Nimazi</p>
+        <h1 class="tools-hero-title">Islamic Tools</h1>
+        <p class="tools-hero-subtitle">Purpose-built calculators for worship and Islamic life</p>
     </div>
 
-    <div class="settings-page-body">
-        <div class="settings-page-card">
+    <div class="tools-cards">
 
-            <div class="form-group">
-                <label for="locationInput">Location</label>
-                <div class="zip-input-group">
-                    <input type="text" id="locationInput" placeholder="City, postal code, or address">
-                    <button type="button" class="detect-location-button" id="detectLocationButton" onclick="detectLocation()" title="Detect my location">
-                        <span class="material-icons">my_location</span>
-                    </button>
+        <a href="https://zakat.nimazi.com/" target="_blank" rel="noopener noreferrer" class="tool-card tool-card-zakat">
+            <div class="tool-card-watermark">زكاة</div>
+            <div class="tool-card-body">
+                <div class="tool-card-header">
+                    <span class="material-icons tool-card-icon">volunteer_activism</span>
+                    <span class="tool-card-badge">Free</span>
+                </div>
+                <h2 class="tool-card-name">Zakat</h2>
+                <p class="tool-card-arabic-sub">الزكاة</p>
+                <p class="tool-card-desc">Calculate your annual Zakat obligation across savings, gold, silver, investments, and business assets — with clear guidance on each category.</p>
+                <div class="tool-card-cta">
+                    Open Calculator
+                    <span class="material-icons">arrow_forward</span>
                 </div>
             </div>
+        </a>
 
-            <div class="form-group">
-                <label for="themeSelect">Theme</label>
-                <select id="themeSelect">
-                    <option value="auto">Auto (Ramadan theme during Ramadan)</option>
-                    <option value="default">Default (Green)</option>
-                    <option value="ramadan">Ramadan (Golden)</option>
-                    <option value="kids">Kids (Colorful &amp; Fun)</option>
-                </select>
+        <a href="https://mirath.nimazi.com/" target="_blank" rel="noopener noreferrer" class="tool-card tool-card-mirath">
+            <div class="tool-card-watermark">ميراث</div>
+            <div class="tool-card-body">
+                <div class="tool-card-header">
+                    <span class="material-icons tool-card-icon">account_tree</span>
+                    <span class="tool-card-badge">Free</span>
+                </div>
+                <h2 class="tool-card-name">Mirath</h2>
+                <p class="tool-card-arabic-sub">الميراث</p>
+                <p class="tool-card-desc">Calculate Islamic inheritance shares for any estate according to the principles of Fara'id — specifying heirs and getting a clear breakdown.</p>
+                <div class="tool-card-cta">
+                    Open Calculator
+                    <span class="material-icons">arrow_forward</span>
+                </div>
             </div>
+        </a>
 
-            <div class="form-group">
-                <label for="athanSelect">Athan Voice</label>
-                <select id="athanSelect">
-                    <option value="default">Default</option>
-                    <option value="Makkah">Makkah</option>
-                    <option value="Madinah">Madinah</option>
-                    <option value="Alaqsa">Al-Aqsa</option>
-                    <option value="Al-Hussaini">Al-Hussaini</option>
-                    <option value="Hafez">Hafez</option>
-                    <option value="Minshawi">Minshawi</option>
-                    <option value="Naghshbandi">Naghshbandi</option>
-                    <option value="Saber">Saber</option>
-                    <option value="Sharif">Sharif</option>
-                </select>
-                <button type="button" class="preview-athan-button" id="previewAthanButton" onclick="previewAthan()">🔊 Play</button>
-            </div>
-
-        </div>
-
-        <div class="settings-page-actions">
-            <button class="settings-cancel-button" onclick="cancelSettings()">Cancel</button>
-            <button class="settings-save-button" onclick="saveSettings()">Save</button>
-        </div>
-
-        <div class="settings-copyright">
-            <a href="https://nimazi.com" target="_blank" rel="noopener noreferrer">Nimazi</a> by <a href="https://sazzad.me" target="_blank" rel="noopener noreferrer">Sazzad Hossain</a>
-        </div>
     </div>
 
-</div><!-- /.container -->
+    <p class="tools-coming-soon">More tools coming soon, insha'Allah.</p>
+
+</div>
 
 <!-- Desktop Side Navigation -->
 <nav class="desktop-side-nav">
@@ -99,11 +86,11 @@
         <span class="material-icons">clean_hands</span>
         <span class="side-nav-tooltip">Guide</span>
     </a>
-    <a href="settings.html" class="side-nav-item active" aria-label="Settings">
+    <a href="settings.html" class="side-nav-item" aria-label="Settings">
         <span class="material-icons">settings</span>
         <span class="side-nav-tooltip">Settings</span>
     </a>
-    <a href="tools.html" class="side-nav-item" aria-label="More Tools">
+    <a href="tools.html" class="side-nav-item active" aria-label="More Tools">
         <span class="material-icons">apps</span>
         <span class="side-nav-tooltip">Tools</span>
     </a>
@@ -123,7 +110,7 @@
         <span class="material-icons">clean_hands</span>
         <span class="bottom-nav-label">Guide</span>
     </a>
-    <a href="settings.html" class="bottom-nav-item active" aria-label="Settings">
+    <a href="settings.html" class="bottom-nav-item" aria-label="Settings">
         <span class="material-icons">settings</span>
         <span class="bottom-nav-label">Settings</span>
     </a>
@@ -133,12 +120,6 @@
     </a>
 </div>
 
-<audio id="athanAudio" preload="auto">
-    <source src="athan/default.mp3" type="audio/mpeg">
-</audio>
-
 <script src="js/utils.js"></script>
-<script src="js/guide.js"></script>
-<script src="js/settings.js"></script>
 </body>
 </html>

@@ -4291,6 +4291,264 @@ body.kids-mode .guide-eid-badge {
 }
 
 /* ══════════════════════════════════════════
+   Tools Page
+   ══════════════════════════════════════════ */
+
+body.toolsPage .bismillah {
+    display: block;
+    flex: none;
+    padding: 10px 0 15px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.tools-hero {
+    text-align: center;
+    padding: 24px 0 36px;
+}
+
+.tools-hero-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 10px;
+}
+
+.tools-hero-title {
+    font-family: 'Amiri', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--color-accent);
+    line-height: 1.1;
+    margin-bottom: 10px;
+}
+
+.tools-hero-subtitle {
+    font-size: 15px;
+    opacity: 0.7;
+    max-width: 340px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.tools-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 24px;
+}
+
+.tool-card {
+    position: relative;
+    display: block;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+}
+
+.tool-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tool-card:active {
+    transform: translateY(-1px);
+}
+
+.tool-card-watermark {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-family: 'Amiri', serif;
+    font-size: 130px;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.06;
+    color: #fff;
+}
+
+.tool-card-body {
+    position: relative;
+    z-index: 1;
+    padding: 24px 24px 20px;
+}
+
+.tool-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.tool-card-icon {
+    font-size: 32px !important;
+    color: var(--color-accent);
+}
+
+.tool-card-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid rgba(244, 213, 113, 0.4);
+    border-radius: 20px;
+    padding: 3px 10px;
+    opacity: 0.8;
+}
+
+.tool-card-name {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 2px;
+}
+
+.tool-card-arabic-sub {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    opacity: 0.5;
+    margin-bottom: 12px;
+}
+
+.tool-card-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.75;
+    margin-bottom: 20px;
+}
+
+.tool-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-accent);
+    letter-spacing: 0.02em;
+}
+
+.tool-card-cta .material-icons {
+    font-size: 18px !important;
+    transition: transform 0.2s ease;
+}
+
+.tool-card:hover .tool-card-cta .material-icons {
+    transform: translateX(4px);
+}
+
+/* Zakat card accent */
+.tool-card-zakat {
+    border-color: rgba(244, 213, 113, 0.25);
+}
+
+.tool-card-zakat .tool-card-watermark {
+    color: #f4d571;
+    opacity: 0.08;
+}
+
+/* Mirath card accent */
+.tool-card-mirath {
+    border-color: rgba(100, 210, 180, 0.2);
+}
+
+.tool-card-mirath .tool-card-watermark {
+    color: #64d2b4;
+    opacity: 0.08;
+}
+
+.tool-card-mirath .tool-card-icon {
+    color: #64d2b4;
+}
+
+.tool-card-mirath .tool-card-badge {
+    color: #64d2b4;
+    border-color: rgba(100, 210, 180, 0.4);
+}
+
+.tool-card-mirath .tool-card-cta {
+    color: #64d2b4;
+}
+
+.tools-coming-soon {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.4;
+    padding-bottom: 32px;
+    font-style: italic;
+}
+
+/* Ramadan overrides */
+body.ramadan-mode .tools-hero-title {
+    color: #8B6914;
+}
+
+body.ramadan-mode .tool-card {
+    background: rgba(255, 248, 235, 0.18);
+    border-color: rgba(139, 105, 20, 0.2);
+}
+
+body.ramadan-mode .tool-card:hover {
+    background: rgba(255, 248, 235, 0.26);
+}
+
+body.ramadan-mode .tool-card-icon,
+body.ramadan-mode .tool-card-badge,
+body.ramadan-mode .tool-card-cta {
+    color: #8B6914;
+}
+
+body.ramadan-mode .tool-card-badge {
+    border-color: rgba(139, 105, 20, 0.35);
+}
+
+body.ramadan-mode .tool-card-zakat {
+    border-color: rgba(139, 105, 20, 0.25);
+}
+
+body.ramadan-mode .tool-card-mirath .tool-card-icon,
+body.ramadan-mode .tool-card-mirath .tool-card-badge,
+body.ramadan-mode .tool-card-mirath .tool-card-cta {
+    color: #2d7d60;
+}
+
+body.ramadan-mode .tool-card-mirath {
+    border-color: rgba(45, 125, 96, 0.2);
+}
+
+/* Desktop — side by side */
+@media (min-width: 900px) {
+    .tools-cards {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .tool-card {
+        flex: 1;
+    }
+
+    .tool-card-watermark {
+        font-size: 160px;
+    }
+
+    .tools-hero-title {
+        font-size: 52px;
+    }
+}
+
+/* ══════════════════════════════════════════
    About Page
    ══════════════════════════════════════════ */
 
@@ -4402,6 +4660,135 @@ body.aboutPage .bismillah {
     line-height: 1.65;
     color: rgba(255, 255, 255, 0.72);
     margin: 0;
+}
+
+/* Home screen tools strip */
+.tools-strip {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-bottom: 8px;
+}
+
+.tools-strip-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.tools-strip-link .material-icons {
+    font-size: 17px !important;
+    opacity: 0.85;
+}
+
+.tools-strip-link:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+body.ramadan-mode .tools-strip-link {
+    background: rgba(139, 105, 20, 0.12);
+    border-color: rgba(139, 105, 20, 0.2);
+    color: rgba(139, 105, 20, 0.85);
+}
+
+body.ramadan-mode .tools-strip-link:hover {
+    background: rgba(139, 105, 20, 0.2);
+}
+
+body.kids-mode .tools-strip-link {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Tools card */
+.about-card-tools {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.about-tools-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.about-tool-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.about-tool-link:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.about-tool-icon {
+    font-size: 24px !important;
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+
+.about-tool-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.about-tool-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.about-tool-desc {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.about-tool-arrow {
+    font-size: 16px !important;
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+/* Ramadan overrides for tools card */
+body.ramadan-mode .about-card-tools {
+    border-color: rgba(139, 105, 20, 0.2);
+}
+
+body.ramadan-mode .about-tool-link {
+    background: rgba(139, 105, 20, 0.1);
+    border-color: rgba(139, 105, 20, 0.2);
+}
+
+body.ramadan-mode .about-tool-link:hover {
+    background: rgba(139, 105, 20, 0.18);
+}
+
+body.ramadan-mode .about-tool-name {
+    color: #8B6914;
 }
 
 /* GitHub card */
