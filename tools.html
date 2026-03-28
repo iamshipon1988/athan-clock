@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>Nimazi - Prayer Companion</title>
+<title>Islamic Tools - Nimazi</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -18,7 +18,7 @@
 <link rel="manifest" href="assets/favicon/site.webmanifest" />
 </head>
 
-<body>
+<body class="toolsPage">
 <script>
 (function(){try{var s=JSON.parse(localStorage.getItem('athanClockSettings')||'{}'),t=s.theme||'auto';if(t==='ramadan'){document.body.classList.add('ramadan-mode');}else if(t==='kids'){document.body.classList.add('kids-mode');}else if(t==='auto'){var n=new Date(),y=n.getFullYear(),rd={2025:[new Date(2025,2,1),new Date(2025,2,30)],2026:[new Date(2026,1,17),new Date(2026,2,18)],2027:[new Date(2027,1,6),new Date(2027,2,7)]};if(rd[y]&&n>=rd[y][0]&&n<=rd[y][1])document.body.classList.add('ramadan-mode');}}catch(e){}})();
 </script>
@@ -26,96 +26,59 @@
 <div class="geometric-pattern"></div>
 
 <div class="container">
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
 
-    <div class="header">
-        <div class="header-left">
-            <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
-            <div class="current-time" id="clock">--:--</div>
-            <a href="guide.html" class="guide-button" aria-label="Prayer Guide">
-                <span class="material-icons">accessibility_new</span>
-            </a>
-            <a href="settings.html" class="settings-button" aria-label="Settings">
-                <span class="material-icons">settings</span>
-            </a>
-        </div>
-        <div class="date-info">
-            <button class="date-nav-button date-nav-prev" id="dateNavPrev" onclick="navigateDateDebounced(-1)" aria-label="Previous day">
-                <span class="material-icons">chevron_left</span>
-            </button>
-            <div class="date-container">
-                <div class="gregorian-date" id="gregorianDate">Loading...</div>
-                <div class="hijri-date" id="hijriDate">Loading...</div>
+    <div class="tools-hero">
+        <p class="tools-hero-eyebrow">From the makers of Nimazi</p>
+        <h1 class="tools-hero-title">Islamic Tools</h1>
+        <p class="tools-hero-subtitle">Purpose-built calculators for worship and Islamic life</p>
+    </div>
+
+    <div class="tools-cards">
+
+        <a href="https://zakat.nimazi.com/" target="_blank" rel="noopener noreferrer" class="tool-card tool-card-zakat">
+            <div class="tool-card-watermark">زكاة</div>
+            <div class="tool-card-body">
+                <div class="tool-card-header">
+                    <span class="material-icons tool-card-icon">volunteer_activism</span>
+                    <span class="tool-card-badge">Free</span>
+                </div>
+                <h2 class="tool-card-name">Zakat</h2>
+                <p class="tool-card-arabic-sub">الزكاة</p>
+                <p class="tool-card-desc">Calculate your annual Zakat obligation across savings, gold, silver, investments, and business assets — with clear guidance on each category.</p>
+                <div class="tool-card-cta">
+                    Open Calculator
+                    <span class="material-icons">arrow_forward</span>
+                </div>
             </div>
-            <button class="date-nav-button date-nav-next" id="dateNavNext" onclick="navigateDateDebounced(1)" aria-label="Next day">
-                <span class="material-icons">chevron_right</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="next-prayer-section">
-
-        <div class="next-prayer-info">
-            <div class="next-prayer-info-label">Next Prayer</div>
-            <div class="next-prayer-name" id="nextPrayerName">Loading...</div>
-        </div>
-        <div class="next-prayer-time-info">
-            <div class="next-prayer-time-label">Prayer Time</div>
-            <div class="next-prayer-time" id="nextPrayerTime">--:--</div>
-        </div>
-        <div class="countdown-info">
-            <div class="countdown-label">Time Remaining</div>
-            <div class="countdown" id="countdown">Calculating...</div>
-        </div>
-        <div class="date-navigation-badge" id="dateNavigationBadge" style="display:none;">
-            <div class="date-badge-date" id="viewedDateLabel">Today</div>
-            <button class="back-to-today-button" id="backToTodayButton" onclick="navigateToToday()">Back to Today</button>
-        </div>
-    </div>
-
-    <div class="prayer-grid" id="prayerGrid">
-        <div class="loading">Loading prayer times</div>
-    </div>
-
-    <div class="tools-strip">
-        <a href="https://zakat.nimazi.com/" target="_blank" rel="noopener noreferrer" class="tools-strip-link">
-            <span class="material-icons">volunteer_activism</span>
-            Zakat
         </a>
-        <a href="https://mirath.nimazi.com/" target="_blank" rel="noopener noreferrer" class="tools-strip-link">
-            <span class="material-icons">account_tree</span>
-            Mirath
+
+        <a href="https://mirath.nimazi.com/" target="_blank" rel="noopener noreferrer" class="tool-card tool-card-mirath">
+            <div class="tool-card-watermark">ميراث</div>
+            <div class="tool-card-body">
+                <div class="tool-card-header">
+                    <span class="material-icons tool-card-icon">account_tree</span>
+                    <span class="tool-card-badge">Free</span>
+                </div>
+                <h2 class="tool-card-name">Mirath</h2>
+                <p class="tool-card-arabic-sub">الميراث</p>
+                <p class="tool-card-desc">Calculate Islamic inheritance shares for any estate according to the principles of Fara'id — specifying heirs and getting a clear breakdown.</p>
+                <div class="tool-card-cta">
+                    Open Calculator
+                    <span class="material-icons">arrow_forward</span>
+                </div>
+            </div>
         </a>
+
     </div>
 
-</div>
+    <p class="tools-coming-soon">More tools coming soon, insha'Allah.</p>
 
-<!-- Prayer Time Modal -->
-<div class="prayer-modal" id="prayerModal">
-    <div class="prayer-modal-content">
-        <div class="prayer-modal-icon">🕌</div>
-        <h2 id="modalPrayerName">Prayer Time</h2>
-        <div class="prayer-modal-time" id="modalPrayerTime">--:--</div>
-        <div class="prayer-modal-info" id="modalPrayerInfo"></div>
-        <button class="prayer-modal-button" onclick="stopAthan()">Stop Athan</button>
-    </div>
 </div>
-
-<!-- Prayer Details Modal -->
-<div class="prayer-details-modal" id="prayerDetailsModal">
-    <div class="prayer-details-content">
-        <button class="modal-close" onclick="closePrayerDetails()">✕</button>
-        <div class="prayer-details-icon">🕌</div>
-        <h2 id="detailsPrayerName">Prayer Details</h2>
-        <div class="prayer-details-time" id="detailsPrayerTime">--:--</div>
-        <div class="rakats-info" id="rakatsInfo"></div>
-        <div class="prayer-description" id="prayerDescription"></div>
-    </div>
-</div>
-
 
 <!-- Desktop Side Navigation -->
 <nav class="desktop-side-nav">
-    <a href="index.html" class="side-nav-item active" aria-label="Prayer Times">
+    <a href="index.html" class="side-nav-item" aria-label="Prayer Times">
         <span class="material-icons">accessibility_new</span>
         <span class="side-nav-tooltip">Prayer</span>
     </a>
@@ -127,7 +90,7 @@
         <span class="material-icons">settings</span>
         <span class="side-nav-tooltip">Settings</span>
     </a>
-    <a href="tools.html" class="side-nav-item" aria-label="More Tools">
+    <a href="tools.html" class="side-nav-item active" aria-label="More Tools">
         <span class="material-icons">apps</span>
         <span class="side-nav-tooltip">Tools</span>
     </a>
@@ -139,7 +102,7 @@
 
 <!-- Mobile Bottom Navigation -->
 <div class="mobile-bottom-nav">
-    <a href="index.html" class="bottom-nav-item active" aria-label="Prayer Times">
+    <a href="index.html" class="bottom-nav-item" aria-label="Prayer Times">
         <span class="material-icons">accessibility_new</span>
         <span class="bottom-nav-label">Prayer</span>
     </a>
@@ -157,40 +120,6 @@
     </a>
 </div>
 
-<!-- Onboarding Modal -->
-<div class="onboarding-modal" id="onboardingModal">
-    <div class="onboarding-content">
-        <div class="onboarding-arabic">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
-        <img src="assets/branding/symbol-flat.svg" class="onboarding-logo" alt="Nimazi">
-        <h1 class="onboarding-title">Welcome to Nimazi</h1>
-        <p class="onboarding-subtitle">Your personal prayer companion. Enter your location to get accurate prayer times.</p>
-        <div class="onboarding-input-group">
-            <input type="text" id="onboardingLocationInput" class="onboarding-location-input" placeholder="City, postal code, or address" autocomplete="off">
-            <button type="button" class="onboarding-detect-btn" id="onboardingDetectBtn" onclick="onboardingDetectLocation()" title="Detect my location">
-                <span class="material-icons">my_location</span>
-            </button>
-        </div>
-        <button class="onboarding-save-btn" onclick="saveOnboardingLocation()">Get Started</button>
-    </div>
-</div>
-
-<!-- Athan Audio -->
-<audio id="athanAudio" preload="auto">
-    <source src="athan/default.mp3" type="audio/mpeg">
-</audio>
-
-<!-- Install nudge — shown once on first mobile visit when not already installed -->
-<div class="install-nudge" id="installNudge">
-    <span class="material-icons install-nudge-icon">add_to_home_screen</span>
-    <div class="install-nudge-text">Add Nimazi to your home screen for the best experience.</div>
-    <a href="about.html#install" class="install-nudge-link">How?</a>
-    <button class="install-nudge-dismiss" onclick="dismissInstallNudge()" aria-label="Dismiss">
-        <span class="material-icons">close</span>
-    </button>
-</div>
-
 <script src="js/utils.js"></script>
-<script src="js/app.js"></script>
-
 </body>
 </html>
