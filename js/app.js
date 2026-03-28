@@ -5,7 +5,8 @@ let settings = {
     lng: null,          // Longitude from GPS detect
     locationType: 'address', // 'address' or 'coords'
     theme: "auto", // auto, default, ramadan, kids
-    athan: "default" // Athan voice selection
+    athan: "default", // Athan voice selection
+    athanLength: "full" // full or short (15 seconds)
 };
 
 const CALCULATION_METHOD = 2; // ISNA method
@@ -67,6 +68,10 @@ let lastAnnouncedPrayer = null;
 let showingTomorrow = false;
 let currentHijriData = null;    // Hijri data for current viewed date
 let locationTimezone = null;    // IANA timezone from Aladhan API (e.g. "America/New_York")
+let athanStopTimer = null;
+let lastPrayerCheckAt = Date.now();
+let athanAudioUnlocked = false;
+const MISSED_PRAYER_GRACE_MS = 2 * 60 * 1000;
 
 // Date navigation and caching state
 let currentViewedDate = null;  // Date being viewed (user navigates this)
@@ -98,6 +103,7 @@ function saveSettingsToStorage() {
 
 // Initialize settings on page load
 loadSettings();
+registerNimaziServiceWorker();
 
 // ==================== DATE HELPER FUNCTIONS ====================
 
@@ -119,6 +125,21 @@ function addDays(date, days) {
 // Check if two dates are the same day
 function isSameDay(date1, date2) {
     return formatDateKey(date1) === formatDateKey(date2);
+}
+
+function parsePrayerTimeToday(prayerTimeString, baseDate = new Date()) {
+    const [hours, minutes] = prayerTimeString.split(':').map(Number);
+    if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+
+    return new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        hours,
+        minutes,
+        0,
+        0
+    );
 }
 
 // ==================== CACHE MANAGEMENT FUNCTIONS ====================
@@ -1155,6 +1176,24 @@ document.addEventListener('touchend', (e) => {
     }
 }, { passive: true });
 
+document.addEventListener('pointerdown', () => {
+    unlockAthanAudio();
+}, { passive: true });
+
+document.addEventListener('keydown', () => {
+    unlockAthanAudio();
+}, { passive: true });
+
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        checkPrayerTime();
+    }
+});
+
+window.addEventListener('pageshow', () => {
+    checkPrayerTime();
+});
+
 // Initialize
 initializePrayerTimes();
 
@@ -1181,10 +1220,15 @@ function checkPrayerTime() {
     if (!prayerTimesData || !todayDate || !currentViewedDate) return;
 
     // CRITICAL: Only play athan when viewing today, not when browsing other dates
-    if (!isSameDay(currentViewedDate, todayDate)) return;
+    if (!isSameDay(currentViewedDate, todayDate)) {
+        lastPrayerCheckAt = Date.now();
+        return;
+    }
 
     const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const nowMs = now.getTime();
+    const windowStartMs = Math.max(lastPrayerCheckAt, nowMs - MISSED_PRAYER_GRACE_MS);
+    lastPrayerCheckAt = nowMs;
 
     // Only check the 5 main prayers
     const mainPrayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
@@ -1196,9 +1240,11 @@ function checkPrayerTime() {
 
         // Validate prayer time format before comparing
         if (!prayerTimeString || prayerTimeString.length < 4) continue;
+        const prayerDate = parsePrayerTimeToday(prayerTimeString, now);
+        if (!prayerDate) continue;
 
-        // Check if current time matches prayer time and hasn't been announced yet
-        if (currentTime === prayerTimeString && lastAnnouncedPrayer !== prayer) {
+        // Allow a short catch-up window in case iOS briefly suspends timers.
+        if (prayerDate.getTime() > windowStartMs && prayerDate.getTime() <= nowMs && lastAnnouncedPrayer !== prayer) {
             playAthan(prayer, prayerTimeString);
             lastAnnouncedPrayer = prayer;
             break;
@@ -1235,6 +1281,16 @@ function playAthan(prayerName, prayerTime) {
     // Show modal
     modal.classList.add('show');
 
+    showPrayerNotification(`${prayerName} Prayer Time`, {
+        body: `${formatTime(prayerTime)} • Time for ${prayerName}`,
+        tag: `nimazi-${formatDateKey(todayDate || new Date())}-${prayerName.toLowerCase()}`,
+        icon: 'assets/favicon/web-app-manifest-192x192.png',
+        badge: 'assets/favicon/favicon-96x96.png',
+        data: { url: './index.html' }
+    }).catch(error => {
+        console.warn('Prayer notification failed:', error);
+    });
+
     // Auto-close modal when athan finishes
     audio.onended = function() {
         stopAthan();
@@ -1242,6 +1298,7 @@ function playAthan(prayerName, prayerTime) {
 
     // Play audio
     audio.currentTime = 0;
+    scheduleAthanStop(stopAthan);
     audio.play().catch(error => {
         console.error('Error playing athan:', error);
     });
@@ -1251,6 +1308,9 @@ function playAthan(prayerName, prayerTime) {
 function stopAthan() {
     const modal = document.getElementById('prayerModal');
     const audio = document.getElementById('athanAudio');
+
+    window.clearTimeout(athanStopTimer);
+    athanStopTimer = null;
 
     // Stop audio
     audio.pause();
@@ -1273,9 +1333,22 @@ function updateAthanAudioSource() {
     }
 }
 
+function scheduleAthanStop(onStop) {
+    window.clearTimeout(athanStopTimer);
+    athanStopTimer = null;
+
+    if (settings.athanLength !== 'short') return;
+
+    athanStopTimer = window.setTimeout(() => {
+        athanStopTimer = null;
+        onStop();
+    }, 15000);
+}
+
 // Preview the selected athan (play/stop toggle)
 function previewAthan() {
     const athanSelect = document.getElementById('athanSelect');
+    const athanLengthSelect = document.getElementById('athanLengthSelect');
     const previewButton = document.getElementById('previewAthanButton');
     const selectedAthan = athanSelect.value;
     const audio = document.getElementById('athanAudio');
@@ -1284,9 +1357,10 @@ function previewAthan() {
     // Check if audio is currently playing
     if (!audio.paused) {
         // Stop the audio
+        window.clearTimeout(audio._previewStopTimer);
         audio.pause();
         audio.currentTime = 0;
-        previewButton.innerHTML = '🔊 Play';
+        previewButton.textContent = '🔊 Play';
         return;
     }
 
@@ -1296,19 +1370,30 @@ function previewAthan() {
     audio.load();
 
     // Change button to stop state
-    previewButton.innerHTML = '⏹ Stop';
+    previewButton.textContent = '⏹ Stop';
 
     // Play the full athan
+    window.clearTimeout(audio._previewStopTimer);
     audio.currentTime = 0;
     audio.play().catch(error => {
         console.error('Error playing athan:', error);
         alert('Unable to play athan. Please check your audio settings.');
-        previewButton.innerHTML = '🔊 Play';
+        previewButton.textContent = '🔊 Play';
     });
+
+    if (athanLengthSelect && athanLengthSelect.value === 'short') {
+        window.clearTimeout(audio._previewStopTimer);
+        audio._previewStopTimer = window.setTimeout(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            previewButton.textContent = '🔊 Play';
+        }, 15000);
+    }
 
     // Reset button when audio ends
     audio.onended = function() {
-        previewButton.innerHTML = '🔊 Play';
+        window.clearTimeout(audio._previewStopTimer);
+        previewButton.textContent = '🔊 Play';
     };
 }
 
@@ -1338,9 +1423,34 @@ function playAthanManually() {
 
     // Play audio
     audio.currentTime = 0;
+    scheduleAthanStop(stopAthan);
     audio.play().catch(error => {
         console.error('Error playing athan:', error);
     });
+}
+
+async function unlockAthanAudio() {
+    if (athanAudioUnlocked) return;
+
+    const audio = document.getElementById('athanAudio');
+    if (!audio) return;
+
+    updateAthanAudioSource();
+
+    const previousMuted = audio.muted;
+    audio.muted = true;
+    audio.currentTime = 0;
+
+    try {
+        await audio.play();
+        audio.pause();
+        audio.currentTime = 0;
+        athanAudioUnlocked = true;
+    } catch (error) {
+        console.warn('Audio unlock was blocked:', error);
+    } finally {
+        audio.muted = previousMuted;
+    }
 }
 
 // Check for prayer time every second
@@ -1454,7 +1564,7 @@ function saveOnboardingLocation() {
     document.getElementById('onboardingModal').classList.remove('show');
 
     // Reload settings and re-initialize
-    const defaults = { location: '', lat: null, lng: null, locationType: 'address', theme: 'auto', athan: 'default' };
+    const defaults = { location: '', lat: null, lng: null, locationType: 'address', theme: 'auto', athan: 'default', athanLength: 'full' };
     const saved = localStorage.getItem('athanClockSettings');
     Object.assign(settings, defaults, saved ? JSON.parse(saved) : {});
     initializePrayerTimes();

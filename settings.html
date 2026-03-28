@@ -72,7 +72,21 @@
                     <option value="Saber">Saber</option>
                     <option value="Sharif">Sharif</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label for="athanLengthSelect">Athan Length</label>
+                <select id="athanLengthSelect">
+                    <option value="full">Full Athan</option>
+                    <option value="short">Short Athan (15 seconds)</option>
+                </select>
                 <button type="button" class="preview-athan-button" id="previewAthanButton" onclick="previewAthan()">🔊 Play</button>
+            </div>
+
+            <div class="form-group">
+                <label for="notificationPermissionButton">Prayer Notifications</label>
+                <button type="button" class="preview-athan-button" id="notificationPermissionButton" onclick="requestPrayerNotifications()">Enable Notifications</button>
+                <div class="settings-help-text" id="notificationStatus">Notifications are currently off.</div>
             </div>
 
         </div>

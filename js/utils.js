@@ -225,3 +225,49 @@ function setupLocationAutocomplete(inputEl, wrapperEl, onSubmit) {
         }
     });
 }
+
+// ==================== NOTIFICATIONS ====================
+
+let nimaziServiceWorkerRegistrationPromise = null;
+
+function isStandaloneDisplayMode() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+async function registerNimaziServiceWorker() {
+    if (!('serviceWorker' in navigator)) return null;
+    if (!nimaziServiceWorkerRegistrationPromise) {
+        nimaziServiceWorkerRegistrationPromise = navigator.serviceWorker.register('sw.js');
+    }
+    try {
+        return await nimaziServiceWorkerRegistrationPromise;
+    } catch (error) {
+        console.warn('Service worker registration failed:', error);
+        return null;
+    }
+}
+
+async function requestPrayerNotificationPermission() {
+    if (!('Notification' in window)) return 'unsupported';
+    if (Notification.permission !== 'default') return Notification.permission;
+    await registerNimaziServiceWorker();
+    return Notification.requestPermission();
+}
+
+async function showPrayerNotification(title, options = {}) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return false;
+
+    const registration = await registerNimaziServiceWorker();
+    if (registration && typeof registration.showNotification === 'function') {
+        await registration.showNotification(title, options);
+        return true;
+    }
+
+    try {
+        new Notification(title, options);
+        return true;
+    } catch (error) {
+        console.warn('Unable to show notification:', error);
+        return false;
+    }
+}

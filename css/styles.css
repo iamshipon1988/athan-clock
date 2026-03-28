@@ -3496,6 +3496,22 @@ body.kids-mode .preview-athan-button:hover {
     transform: translateY(0);
 }
 
+.settings-help-text {
+    margin-top: 10px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+body.ramadan-mode .settings-help-text {
+    color: rgba(60, 44, 5, 0.72);
+}
+
+body.kids-mode .settings-help-text {
+    color: rgba(26, 58, 92, 0.78);
+}
+
 .settings-buttons {
     display: flex;
     gap: 12px;
@@ -3976,7 +3992,7 @@ body.guidePage .bismillah {
     text-align: center;
 }
 body.guidePage .guide-page-header {
-    background: rgba(255, 255, 255, 0.9);
+    /* background: rgba(255, 255, 255, 0.9); */
     border-color: rgba(255, 255, 255, 0.3);
     text-align: center;
     flex-direction: row;
